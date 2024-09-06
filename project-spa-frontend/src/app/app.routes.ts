@@ -12,7 +12,7 @@ import { SkillsComponent } from './components/skills/skills.component';
 import { SummaryComponent } from './components/summary/summary.component';
 
 // Define the array of routes for your application
-const routes: Routes = [
+export const routes: Routes = [
   // Redirect to the 'basic-info' page when the root URL is accessed
   { path: '', redirectTo: '/basic-info', pathMatch: 'full' },
 

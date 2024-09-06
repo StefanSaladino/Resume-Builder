@@ -1,1 +1,33 @@
-<p>education works!</p>
+<form [formGroup]="educationForm" (ngSubmit)="onAddEducation()">
+    <!-- School Name -->
+    <label for="schoolName">School Name:</label>
+    <input id="schoolName" formControlName="schoolName" type="text" required>
+  
+    <!-- Timeframe -->
+    <label for="timeframe">Timeframe:</label>
+    <input id="timeframe" formControlName="timeframe" type="text" required>
+  
+    <!-- Degree Type -->
+    <label for="degreeType">Degree Type:</label>
+    <input id="degreeType" formControlName="degreeType" type="text" required>
+  
+    <!-- Degree Name -->
+    <label for="degreeName">Degree Name:</label>
+    <input id="degreeName" formControlName="degreeName" type="text" required>
+  
+    <!-- Additional Details -->
+    <label for="details">Additional Details:</label>
+    <textarea id="details" formControlName="details"></textarea>
+  
+    <button type="submit" [disabled]="!educationForm.valid">Add Education</button>
+  </form>
+  
+  <!-- List of Added Educations -->
+  <div *ngFor="let edu of educations; let i = index">
+    <p>{{ edu.schoolName }} - {{ edu.degreeName }}</p>
+    <button (click)="removeEducation(i)">Remove</button>
+  </div>
+  
+  <button (click)="onNext()" [disabled]="educations.length === 0">Next</button>
+  <button (click)="onBack()">Back</button>
+  
