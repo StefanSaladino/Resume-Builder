@@ -26,9 +26,10 @@ export class EducationComponent implements OnInit {
     // Initialize the education form with form controls and validators
     this.educationForm = this.fb.group({
       schoolName: ['', Validators.required],
-      timeframe: ['', Validators.required],
       degreeType: ['', Validators.required],
       degreeName: ['', Validators.required],
+      startDate: ['', [Validators.required, this.validateDateFormat]],
+      endDate: ['', this.validateOptionalEndDate],
       details: [''],
     });
 
@@ -36,12 +37,44 @@ export class EducationComponent implements OnInit {
     this.educations = this.formDataService.getEducation();
   }
 
+  validateDateFormat(control: any) {
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!datePattern.test(control.value)) {
+      return { invalidDate: true };
+    }
+    return null;
+  }
+
+  validateOptionalEndDate(control: any) {
+    if (!control.value || control.value.trim() === '') {
+      return null; // Empty value is valid (no end date provided)
+    }
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    if (!datePattern.test(control.value)) {
+      return { invalidDate: true }; // Invalid date format
+    }
+    return null; // Valid date format
+  }
+  
+
   // Add new education entry
   onAddEducation() {
-    this.formDataService.addEducation(this.educationForm.value); // Add form data to service
-    this.educations = this.formDataService.getEducation(); // Update local education list
-    this.educationForm.reset(); // Reset the form after submission
-  }
+      if (this.educationForm.valid) {
+        const formValue = this.educationForm.value;
+        if (!formValue.endDate) {
+          formValue.endDate = 'Present';
+        }
+  
+        // Log the form values to console
+        console.log('Form Values:', formValue);
+  
+        this.educations.push(formValue);
+        this.educationForm.reset();
+      } else {
+        // Trigger form validation if there are errors
+        this.educationForm.markAllAsTouched();
+      }
+    }
 
   // Remove education entry by index
   removeEducation(index: number) {

@@ -26,8 +26,8 @@ export class VolunteerComponent implements OnInit {
     this.volunteerForm = this.fb.group({
       organization: ['', Validators.required],
       role: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
+      startDate: ['', [Validators.required, this.validateDateFormat]],
+      endDate: ['', this.validateOptionalEndDate],
       notes: [''],
     });
 
@@ -35,6 +35,26 @@ export class VolunteerComponent implements OnInit {
     if (volunteer) {
       this.volunteerForm.patchValue(volunteer);
     }
+  }
+
+  
+  validateDateFormat(control: any) {
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!datePattern.test(control.value)) {
+      return { invalidDate: true };
+    }
+    return null;
+  }
+
+  validateOptionalEndDate(control: any) {
+    if (!control.value || control.value.trim() === '') {
+      return null; // Empty value is valid (no end date provided)
+    }
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    if (!datePattern.test(control.value)) {
+      return { invalidDate: true }; // Invalid date format
+    }
+    return null; // Valid date format
   }
 
   onAddVolunteer(): void {
