@@ -1,1 +1,35 @@
-<p>experience works!</p>
+<form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()">
+    <div>
+      <label for="companyName">Company Name:</label>
+      <input id="companyName" formControlName="companyName" type="text" required />
+    </div>
+  
+    <div>
+      <label for="jobTitle">Job Title:</label>
+      <input id="jobTitle" formControlName="jobTitle" type="text" required />
+    </div>
+  
+    <div>
+      <label for="timeframe">Timeframe:</label>
+      <input id="timeframe" formControlName="timeframe" type="text" required />
+    </div>
+  
+    <div>
+      <label for="responsibilities">Responsibilities:</label>
+      <textarea id="responsibilities" formControlName="responsibilities"></textarea>
+    </div>
+  
+    <button type="submit">Add Experience</button>
+  </form>
+  
+  <!-- Display list of experiences -->
+  <div *ngFor="let exp of experiences; let i = index">
+    <h3>{{ exp.jobTitle }} at {{ exp.companyName }}</h3>
+    <p>{{ exp.timeframe }}</p>
+    <p>{{ exp.responsibilities }}</p>
+    <button (click)="removeExperience(i)">Remove</button>
+  </div>
+  
+  <button (click)="onBack()">Back</button>
+  <button (click)="onNext()">Next</button>
+  

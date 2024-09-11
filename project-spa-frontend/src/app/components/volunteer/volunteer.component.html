@@ -1,1 +1,35 @@
-<p>volunteer works!</p>
+<form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()">
+    <div>
+      <label for="organizationName">Organization Name:</label>
+      <input id="organizationName" formControlName="organizationName" type="text" required />
+    </div>
+  
+    <div>
+      <label for="role">Role:</label>
+      <input id="role" formControlName="role" type="text" required />
+    </div>
+  
+    <div>
+      <label for="timeframe">Timeframe:</label>
+      <input id="timeframe" formControlName="timeframe" type="text" required />
+    </div>
+  
+    <div>
+      <label for="responsibilities">Responsibilities:</label>
+      <textarea id="responsibilities" formControlName="responsibilities"></textarea>
+    </div>
+  
+    <button type="submit">Add Volunteer Experience</button>
+  </form>
+  
+  <!-- Display list of volunteer experiences -->
+  <div *ngFor="let vol of volunteers; let i = index">
+    <h3>{{ vol.role }} at {{ vol.organizationName }}</h3>
+    <p>{{ vol.timeframe }}</p>
+    <p>{{ vol.responsibilities }}</p>
+    <button (click)="removeVolunteer(i)">Remove</button>
+  </div>
+  
+  <button (click)="onBack()">Back</button>
+  <button (click)="onNext()">Next</button>
+  

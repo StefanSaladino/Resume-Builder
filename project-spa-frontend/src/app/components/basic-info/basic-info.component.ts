@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
+  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
   selector: 'app-basic-info',
   templateUrl: './basic-info.component.html',
 })

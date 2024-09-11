@@ -30,7 +30,32 @@ export class FormDataService {
     return this.formData.education;
   }
 
-  // Similar methods for Experience, Volunteer, Skills...
+  // Experience
+  addExperience(data: any) {
+    this.formData.experience.push(data);
+  }
+
+  getExperience() {
+    return this.formData.experience;
+  }
+
+  // Volunteer
+  addVolunteer(data: any) {
+    this.formData.volunteer.push(data);
+  }
+
+  getVolunteer() {
+    return this.formData.volunteer;
+  }
+
+  // Skills
+  addSkills(data: any) {
+    this.formData.skills.push(data);
+  }
+
+  getSkills() {
+    return this.formData.skills;
+  }
 
   // Get All Data
   getFormData() {

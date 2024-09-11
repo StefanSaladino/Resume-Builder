@@ -1,1 +1,24 @@
-<p>skills works!</p>
+<form [formGroup]="skillsForm" (ngSubmit)="onAddSkill()">
+    <div>
+      <label for="skillName">Skill Name:</label>
+      <input id="skillName" formControlName="skillName" type="text" required />
+    </div>
+  
+    <div>
+      <label for="proficiency">Proficiency:</label>
+      <input id="proficiency" formControlName="proficiency" type="text" required />
+    </div>
+  
+    <button type="submit">Add Skill</button>
+  </form>
+  
+  <!-- Display list of skills -->
+  <div *ngFor="let skill of skills; let i = index">
+    <h3>{{ skill.skillName }}</h3>
+    <p>Proficiency: {{ skill.proficiency }}</p>
+    <button (click)="removeSkill(i)">Remove</button>
+  </div>
+  
+  <button (click)="onBack()">Back</button>
+  <button (click)="onNext()">Next</button>
+  
