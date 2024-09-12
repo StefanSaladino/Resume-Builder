@@ -1,7 +1,7 @@
 <form [formGroup]="skillsForm" (ngSubmit)="onAddSkill()">
     <div>
-      <label for="skillName">Skill Name:</label>
-      <input id="skillName" formControlName="skillName" type="text" required />
+      <label for="skill">Skill Name:</label>
+      <input id="skill" formControlName="skill" type="text" required />
     </div>
   
     <div>
@@ -14,7 +14,7 @@
   
   <!-- Display list of skills -->
   <div *ngFor="let skill of skills; let i = index">
-    <h3>{{ skill.skillName }}</h3>
+    <h3>{{ skill.skill }}</h3>
     <p>Proficiency: {{ skill.proficiency }}</p>
     <button (click)="removeSkill(i)">Remove</button>
   </div>

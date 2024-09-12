@@ -1,35 +1,80 @@
 <form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()">
-    <div>
-      <label for="organizationName">Organization Name:</label>
-      <input id="organizationName" formControlName="organizationName" type="text" required />
+  <div>
+    <label for="organization">Organization Name:</label>
+    <input
+      id="organization"
+      formControlName="organization"
+      type="text"
+      required
+    />
+    <div *ngIf="volunteerForm.get('organization')?.invalid && volunteerForm.get('organization')?.touched">
+      <small class="error">Name of organization is required.</small>
     </div>
-  
-    <div>
-      <label for="role">Role:</label>
-      <input id="role" formControlName="role" type="text" required />
-    </div>
-  
-    <div>
-      <label for="timeframe">Timeframe:</label>
-      <input id="timeframe" formControlName="timeframe" type="text" required />
-    </div>
-  
-    <div>
-      <label for="responsibilities">Responsibilities:</label>
-      <textarea id="responsibilities" formControlName="responsibilities"></textarea>
-    </div>
-  
-    <button type="submit">Add Volunteer Experience</button>
-  </form>
-  
-  <!-- Display list of volunteer experiences -->
-  <div *ngFor="let vol of volunteers; let i = index">
-    <h3>{{ vol.role }} at {{ vol.organizationName }}</h3>
-    <p>{{ vol.timeframe }}</p>
-    <p>{{ vol.responsibilities }}</p>
-    <button (click)="removeVolunteer(i)">Remove</button>
   </div>
-  
-  <button (click)="onBack()">Back</button>
-  <button (click)="onNext()">Next</button>
-  
+
+  <div>
+    <label for="role">Role:</label>
+    <input id="role" formControlName="role" type="text" required />
+    <div *ngIf="volunteerForm.get('role')?.invalid && volunteerForm.get('role')?.touched">
+      <small class="error">Name of role is required.</small>
+    </div>
+  </div>
+
+  <!-- Start Date -->
+  <label for="startDate">Start Date (mm/yyyy):</label>
+  <input
+    id="startDate"
+    formControlName="startDate"
+    type="text"
+    placeholder="mm/yyyy"
+    required
+  />
+  <div
+    *ngIf="
+      volunteerForm.controls['startDate'].invalid &&
+      volunteerForm.controls['startDate'].touched
+    "
+  >
+    <small>Please enter a valid start date in mm/yyyy format.</small>
+  </div>
+
+  <!-- End Date (optional) -->
+  <label for="endDate">End Date (mm/yyyy):</label>
+  <input
+    id="endDate"
+    formControlName="endDate"
+    type="text"
+    placeholder="mm/yyyy"
+  />
+  <div
+    *ngIf="
+      volunteerForm.controls['endDate'].invalid &&
+      volunteerForm.controls['endDate'].touched
+    "
+  >
+    <small>Please enter a valid end date in mm/yyyy format.</small>
+  </div>
+
+  <div>
+    <label for="responsibilities">Responsibilities:</label>
+    <div formArrayName="responsibilities">
+      <div *ngFor="let responsibility of responsibilities.controls; let i = index">
+        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" />
+        <button type="button" (click)="removeResponsibility(i)">Remove</button>
+      </div>
+    </div>
+    <button type="button" (click)="addResponsibility()">Add Responsibility</button>
+  </div>
+  <button type="submit">Add Volunteer Experience</button>
+</form>
+
+<!-- Display list of volunteer experiences -->
+<div *ngFor="let vol of volunteers; let i = index">
+  <h3>{{ vol.role }} at {{ vol.organization }}</h3>
+  <p>{{ vol.startDate }} - {{ vol.endDate }}</p>
+  <p>{{ vol.responsibilities }}</p>
+  <button (click)="removeVolunteer(i)">Remove</button>
+</div>
+
+<button (click)="onBack()">Back</button>
+<button (click)="onNext()">Next</button>

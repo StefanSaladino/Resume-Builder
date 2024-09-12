@@ -8,6 +8,7 @@ import { ExperienceComponent } from './components/experience/experience.componen
 import { VolunteerComponent } from './components/volunteer/volunteer.component';
 import { SkillsComponent } from './components/skills/skills.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { LoginComponent } from './components/login/login.component';
 
 // Declare the routes array
 export const routes: Routes = [
@@ -17,7 +18,8 @@ export const routes: Routes = [
   { path: 'experience', component: ExperienceComponent },
   { path: 'volunteer', component: VolunteerComponent },
   { path: 'skills', component: SkillsComponent },
-  { path: 'summary', component: SummaryComponent }
+  { path: 'summary', component: SummaryComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({

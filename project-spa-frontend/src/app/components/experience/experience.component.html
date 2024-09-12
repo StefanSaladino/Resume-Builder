@@ -1,35 +1,85 @@
 <form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()">
-    <div>
-      <label for="companyName">Company Name:</label>
-      <input id="companyName" formControlName="companyName" type="text" required />
+  <div>
+    <label for="company">Company Name:</label>
+    <input
+      id="company"
+      formControlName="company"
+      type="text"
+      required
+    />
+    <div *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched">
+      <small class="error">Name of company is required.</small>
     </div>
-  
-    <div>
-      <label for="jobTitle">Job Title:</label>
-      <input id="jobTitle" formControlName="jobTitle" type="text" required />
-    </div>
-  
-    <div>
-      <label for="timeframe">Timeframe:</label>
-      <input id="timeframe" formControlName="timeframe" type="text" required />
-    </div>
-  
-    <div>
-      <label for="responsibilities">Responsibilities:</label>
-      <textarea id="responsibilities" formControlName="responsibilities"></textarea>
-    </div>
-  
-    <button type="submit">Add Experience</button>
-  </form>
-  
-  <!-- Display list of experiences -->
-  <div *ngFor="let exp of experiences; let i = index">
-    <h3>{{ exp.jobTitle }} at {{ exp.companyName }}</h3>
-    <p>{{ exp.timeframe }}</p>
-    <p>{{ exp.responsibilities }}</p>
-    <button (click)="removeExperience(i)">Remove</button>
   </div>
-  
-  <button (click)="onBack()">Back</button>
-  <button (click)="onNext()">Next</button>
-  
+
+  <div>
+    <label for="jobTitle">Job Title:</label>
+    <input id="jobTitle" formControlName="jobTitle" type="text" required />
+    <div *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched">
+      <small class="error">Job title is required.</small>
+    </div>
+  </div>
+
+  <!-- Start Date -->
+  <label for="startDate">Start Date (mm/yyyy):</label>
+  <input
+    id="startDate"
+    formControlName="startDate"
+    type="text"
+    placeholder="mm/yyyy"
+    required
+  />
+  <div
+    *ngIf="
+      experienceForm.controls['startDate'].invalid &&
+      experienceForm.controls['startDate'].touched
+    "
+  >
+    <small>Please enter a valid start date in mm/yyyy format.</small>
+  </div>
+
+  <!-- End Date (optional) -->
+  <label for="endDate">End Date (mm/yyyy):</label>
+  <input
+    id="endDate"
+    formControlName="endDate"
+    type="text"
+    placeholder="mm/yyyy"
+  />
+  <div
+    *ngIf="
+      experienceForm.controls['endDate'].invalid &&
+      experienceForm.controls['endDate'].touched
+    "
+  >
+    <small>Please enter a valid end date in mm/yyyy format.</small>
+  </div>
+
+  <div>
+    <label for="responsibilities">Responsibilities:</label>
+    <div formArrayName="responsibilities">
+      <div *ngFor="let responsibility of responsibilities.controls; let i = index">
+        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" />
+        <button type="button" (click)="removeResponsibility(i)">Remove</button>
+      </div>
+    </div>
+    <button type="button" (click)="addResponsibility()">Add Responsibility</button>
+  </div>
+
+  <button type="submit">Add Experience</button>
+</form>
+
+<!-- Display list of experiences -->
+<div *ngFor="let exp of experiences; let i = index">
+  <h3>{{ exp.jobTitle }} at {{ exp.company }}</h3>
+  <p>{{ exp.startDate }} - {{ exp.endDate }}</p>
+  <ul>
+    <li *ngFor="let responsibility of exp.responsibilities">
+      {{ responsibility }}
+    </li>
+  </ul>
+  <button (click)="removeExperience(i)">Remove</button>
+</div>
+
+<button (click)="onBack()">Back</button>
+<button (click)="onNext()">Next</button>
