@@ -1,1 +1,42 @@
-<p>register works!</p>
+<h2>Register</h2>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+  <fieldset class="form-group">
+    <label for="firstName">First Name: *</label>
+    <input formControlName="firstName" id="firstName" required />
+  </fieldset>
+
+  <fieldset class="form-group">
+    <label for="lastName">Last Name: *</label>
+    <input formControlName="lastName" id="lastName" required />
+  </fieldset>
+
+  <fieldset class="form-group">
+    <label for="email">Email: *</label>
+    <input formControlName="email" id="email" type="email" required />
+  </fieldset>
+
+  <fieldset class="form-group">
+    <label for="password">Password: *</label>
+    <input formControlName="password" id="password" type="password" required />
+    <div *ngIf="registerForm.get('password')?.errors?.['pattern']">
+      Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group">
+    <label for="confirmPassword">Confirm Password: *</label>
+    <input formControlName="confirmPassword" id="confirmPassword" type="password" required />
+    <div *ngIf="registerForm.hasError('passwordMismatch')">
+      Passwords must match.
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group">
+    <button class="btn btn-info" type="submit">Register</button>
+  </fieldset>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+</form>

@@ -3,18 +3,26 @@ const passport = require('passport');
 const User = require('../models/user'); // User model
 const router = express.Router();
 
-// Register route
+// Registration route
 router.post('/register', (req, res) => {
-    const { username, password } = req.body;
-    User.register(new User({ username: username }), password, (err, user) => {
+    const { email, firstName, lastName, password } = req.body;
+
+    // Register new user
+    User.register(new User({ email, firstName, lastName }), password, (err, user) => {
         if (err) {
-            return res.status(500).json({ message: 'Error registering user' });
+            console.error('Registration error:', err);  // Improved error logging
+            return res.status(500).send(err.message);
         }
+
+        console.log(`Successfully added new user: ${email}`);
+        
+        // Log the user in after registration
         passport.authenticate('local')(req, res, () => {
-            res.status(200).json({ message: 'Registration successful' });
+            res.status(200).json({ message: 'Registered and logged in', user });
         });
     });
 });
+
 
 // Login route
 router.post('/login', passport.authenticate('local', {

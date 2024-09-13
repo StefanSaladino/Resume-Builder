@@ -5,27 +5,36 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var globals = require("./configs/globals");
 const mongoose = require('mongoose');
-const passport = require('passport');
+var passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const User = require('./models/user'); // Import the user model
-const authRoutes = require('./routes/auth'); // Auth routes
+var User = require('./models/user'); // Import the user model
+const authRouter = require('./routes/auth'); // Auth routes
+var dotenv = require('dotenv');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-// Serve static files from Angular's 'src' directory for development
-app.use(express.static(path.join(__dirname, 'project-spa-frontend', 'src')));
+// Enabling cross origin resource sharing so the API can be called at the host origin
+var corsOptions = {
+  origin: "http://localhost:4200",
+  optionsSuccessStatus: 200
+};
+
+
+
+
+
 
 // Catch-all route: Send all other requests to Angular's index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'project-spa-frontend', 'src', 'index.html'));
-});
-
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'project-spa-frontend', 'src', 'index.html'));
+// });
+app.use(express.static(path.join(__dirname, 'views')));
 app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
@@ -33,6 +42,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(cors(corsOptions));
 
 // Configure session object
 // Initialize passport
@@ -42,10 +53,20 @@ app.use(session({
   saveUninitialized: false // Save session even if not used
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+// Initialize passport strategy
+passport.use(User.createStrategy());
+// Configure passport to serialize and deserialize user data
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // Use the auth routes
-app.use('/', authRoutes);
+app.use('/auth', authRouter);
 
 // Connect to MongoDB
 mongoose

@@ -9,6 +9,7 @@ import { VolunteerComponent } from './components/volunteer/volunteer.component';
 import { SkillsComponent } from './components/skills/skills.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 // Declare the routes array
 export const routes: Routes = [
@@ -19,7 +20,8 @@ export const routes: Routes = [
   { path: 'volunteer', component: VolunteerComponent },
   { path: 'skills', component: SkillsComponent },
   { path: 'summary', component: SummaryComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent }
 ];
 
 @NgModule({
