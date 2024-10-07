@@ -100,10 +100,10 @@ export class ExperienceComponent implements OnInit {
 
   onNext() {
     this.formDataService.addExperience(this.experienceForm.value);
-    this.router.navigate(['/volunteer']);
+    this.router.navigate(['/resume/volunteer']);
   }
 
   onBack() {
-    this.router.navigate(['/education']);
+    this.router.navigate(['/resume/education']);
   }
 }

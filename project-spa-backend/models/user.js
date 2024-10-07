@@ -1,8 +1,23 @@
 const mongoose = require("mongoose");
-// Take the out of the box functionality from the plm package to extend the user model
 const plm = require("passport-local-mongoose");
 
-const UserSchema = {
+// Define resume sub-schema for user data
+const ResumeSchema = new mongoose.Schema({
+  basicInfo: {
+    emailAddress: String,
+    firstName: String,
+    lastName: String,
+    phone: String,
+    address: String,
+  },
+  education: [ /* Define education fields */ ],
+  skills: [ /* Define skills fields */ ],
+  volunteer: [ /* Define volunteer fields */ ],
+  experience: [ /* Define experience fields */ ],
+});
+
+// Updated UserSchema to ensure resume is initialized
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -24,13 +39,14 @@ const UserSchema = {
     type: Boolean,
     default: false
   },
-};
-
-// Create a Mongoose schema using the UserSchema object
-const mongooseSchema = new mongoose.Schema(UserSchema);
+  resume: {
+    type: ResumeSchema,
+    default: {}  // Initialize as an empty object
+  }, // Embedded resume schema
+});
 
 // Apply the passport-local-mongoose plugin to the schema
-mongooseSchema.plugin(plm, { usernameField: 'email' }); // use email as the username
+UserSchema.plugin(plm, { usernameField: 'email' }); // use email as the username
 
 // Export the Mongoose model
-module.exports = mongoose.model("User", mongooseSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -5,22 +5,24 @@ import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
-
-
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginForm!: FormGroup;
+  loginForm: FormGroup;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],  // Added email validation
       password: ['', [Validators.required]],
     });
   }
@@ -28,14 +30,29 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).pipe(
-        tap((response) => {
-          this.router.navigate(['/']);  // Navigate after login
+        tap((response: any) => {
+          if (response.success) {
+            // Navigate to the next page if login is successful
+            this.router.navigate(['/resume/basic-info']);
+          }
         }),
         catchError((error) => {
-          this.errorMessage = 'Invalid credentials';
-          return of(error);  // Handle the error and return an observable
+          // Handle any unexpected errors
+          this.errorMessage = 'An unexpected error occurred';
+          console.error('Login error:', error);
+          return of(null); // Returning observable of null to avoid breaking the stream
         })
-      ).subscribe();
+      ).subscribe((response: any) => {
+        if (!response?.success) {
+          // Display the error message if login failed
+          this.errorMessage = response?.message || 'Invalid credentials';
+        }
+      });
+    } else {
+      this.errorMessage = 'Please fill in all required fields';
     }
   }
+  
+
+  
 }

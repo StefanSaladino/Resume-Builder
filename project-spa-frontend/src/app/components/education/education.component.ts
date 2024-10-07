@@ -3,27 +3,29 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
+import { ReactiveFormsModule } from '@angular/forms'; 
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-education',
-  standalone: true, // Standalone component declaration
-  imports: [CommonModule, ReactiveFormsModule], // Import CommonModule and ReactiveFormsModule here
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './education.component.html',
   styleUrls: ['./education.component.css']
 })
 export class EducationComponent implements OnInit {
-  educationForm!: FormGroup; // FormGroup to manage education form
-  educations: any[] = []; // List of educations
+  educationForm!: FormGroup;
+  educations: any[] = [];
 
   constructor(
-    private fb: FormBuilder, // FormBuilder for form creation
-    private router: Router, // Router for navigation
-    private formDataService: FormDataService // Service to manage form data
+    private fb: FormBuilder,
+    private router: Router,
+    private formDataService: FormDataService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
-    // Initialize the education form with form controls and validators
     this.educationForm = this.fb.group({
       schoolName: ['', Validators.required],
       degreeType: ['', Validators.required],
@@ -33,7 +35,6 @@ export class EducationComponent implements OnInit {
       details: [''],
     });
 
-    // Retrieve any previously added education data
     this.educations = this.formDataService.getEducation();
   }
 
@@ -47,47 +48,63 @@ export class EducationComponent implements OnInit {
 
   validateOptionalEndDate(control: any) {
     if (!control.value || control.value.trim() === '') {
-      return null; // Empty value is valid (no end date provided)
+      return null; 
     }
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; 
     if (!datePattern.test(control.value)) {
-      return { invalidDate: true }; // Invalid date format
+      return { invalidDate: true }; 
     }
-    return null; // Valid date format
+    return null;
   }
-  
 
-  // Add new education entry
   onAddEducation() {
-      if (this.educationForm.valid) {
-        const formValue = this.educationForm.value;
-        if (!formValue.endDate) {
-          formValue.endDate = 'Present';
-        }
-  
-        // Log the form values to console
-        console.log('Form Values:', formValue);
-  
-        this.educations.push(formValue);
-        this.educationForm.reset();
-      } else {
-        // Trigger form validation if there are errors
-        this.educationForm.markAllAsTouched();
+    if (this.educationForm.valid) {
+      const formValue = this.educationForm.value;
+      if (!formValue.endDate) {
+        formValue.endDate = 'Present';
       }
-    }
 
-  // Remove education entry by index
+      console.log('Form Values:', formValue);
+      this.educations.push(formValue);
+      this.educationForm.reset();
+    } else {
+      this.educationForm.markAllAsTouched();
+    }
+  }
+
   removeEducation(index: number) {
     this.educations.splice(index, 1);
   }
 
-  // Navigate to the Experience page
   onNext() {
-    this.router.navigate(['/experience']);
+    if (this.educationForm.valid) {
+      const formValue = this.educationForm.value;
+      if (!formValue.endDate) {
+        formValue.endDate = 'Present';
+      }
+
+      const token = localStorage.getItem('authToken'); // Ensure the correct token key is used
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+      this.http.post('http://localhost:4200/backend/resume/education', formValue, { headers })
+        .pipe(
+          tap((response) => {
+            console.log('Education info saved:', response);
+            this.formDataService.setEducation(this.educationForm.value); 
+            this.router.navigate(['/resume/experience']); 
+          }),
+          catchError((error) => {
+            console.error('Error saving education info:', error);
+            return of(error); 
+          })
+        )
+        .subscribe();
+    } else {
+      this.educationForm.markAllAsTouched();
+    }
   }
 
-  // Navigate back to the Basic Info page
   onBack() {
-    this.router.navigate(['/basic-info']);
+    this.router.navigate(['/resume/basic-info']);
   }
 }

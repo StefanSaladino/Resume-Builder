@@ -1,7 +1,9 @@
 const express = require('express');
 const passport = require('passport');
-const User = require('../models/user'); // User model
+const User = require('../models/user'); 
+const { ensureAuthenticated } = require('../middleware/enforceAuth');
 const router = express.Router();
+const jwt = require('jsonwebtoken'); 
 
 // Registration route
 router.post('/register', (req, res) => {
@@ -24,18 +26,66 @@ router.post('/register', (req, res) => {
 });
 
 
-// Login route
-router.post('/login', passport.authenticate('local', {
-    failureRedirect: '/login',
-    failureMessage: true
-}), (req, res) => {
-    res.status(200).json({ message: 'Login successful', user: req.user });
+// GET login
+router.get("/login", (req, res, next) => {
+    let messages = req.session.messages || [];
+    req.session.messages = [];
+    res.render("login", {
+      title: "Login to your account",
+      messages: messages,
+    });
+  });
+  
+ // Login route (POST)
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+        if (!user) {
+            return res.status(401).json({ success: false, message: info.message });
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Internal server error' });
+            }
+            // Generate JWT
+            const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+            return res.json({ success: true, user: user, token: token }); // Send token with response
+        });
+    })(req, res, next);
 });
+  
 
 // Logout route
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.status(200).json({ message: 'Logout successful' });
-});
+router.get("/logout", (req, res, next) => {
+    req.logout((err) => {
+      if (err) {
+        return next(err); // Pass error to error-handling middleware
+      }
+      
+      // Clear the session (optional but ensures everything is cleared)
+      req.session.destroy((err) => {
+        if (err) {
+          return next(err);
+        }
+  
+        // Send success response to the frontend
+        res.status(200).json({ message: 'Logout successful' });
+  
+      });
+    });
+  });
+  
+
+router.get('/user', (req, res) => {
+    console.log('Session:', req.session);
+    console.log('User:', req.user);
+    if (req.isAuthenticated()) {
+        return res.status(200).json(req.user);  // Return the user object
+    } else {
+        return res.status(200).json(null);  // Return null if not authenticated
+    }
+  });
 
 module.exports = router;

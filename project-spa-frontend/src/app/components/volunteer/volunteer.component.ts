@@ -86,10 +86,10 @@ export class VolunteerComponent implements OnInit {
 
   onNext() {
     this.formDataService.addVolunteer(this.volunteerForm.value);
-    this.router.navigate(['/skills']);
+    this.router.navigate(['/resume/skills']);
   }
 
   onBack() {
-    this.router.navigate(['/experience']); 
+    this.router.navigate(['/resume/experience']); 
   }
 }

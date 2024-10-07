@@ -1,3 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">MyApp</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <!-- Display greeting if user is logged in -->
+      <li *ngIf="isLoggedIn" class="nav-item">
+        <span class="navbar-text">Hello, {{ firstName }}</span>
+      </li>
+      <!-- Login link if not logged in -->
+      <li *ngIf="!isLoggedIn" class="nav-item">
+        <a class="nav-link" routerLink="/login">Login</a>
+      </li>
+      <!-- Logout link if logged in -->
+      <li *ngIf="isLoggedIn" class="nav-item">
+        <a class="nav-link" (click)="logout()">Logout</a>
+      </li>
+      <!-- Optional message when not logged in -->
+      <li *ngIf="!isLoggedIn" class="nav-item">
+        <span class="nav-link disabled">NOT LOGGED IN!</span>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <h1>
   Build your Resume!
 </h1>

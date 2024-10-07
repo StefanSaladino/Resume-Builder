@@ -10,22 +10,26 @@ import { SkillsComponent } from './components/skills/skills.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthGuard } from './guards/auth.guard';
+import { CommonModule } from '@angular/common';
 
 // Declare the routes array
+//TODO: IMPLEMENT AUTH GUARD
 export const routes: Routes = [
-  { path: '', redirectTo: '/basic-info', pathMatch: 'full' },
-  { path: 'basic-info', component: BasicInfoComponent },
-  { path: 'education', component: EducationComponent },
-  { path: 'experience', component: ExperienceComponent },
-  { path: 'volunteer', component: VolunteerComponent },
-  { path: 'skills', component: SkillsComponent },
-  { path: 'summary', component: SummaryComponent },
+  { path: '', redirectTo: 'resume/basic-info', pathMatch: 'full' },
+  { path: 'resume/basic-info', component: BasicInfoComponent, canActivate: [AuthGuard] },
+  { path: 'resume/education', component: EducationComponent, },
+  { path: 'resume/experience', component: ExperienceComponent, },
+  { path: 'resume/volunteer', component: VolunteerComponent, },
+  { path: 'resume/skills', component: SkillsComponent,  },
+  { path: 'resume/summary', component: SummaryComponent, },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes), CommonModule],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

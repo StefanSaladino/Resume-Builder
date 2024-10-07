@@ -14,23 +14,23 @@ var User = require('./models/user'); // Import the user model
 const authRouter = require('./routes/auth'); // Auth routes
 var dotenv = require('dotenv');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
 
 // Enabling cross origin resource sharing so the API can be called at the host origin
 var corsOptions = {
-  origin: "http://localhost:4200",
-  optionsSuccessStatus: 200
+  origin: 'http://localhost:4200',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
 };
 
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+const resumeRoutes = require('./routes/components');
+
+var app = express();
 
 
 
-
-
-// Catch-all route: Send all other requests to Angular's index.html
+//Catch-all route: Send all other requests to Angular's index.html
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'project-spa-frontend', 'src', 'index.html'));
 // });
@@ -39,34 +39,45 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors(corsOptions));
+
 
 // Configure session object
 // Initialize passport
 app.use(session({
-  secret: "resumeBuilder", // Value used to sign session ID cookie
-  resave: false, // Save session even if not modified
-  saveUninitialized: false // Save session even if not used
+  secret: 'resume-Builder',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false,
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  } // Secure should be true only in production with HTTPS
 }));
+
+app.use(cors(corsOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+  console.log('Session Data:', req.session);
+  next();
+});
 
 
-// Initialize passport strategy
 passport.use(User.createStrategy());
-// Configure passport to serialize and deserialize user data
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // Use the auth routes
-app.use('/auth', authRouter);
+app.use('/', authRouter);
+// resume component routes
+app.use('/resume', resumeRoutes);
 
 // Connect to MongoDB
 mongoose

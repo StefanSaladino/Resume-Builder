@@ -1,7 +1,7 @@
 <form [formGroup]="basicInfoForm" (ngSubmit)="onNext()">
     <!-- Email -->
-    <label for="email">Email:</label>
-    <input id="email" formControlName="email" type="email" required>
+    <label for="emailAddress">Email:</label>
+    <input id="emailAddress" formControlName="emailAddress" type="email" required>
     
     <!-- First Name -->
     <label for="firstName">First Name:</label>
@@ -19,6 +19,6 @@
     <label for="address">Address:</label>
     <input id="address" formControlName="address" type="text" required>
     
-    <button type="submit" [disabled]="!basicInfoForm.valid">Next</button>
+    <button click="onNext()" [disabled]="!basicInfoForm.valid">Next</button>
   </form>
   

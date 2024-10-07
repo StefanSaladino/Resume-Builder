@@ -16,6 +16,9 @@
       required
     />
   </fieldset>
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>  
 
   <fieldset class="form-group">
     <button class="btn btn-info offset-3" type="submit">Login</button>
@@ -32,4 +35,3 @@
 <div *ngIf="errorMessage" class="alert alert-danger">
   {{ errorMessage }}
 </div>
-

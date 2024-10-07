@@ -22,7 +22,7 @@ export class FormDataService {
   }
 
   // Education
-  addEducation(data: any) {
+  setEducation(data: any) {
     this.formData.education.push(data);
   }
 

@@ -47,10 +47,10 @@ export class SkillsComponent implements OnInit {
 
   onNext() {
     this.formDataService.addSkills(this.skillsForm.value);
-    this.router.navigate(['/summary']);
+    this.router.navigate(['/resume/summary']);
   }
 
   onBack() {
-    this.router.navigate(['/volunteer']);
+    this.router.navigate(['/resume/volunteer']);
   }
 }
