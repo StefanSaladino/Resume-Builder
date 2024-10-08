@@ -45,7 +45,6 @@ router.post('/basic-info', async (req, res) => {
 
 
 // Get route to retrieve the user's basic info
-// Get route to retrieve the user's basic info
 router.get('/basic-info', async (req, res) => {
   try {
       const user = await User.findById(req.userId); // Use req.userId from the token
@@ -66,46 +65,82 @@ router.get('/basic-info', async (req, res) => {
   
 
 // Education
-router.get('/education', verifyToken, (req, res) => {
-  res.render('education', { title: 'Education' });
+router.get('/education', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId); // Use req.userId from the token
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Check if resume.education exists
+    if (user.resume && user.resume.education) {
+        res.status(200).json(user.resume.education);
+    } else {
+        res.status(200).json({ message: 'No education found', data: null });
+    }
+} catch (error) {
+    console.error('Error retrieving education:', error);
+    res.status(500).json({ message: 'Error retrieving education' });
+}
 });
 
-// Education route - POST (to save education data)
-router.post('/education', verifyToken, async (req, res) => {
+// Add Education - POST
+router.post('/education', async (req, res) => {
   try {
-    // Get the authenticated user by ID from the token
-    const userId = req.user.id;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Find the user in the database
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    // Check for duplicates before adding
+    const existingEducation = user.resume.education.find(ed => 
+      ed.schoolName === req.body.schoolName &&
+      ed.degreeType === req.body.degreeType &&
+      ed.degreeName === req.body.degreeName &&
+      ed.startDate === req.body.startDate &&
+      ed.endDate === (req.body.endDate || 'Present')
+    );
+
+    if (existingEducation) {
+      return res.status(400).json({ message: 'Education entry already exists' });
     }
 
-    // Education data from the form submission
-    const { schoolName, degreeType, degreeName, startDate, endDate, details } = req.body;
-
-    // Create the new education entry
+    // Add new education entry to the education array
     const newEducation = {
-      schoolName,
-      degreeType,
-      degreeName,
-      startDate,
-      endDate: endDate || 'Present', // If no end date, assume "Present"
-      details
+      schoolName: req.body.schoolName,
+      degreeType: req.body.degreeType,
+      degreeName: req.body.degreeName,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate || 'Present',
+      details: req.body.details
     };
 
-    // Add the new education to the user's education array
-    user.education.push(newEducation);
-
-    // Save the user with the new education data
+    user.resume.education.push(newEducation);
     await user.save();
-
-    // Respond with success
     res.status(200).json({ message: 'Education added successfully', data: newEducation });
   } catch (error) {
     console.error('Error saving education:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+
+// Remove Education instance
+router.delete('/education/:id', ensureAuthenticated, async (req, res) => {
+  try {
+    const userId = req.user.id; // Assuming Passport sets req.user
+    const educationId = req.params.id;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { education: { _id: educationId } } }, // Remove the education with matching _id
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).send('User or education entry not found');
+    }
+
+    res.send(user); // Send updated user object or success message
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
   }
 });
 

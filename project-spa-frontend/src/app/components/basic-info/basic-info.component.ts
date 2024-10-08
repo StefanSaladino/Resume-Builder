@@ -15,7 +15,7 @@ import { catchError, of, tap } from 'rxjs';
 })
 export class BasicInfoComponent implements OnInit {
   basicInfoForm!: FormGroup;
-  private apiUrl = 'http://localhost:4200/backend/resume/basic-info'; // Ensure proxy is set up properly for backend communication
+  private apiUrl = 'http://localhost:4200/backend/resume/basic-info';
 
   constructor(
     private fb: FormBuilder,

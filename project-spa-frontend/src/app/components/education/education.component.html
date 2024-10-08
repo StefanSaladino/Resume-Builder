@@ -1,44 +1,52 @@
-<form [formGroup]="educationForm" (ngSubmit)="onAddEducation()">
-  <!-- School Name -->
-  <label for="schoolName">School Name:</label>
-  <input id="schoolName" formControlName="schoolName" type="text" required>
-  
-  <!-- Start Date -->
-  <label for="startDate">Start Date (mm/yyyy):</label>
-  <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" required>
-  <div *ngIf="educationForm.controls['startDate'].invalid && educationForm.controls['startDate'].touched">
-    <small>Please enter a valid start date in mm/yyyy format.</small>
-  </div>
-
-  <!-- End Date (optional) -->
-  <label for="endDate">End Date (mm/yyyy):</label>
-  <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy">
-  <div *ngIf="educationForm.controls['endDate'].invalid && educationForm.controls['endDate'].touched">
-    <small>Please enter a valid end date in mm/yyyy format.</small>
-  </div>
-
-  <!-- Degree Type -->
-  <label for="degreeType">Degree Type:</label>
-  <input id="degreeType" formControlName="degreeType" type="text" required>
-
-  <!-- Degree Name -->
-  <label for="degreeName">Degree Name:</label>
-  <input id="degreeName" formControlName="degreeName" type="text" required>
-
-  <!-- Additional Details -->
-  <label for="details">Additional Details:</label>
-  <textarea id="details" formControlName="details"></textarea>
-
-  <!-- Add Education Button -->
-  <button type="button" (click)="onAddEducation()" [disabled]="!educationForm.valid">Add Education</button>
-</form>
-
 <!-- List of Added Educations -->
 <div *ngFor="let edu of educations; let i = index">
   <p>{{ edu.schoolName }} - {{ edu.degreeName }} ({{ edu.startDate }} - {{ edu.endDate || 'Present' }})</p>
   <button (click)="removeEducation(i)">Remove</button>
 </div>
 
+<!-- Add Another Education Button (Visible only when form is hidden) -->
+<button *ngIf="!showForm" (click)="showEducationForm()">Add Another Education</button>
+
+<!-- Education Form (Visible if there are no educations or when user clicks 'Add Another Education') -->
+<div *ngIf="showForm">
+  <form [formGroup]="educationForm" (ngSubmit)="onAddEducation($event)">
+    <!-- School Name -->
+    <label for="schoolName">School Name:</label>
+    <input id="schoolName" formControlName="schoolName" type="text" required>
+
+    <!-- Start Date -->
+    <label for="startDate">Start Date (mm/yyyy):</label>
+    <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" required>
+    <div *ngIf="educationForm.controls['startDate'].invalid && educationForm.controls['startDate'].touched">
+      <small>Please enter a valid start date in mm/yyyy format.</small>
+    </div>
+
+    <!-- End Date (optional) -->
+    <label for="endDate">End Date (mm/yyyy):</label>
+    <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy">
+    <div *ngIf="educationForm.controls['endDate'].invalid && educationForm.controls['endDate'].touched">
+      <small>Please enter a valid end date in mm/yyyy format.</small>
+    </div>
+
+    <!-- Degree Type -->
+    <label for="degreeType">Degree Type:</label>
+    <input id="degreeType" formControlName="degreeType" type="text" required>
+
+    <!-- Degree Name -->
+    <label for="degreeName">Degree Name:</label>
+    <input id="degreeName" formControlName="degreeName" type="text" required>
+
+    <!-- Details -->
+    <label for="details">Details:</label>
+    <textarea id="details" formControlName="details"></textarea>
+
+    <button type="submit">Add Education</button>
+    <button type="button" (click)="cancelNewEducation()">Cancel</button>
+  </form>
+</div>
+
 <!-- Navigation Buttons -->
-<button (click)="onNext()" [disabled]="educations.length === 0">Next</button>
-<button (click)="onBack()">Back</button>
+<div>
+  <button (click)="onBack()">Back</button>
+  <button (click)="onNext()" [disabled]="educations.length === 0">Next</button>
+</div>
