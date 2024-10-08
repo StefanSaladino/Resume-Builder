@@ -1,6 +1,15 @@
 const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 
+// Define work experience sub-schema
+const ExperienceSchema = new mongoose.Schema({
+  jobTitle: { type: String, required: true },
+  company: { type: String, required: true },
+  startDate: { type: String, required: true },  // Stored as mm/yyyy string
+  endDate: { type: String },  // Optional, defaults to 'Present'
+  responsibilities: [{ type: String, required: true }]  // Array of strings // Array of responsibilities
+});
+
 // Define education sub-schema
 const EducationSchema = new mongoose.Schema({
   schoolName: { type: String, required: true },
@@ -23,7 +32,7 @@ const ResumeSchema = new mongoose.Schema({
   education: [EducationSchema],  // Store multiple education entries
   skills: [{ type: String }],
   volunteer: [{ type: String }],
-  experience: [{ type: String }]
+  experience: [ExperienceSchema]
 });
 
 // Updated UserSchema to ensure resume is initialized

@@ -1,4 +1,7 @@
-<form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()">
+<!-- Experience form: initially hidden, shown only when adding a new experience -->
+<form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()" *ngIf="showForm" class="experience-form">
+
+  <!-- Company Name -->
   <div>
     <label for="company">Company Name:</label>
     <input
@@ -8,10 +11,11 @@
       required
     />
     <div *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched">
-      <small class="error">Name of company is required.</small>
+      <small class="error">Company name is required.</small>
     </div>
   </div>
 
+  <!-- Job Title -->
   <div>
     <label for="jobTitle">Job Title:</label>
     <input id="jobTitle" formControlName="jobTitle" type="text" required />
@@ -21,40 +25,35 @@
   </div>
 
   <!-- Start Date -->
-  <label for="startDate">Start Date (mm/yyyy):</label>
-  <input
-    id="startDate"
-    formControlName="startDate"
-    type="text"
-    placeholder="mm/yyyy"
-    required
-  />
-  <div
-    *ngIf="
-      experienceForm.controls['startDate'].invalid &&
-      experienceForm.controls['startDate'].touched
-    "
-  >
-    <small>Please enter a valid start date in mm/yyyy format.</small>
+  <div>
+    <label for="startDate">Start Date (mm/yyyy):</label>
+    <input
+      id="startDate"
+      formControlName="startDate"
+      type="text"
+      placeholder="mm/yyyy"
+      required
+    />
+    <div *ngIf="experienceForm.controls['startDate'].invalid && experienceForm.controls['startDate'].touched">
+      <small>Please enter a valid start date in mm/yyyy format.</small>
+    </div>
   </div>
 
   <!-- End Date (optional) -->
-  <label for="endDate">End Date (mm/yyyy):</label>
-  <input
-    id="endDate"
-    formControlName="endDate"
-    type="text"
-    placeholder="mm/yyyy"
-  />
-  <div
-    *ngIf="
-      experienceForm.controls['endDate'].invalid &&
-      experienceForm.controls['endDate'].touched
-    "
-  >
-    <small>Please enter a valid end date in mm/yyyy format.</small>
+  <div>
+    <label for="endDate">End Date (mm/yyyy):</label>
+    <input
+      id="endDate"
+      formControlName="endDate"
+      type="text"
+      placeholder="mm/yyyy"
+    />
+    <div *ngIf="experienceForm.controls['endDate'].invalid && experienceForm.controls['endDate'].touched">
+      <small>Please enter a valid end date in mm/yyyy format.</small>
+    </div>
   </div>
 
+  <!-- Responsibilities -->
   <div>
     <label for="responsibilities">Responsibilities:</label>
     <div formArrayName="responsibilities">
@@ -66,20 +65,26 @@
     <button type="button" (click)="addResponsibility()">Add Responsibility</button>
   </div>
 
-  <button type="submit">Add Experience</button>
+  <!-- Save and Cancel buttons -->
+  <div class="form-actions">
+    <button type="submit">Save Experience</button>
+    <button type="button" (click)="cancelExperience()">Cancel</button>
+  </div>
 </form>
 
-<!-- Display list of experiences -->
-<div *ngFor="let exp of experiences; let i = index">
+<!-- Display list of saved experiences -->
+<div *ngFor="let exp of experiences; let i = index" class="experience-entry">
   <h3>{{ exp.jobTitle }} at {{ exp.company }}</h3>
   <p>{{ exp.startDate }} - {{ exp.endDate }}</p>
   <ul>
-    <li *ngFor="let responsibility of exp.responsibilities">
-      {{ responsibility }}
-    </li>
+    <li *ngFor="let responsibility of exp.responsibilities">{{ responsibility }}</li>
   </ul>
-  <button (click)="removeExperience(i)">Remove</button>
+  <button (click)="removeExperience(i)">Remove Experience</button>
 </div>
 
+<!-- Button to add another experience (shown only when not adding an experience) -->
+<button *ngIf="!showForm" (click)="toggleForm()">Add Another Experience</button>
+
+<!-- Navigation buttons -->
 <button (click)="onBack()">Back</button>
 <button (click)="onNext()">Next</button>

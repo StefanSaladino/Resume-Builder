@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { tap, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-experience',
@@ -15,11 +17,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class ExperienceComponent implements OnInit {
   experienceForm!: FormGroup;
   experiences: any[] = [];
+  showForm: boolean = false; // Controls the visibility of the form
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private formDataService: FormDataService
+    private formDataService: FormDataService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -28,31 +32,31 @@ export class ExperienceComponent implements OnInit {
       company: ['', Validators.required],
       startDate: ['', [Validators.required, this.validateDateFormat]],
       endDate: ['', this.validateOptionalEndDate],
-      responsibilities: this.fb.array([this.fb.control('')], Validators.required),
+      responsibilities: this.fb.array(
+        [this.fb.control('')],
+        Validators.required
+      ),
     });
 
-    const experience = this.formDataService.getExperience();
-    if (experience) {
-      this.experienceForm.patchValue(experience);
-    }
+    this.fetchExperienceEntries();
   }
 
-    // Get responsibilities form array for dynamic controls
-    get responsibilities(): FormArray {
-      return this.experienceForm.get('responsibilities') as FormArray;
+  // Get responsibilities form array for dynamic controls
+  get responsibilities(): FormArray {
+    return this.experienceForm.get('responsibilities') as FormArray;
+  }
+
+  // Function to add a responsibility field
+  addResponsibility() {
+    this.responsibilities.push(this.fb.control('', Validators.required));
+  }
+
+  // Function to remove a responsibility field by index
+  removeResponsibility(index: number) {
+    if (this.responsibilities.length > 1) {
+      this.responsibilities.removeAt(index);
     }
-  
-    // Function to add a responsibility field
-    addResponsibility() {
-      this.responsibilities.push(this.fb.control('', Validators.required));
-    }
-  
-    // Function to remove a responsibility field by index
-    removeResponsibility(index: number) {
-      if (this.responsibilities.length > 1) {
-        this.responsibilities.removeAt(index);
-      }
-    }
+  }
 
   validateDateFormat(control: any) {
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
@@ -85,17 +89,107 @@ export class ExperienceComponent implements OnInit {
       console.log('Form Values:', formValue);
 
       this.experiences.push(formValue);
+      this.saveExperienceToBackend(formValue);
       this.experienceForm.reset();
       this.responsibilities.clear(); // Reset responsibilities array after adding experience
       this.addResponsibility(); // Add the first responsibility field back
+
+      // Hide the form after adding the experience
+      this.showForm = false;
     } else {
       // Trigger form validation if there are errors
       this.experienceForm.markAllAsTouched();
     }
   }
 
+  cancelExperience() {
+    // Reset the form and hide it
+    this.experienceForm.reset();
+    this.responsibilities.clear();
+    this.addResponsibility();
+    this.showForm = false; // Hide the form when canceled
+  }
+
   removeExperience(index: number) {
-    this.experiences.splice(index, 1); // Remove experience at the given index
+    const removedExperience = this.experiences[index];
+    console.log('Attempting to remove experience:', removedExperience); // Log the experience being removed
+
+    if (removedExperience && removedExperience._id) {
+      const token = localStorage.getItem('authToken');
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+      this.http
+        .delete(
+          `http://localhost:4200/backend/resume/experience/${removedExperience._id}`,
+          { headers }
+        )
+        .pipe(
+          tap(() => {
+            console.log('Experience removed from backend');
+            this.experiences.splice(index, 1);
+          }),
+          catchError((error) => {
+            console.error('Error removing experience:', error);
+            return of(error);
+          })
+        )
+        .subscribe();
+    } else {
+      console.error(
+        'Experience to remove does not exist or has no ID:',
+        removedExperience
+      );
+    }
+  }
+
+  saveExperienceToBackend(experience: any) {
+    console.log('Saving experience:', experience);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .post('http://localhost:4200/backend/resume/experience', experience, {
+        headers,
+      })
+      .pipe(
+        tap((response: any) => {
+          console.log('Work experience saved:', response);
+          // Check if the ID is present in the response
+          if (response._id) {
+            this.experiences.push({ ...experience, _id: response._id });
+          } else {
+            console.error('No ID returned from backend.');
+          }
+        }),
+        catchError((error) => {
+          console.error('Error saving work experience:', error);
+          return of(error);
+        })
+      )
+      .subscribe();
+  }
+
+  fetchExperienceEntries() {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>('http://localhost:4200/backend/resume/experience', { headers })
+      .pipe(
+        tap((response) => {
+          this.experiences = response; // Assign the response to the educations array
+          this.showForm = this.experiences.length === 0; // Show form only if no entries exist
+        }),
+        catchError((error) => {
+          console.error('Error fetching education entries:', error);
+          return of([]); // Return an empty array on error
+        })
+      )
+      .subscribe();
+  }
+
+  toggleForm() {
+    // Show or hide the form
+    this.showForm = !this.showForm;
   }
 
   onNext() {

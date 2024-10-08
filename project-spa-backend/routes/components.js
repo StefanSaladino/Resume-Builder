@@ -167,13 +167,62 @@ router.post('/volunteer', (req, res) => {
 });
 
 // Experience
-router.get('/experience', (req, res) => {
-  res.render('experience', { title: 'Experience' });
+// Get all experiences
+router.get('/experience', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json(user.resume.experience || []);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving experiences', error });
+  }
 });
 
-router.post('/experience', (req, res) => {
-  console.log('Experience Submitted:', req.body);
-  res.status(200).json({ message: 'Experience Received', data: req.body });
+// Add a new experience
+router.post('/experience', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const newExperience = {
+      jobTitle: req.body.jobTitle,
+      company: req.body.company,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate || 'Present',
+      responsibilities: req.body.responsibilities || []
+    };
+
+    user.resume.experience.push(newExperience);
+    await user.save();
+    res.status(200).json({ message: 'Experience added successfully', data: newExperience });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding experience', error });
+  }
 });
 
+// Remove an experience
+router.delete('/experience/:id', async (req, res) => {
+  try{
+  const userId = req.user._id; // Get the logged-in user's ID
+  const experienceId = req.params.id; // Get the experience ID from the request parameters
+
+      // Find the user and remove the specific education entry from the resume
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { 'resume.experience': { _id: experienceId } } }, // Use the correct path to remove the education entry
+      { new: true } // Return the updated user document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found or education entry not found' });
+    }
+
+    // Return the updated education list as part of the response
+    res.json({ message: 'Experience entry removed successfully', experience: user.resume.experience });
+  } catch (err) {
+    console.error('Error deleting experience entry:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 module.exports = router;
