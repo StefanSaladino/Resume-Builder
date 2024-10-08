@@ -124,23 +124,25 @@ router.post('/education', async (req, res) => {
 // Remove Education instance
 router.delete('/education/:id', ensureAuthenticated, async (req, res) => {
   try {
-    const userId = req.user.id; // Assuming Passport sets req.user
-    const educationId = req.params.id;
+    const userId = req.user.id; // Get the user ID from the authenticated session
+    const educationId = req.params.id; // Get the education ID from the route parameter
 
+    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { education: { _id: educationId } } }, // Remove the education with matching _id
-      { new: true }
+      { $pull: { 'resume.education': { _id: educationId } } }, // Use the correct path to remove the education entry
+      { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res.status(404).send('User or education entry not found');
+      return res.status(404).json({ message: 'User not found or education entry not found' });
     }
 
-    res.send(user); // Send updated user object or success message
+    // Return the updated education list as part of the response
+    res.json({ message: 'Education entry removed successfully', education: user.resume.education });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    console.error('Error deleting education entry:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
