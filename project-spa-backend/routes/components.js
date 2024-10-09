@@ -147,8 +147,21 @@ router.delete('/education/:id', ensureAuthenticated, async (req, res) => {
 });
 
 // Skills
-router.get('/skills', (req, res) => {
-  res.render('skills', { title: 'Skills' });
+router.get('/skills', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId); // Use req.userId from the token
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Check if resume.education exists
+    if (user.resume && user.resume.skills) {
+        res.status(200).json(user.resume.skills);
+    } else {
+        res.status(200).json({ message: 'No skills found (skill issue)', data: null });
+    }
+} catch (error) {
+    console.error('Error retrieving education:', error);
+    res.status(500).json({ message: 'Error retrieving education' });
+}
 });
 
 router.post('/skills', (req, res) => {
@@ -157,13 +170,61 @@ router.post('/skills', (req, res) => {
 });
 
 // Volunteer
-router.get('/volunteer', (req, res) => {
-  res.render('volunteer', { title: 'Volunteer Experience' });
+router.get('/volunteer', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json(user.resume.volunteer || []);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving volunteer experiences', error });
+  }
 });
 
-router.post('/volunteer', (req, res) => {
+router.post('/volunteer', async (req, res) => {
   console.log('Volunteer Experience Submitted:', req.body);
-  res.status(200).json({ message: 'Volunteer Experience Received', data: req.body });
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const newVolunteer = {
+      organization: req.body.organization,
+      role: req.body.role,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate || 'Present',
+      responsibilities: req.body.responsibilities || []
+    };
+
+    user.resume.volunteer.push(newVolunteer);
+    await user.save();
+    res.status(200).json({ message: 'Volunteer experience added successfully', data: newVolunteer });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding volunteer experience', error });
+  }
+});
+
+router.delete('/volunteer/:id', async (req, res) => {
+  try{
+  const userId = req.user._id; // Get the logged-in user's ID
+  const volunteerId = req.params.id; // Get the experience ID from the request parameters
+
+      // Find the user and remove the specific education entry from the resume
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { 'resume.volunteer': { _id: volunteerId } } }, // Use the correct path to remove the education entry
+      { new: true } // Return the updated user document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found or education entry not found' });
+    }
+
+    // Return the updated education list as part of the response
+    res.json({ message: 'Volunteer entry removed successfully', experience: user.resume.volunteer });
+  } catch (err) {
+    console.error('Error deleting volunteer entry:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Experience

@@ -10,6 +10,14 @@ const ExperienceSchema = new mongoose.Schema({
   responsibilities: [{ type: String, required: true }]  // Array of strings // Array of responsibilities
 });
 
+const VolunteerSchema = new mongoose.Schema({
+  organization: { type: String, required: true },
+  role: { type: String, required: true },
+  startDate: { type: String, required: true },
+  endDate: { type: String },
+  responsibilities: [{ type: String, required: true }]
+})
+
 // Define education sub-schema
 const EducationSchema = new mongoose.Schema({
   schoolName: { type: String, required: true },
@@ -31,7 +39,7 @@ const ResumeSchema = new mongoose.Schema({
   },
   education: [EducationSchema],  // Store multiple education entries
   skills: [{ type: String }],
-  volunteer: [{ type: String }],
+  volunteer: [VolunteerSchema],
   experience: [ExperienceSchema]
 });
 
