@@ -1,24 +1,34 @@
-<form [formGroup]="skillsForm" (ngSubmit)="onAddSkill()">
-    <div>
-      <label for="skill">Skill Name:</label>
-      <input id="skill" formControlName="skill" type="text" required />
-    </div>
-  
-    <div>
-      <label for="proficiency">Proficiency:</label>
-      <input id="proficiency" formControlName="proficiency" type="text" required />
-    </div>
-  
-    <button type="submit">Add Skill</button>
-  </form>
-  
-  <!-- Display list of skills -->
-  <div *ngFor="let skill of skills; let i = index">
-    <h3>{{ skill.skill }}</h3>
-    <p>Proficiency: {{ skill.proficiency }}</p>
-    <button (click)="removeSkill(i)">Remove</button>
+<!-- Display list of skills -->
+<div *ngFor="let skill of skills; let i = index">
+  <h3>{{ skill.skill }}</h3>
+  <p>Proficiency (or years of experience): {{ skill.proficiency }}</p>
+  <button (click)="removeSkill(i)">Remove</button>
+</div>
+
+<!-- Form should be hidden initially unless there are 0 skills -->
+<form [formGroup]="skillsForm" *ngIf="showForm || skills.length === 0" (ngSubmit)="onAddSkill()">
+  <div>
+    <label for="skill">Skill Name:</label>
+    <input id="skill" formControlName="skill" type="text" required />
   </div>
-  
-  <button (click)="onBack()">Back</button>
-  <button (click)="onNext()">Next</button>
-  
+
+  <div>
+    <label for="proficiency">Proficiency:</label>
+    <input id="proficiency" formControlName="proficiency" type="text" required />
+  </div>
+
+  <div>
+    <label for="description">Add a short description paragraph about the skill:</label>
+    <textarea id="description" formControlName="description" required></textarea>
+  </div>
+
+  <button type="submit">Save Skill</button>
+  <button type="button" (click)="cancelSkill()">Cancel</button> <!-- Allow the user to cancel adding a skill -->
+</form>
+
+<!-- Button to add another skill, only shown when there are skills and form is hidden -->
+<button *ngIf="!showForm && skills.length > 0" (click)="toggleForm()">Add Another Skill</button>
+
+<!-- Navigation buttons -->
+<button (click)="onBack()">Back</button>
+<button (click)="onNext()">Next</button>

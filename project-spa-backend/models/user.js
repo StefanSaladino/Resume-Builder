@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 
+//Define skills sub schema
+const SkillsSchema = new mongoose.Schema({
+    skill: {type: String, required: true},
+    proficiency: {type: String, required: true},
+    description: {type: String},
+})
+
 // Define work experience sub-schema
 const ExperienceSchema = new mongoose.Schema({
   jobTitle: { type: String, required: true },
@@ -38,7 +45,7 @@ const ResumeSchema = new mongoose.Schema({
     address: String,
   },
   education: [EducationSchema],  // Store multiple education entries
-  skills: [{ type: String }],
+  skills: [SkillsSchema],
   volunteer: [VolunteerSchema],
   experience: [ExperienceSchema]
 });

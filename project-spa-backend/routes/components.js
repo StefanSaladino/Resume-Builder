@@ -159,14 +159,52 @@ router.get('/skills', async (req, res) => {
         res.status(200).json({ message: 'No skills found (skill issue)', data: null });
     }
 } catch (error) {
-    console.error('Error retrieving education:', error);
-    res.status(500).json({ message: 'Error retrieving education' });
+    console.error('Error retrieving skills:', error);
+    res.status(500).json({ message: 'Error retrieving skills' });
 }
 });
 
-router.post('/skills', (req, res) => {
-  console.log('Skills Submitted:', req.body);
-  res.status(200).json({ message: 'Skills Received', data: req.body });
+router.post('/skills', async (req, res) => {
+  try {
+    const user = await User.findById(req.userId); // Use req.userId from JWT
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const newSkill = {
+      skill: req.body.skill,
+      proficiency: req.body.proficiency,
+      description: req.body.description,
+    };
+
+    user.resume.skills.push(newSkill);
+    await user.save();
+    res.status(200).json({ message: 'Skills added successfully', data: newSkill });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding skill', error });
+  }
+});
+
+router.delete('/skills/:id', async (req, res) => {
+  try{
+  const userId = req.user._id;
+  const skillId = req.params.id; 
+
+      // Find the user and remove the specific education entry from the resume
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { 'resume.skills': { _id: skillId } } }, // Use the correct path to remove the education entry
+      { new: true } // Return the updated user document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found or education entry not found' });
+    }
+
+    // Return the updated education list as part of the response
+    res.json({ message: 'Skill removed successfully', experience: user.resume.skills });
+  } catch (err) {
+    console.error('Error deleting skill:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Volunteer
