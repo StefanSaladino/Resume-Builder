@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +13,10 @@ export class FormDataService {
     volunteer: [],
     skills: [],
   };
+
+  private apiUrl = 'http://localhost:4200/backend';
+
+  constructor(private http: HttpClient) {}
 
   // Basic Info
   setBasicInfo(data: any) {
@@ -60,6 +66,10 @@ export class FormDataService {
   // Get All Data
   getFormData() {
     return this.formData;
+  }
+
+  getResume(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/resume/${userId}`, { withCredentials: true });
   }
 
   // Reset Form Data

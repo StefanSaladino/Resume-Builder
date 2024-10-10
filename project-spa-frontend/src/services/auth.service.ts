@@ -117,4 +117,10 @@ export class AuthService {
       })
     );
   }
+
+  getUserId(): Observable<string | null> {
+    return this.getCurrentUser().pipe(
+      map(user => user ? user._id : null) // Use map to extract the user ID
+    );
+  }
 }

@@ -18,11 +18,11 @@ import { CommonModule } from '@angular/common';
 export const routes: Routes = [
   { path: '', redirectTo: 'resume/basic-info', pathMatch: 'full' },
   { path: 'resume/basic-info', component: BasicInfoComponent, canActivate: [AuthGuard] },
-  { path: 'resume/education', component: EducationComponent, },
-  { path: 'resume/experience', component: ExperienceComponent, },
-  { path: 'resume/volunteer', component: VolunteerComponent, },
-  { path: 'resume/skills', component: SkillsComponent,  },
-  { path: 'resume/summary', component: SummaryComponent, },
+  { path: 'resume/education', component: EducationComponent, canActivate: [AuthGuard] },
+  { path: 'resume/experience', component: ExperienceComponent, canActivate: [AuthGuard] },
+  { path: 'resume/volunteer', component: VolunteerComponent, canActivate: [AuthGuard] },
+  { path: 'resume/skills', component: SkillsComponent, canActivate: [AuthGuard] },
+  { path: 'resume/summary', component: SummaryComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: '**', redirectTo: 'login' }

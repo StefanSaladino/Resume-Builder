@@ -24,7 +24,7 @@
     <button class="btn btn-info offset-3" type="submit">Login</button>
     <hr />
     Need an account?
-    <a routerLink="/register" title="Register">Register</a>
+    <a class="link" routerLink="/register" title="Register">Register</a>
   </fieldset>
 
   <fieldset class="form-group">
@@ -35,3 +35,5 @@
 <div *ngIf="errorMessage" class="alert alert-danger">
   {{ errorMessage }}
 </div>
+
+<router-outlet></router-outlet>
