@@ -1,3 +1,10 @@
+/**
+ * AuthGuard is an Angular guard that implements CanActivate to protect routes 
+ * from unauthorized access. It checks if the user is authenticated by 
+ * using the AuthService. If the user is not authenticated, they are redirected 
+ * to the login page.
+ */
+
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';

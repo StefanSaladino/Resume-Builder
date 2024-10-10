@@ -1,3 +1,19 @@
+/**
+ * Middleware function to verify JSON Web Tokens (JWT).
+ * This function checks the Authorization header for a token,
+ * verifies it using the secret key, and attaches the user ID
+ * to the request object for further processing.
+ * 
+ * It sends a 403 status response if no token is provided, 
+ * and a 500 status response if token verification fails.
+ * On successful verification, it calls the next middleware 
+ * in the stack.
+ * 
+ * Usage:
+ * - This middleware can be used in routes to protect 
+ *   endpoints that require user authentication.
+ */
+
 const jwt = require('jsonwebtoken');
 
 // JWT verification middleware

@@ -1,3 +1,10 @@
+/**
+ * AuthInterceptor is an Angular HTTP interceptor that adds an Authorization header 
+ * to outgoing HTTP requests if an authentication token is present in local storage. 
+ * This is useful for ensuring that protected API routes receive the necessary token 
+ * for user authentication.
+ */
+
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';

@@ -1,3 +1,10 @@
+/* form-data.service.ts
+This service is responsible for managing and storing form data 
+across different sections of the resume builder application, 
+including basic information, education, experience, volunteer work, 
+and skills. It also provides methods for fetching resume data 
+from the backend and resetting the form data.*/
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

@@ -1,3 +1,14 @@
+/**
+ * AuthService is responsible for managing user authentication and 
+ * authorization in the application. It provides methods for user 
+ * login, registration, logout, and checking if a user is authenticated. 
+ * The service also handles storing and retrieving the authentication 
+ * token from local storage and manages the current user state using 
+ * a BehaviorSubject. It interacts with the backend API to perform 
+ * user-related operations and provides an observable to track the 
+ * current user's state across the application.
+ */
+
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
