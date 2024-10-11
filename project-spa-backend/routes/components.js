@@ -1,9 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { ensureAuthenticated } = require('../middleware/enforceAuth');
-const { verifyToken } = require('../middleware/tokenVerifier');
-const passport = require('passport');
-const User = require('../models/user'); 
+const { ensureAuthenticated } = require("../middleware/enforceAuth");
+const { verifyToken } = require("../middleware/tokenVerifier");
+const passport = require("passport");
+const User = require("../models/user");
+const dotenv = require("dotenv");
 
 // Middleware to ensure the user is authenticated
 router.use(ensureAuthenticated);
@@ -13,10 +14,10 @@ router.use(ensureAuthenticated);
 router.use(verifyToken);
 
 // Basic Info
-router.post('/basic-info', async (req, res) => {
+router.post("/basic-info", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from JWT
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     // Ensure resume is initialized
     if (!user.resume) {
@@ -36,69 +37,69 @@ router.post('/basic-info', async (req, res) => {
     };
 
     await user.save(); // Save changes to the database
-    res.status(200).json({ message: 'Basic Info saved successfully' });
+    res.status(200).json({ message: "Basic Info saved successfully" });
   } catch (error) {
-    console.error('Error saving basic info:', error);
-    res.status(500).json({ message: 'Error saving basic info' });
+    console.error("Error saving basic info:", error);
+    res.status(500).json({ message: "Error saving basic info" });
   }
 });
-
 
 // Get route to retrieve the user's basic info
-router.get('/basic-info', async (req, res) => {
+router.get("/basic-info", async (req, res) => {
   try {
-      const user = await User.findById(req.userId); // Use req.userId from the token
-      if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findById(req.userId); // Use req.userId from the token
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-      // Check if resume.basicInfo exists
-      if (user.resume && user.resume.basicInfo) {
-          res.status(200).json(user.resume.basicInfo);
-      } else {
-          res.status(200).json({ message: 'No basic info found', data: null });
-      }
+    // Check if resume.basicInfo exists
+    if (user.resume && user.resume.basicInfo) {
+      res.status(200).json(user.resume.basicInfo);
+    } else {
+      res.status(200).json({ message: "No basic info found", data: null });
+    }
   } catch (error) {
-      console.error('Error retrieving basic info:', error);
-      res.status(500).json({ message: 'Error retrieving basic info' });
+    console.error("Error retrieving basic info:", error);
+    res.status(500).json({ message: "Error retrieving basic info" });
   }
 });
 
-  
-
 // Education
-router.get('/education', async (req, res) => {
+router.get("/education", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     // Check if resume.education exists
     if (user.resume && user.resume.education) {
-        res.status(200).json(user.resume.education);
+      res.status(200).json(user.resume.education);
     } else {
-        res.status(200).json({ message: 'No education found', data: null });
+      res.status(200).json({ message: "No education found", data: null });
     }
-} catch (error) {
-    console.error('Error retrieving education:', error);
-    res.status(500).json({ message: 'Error retrieving education' });
-}
+  } catch (error) {
+    console.error("Error retrieving education:", error);
+    res.status(500).json({ message: "Error retrieving education" });
+  }
 });
 
 // Add Education - POST
-router.post('/education', async (req, res) => {
+router.post("/education", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     // Check for duplicates before adding
-    const existingEducation = user.resume.education.find(ed => 
-      ed.schoolName === req.body.schoolName &&
-      ed.degreeType === req.body.degreeType &&
-      ed.degreeName === req.body.degreeName &&
-      ed.startDate === req.body.startDate &&
-      ed.endDate === (req.body.endDate || 'Present')
+    const existingEducation = user.resume.education.find(
+      (ed) =>
+        ed.schoolName === req.body.schoolName &&
+        ed.degreeType === req.body.degreeType &&
+        ed.degreeName === req.body.degreeName &&
+        ed.startDate === req.body.startDate &&
+        ed.endDate === (req.body.endDate || "Present")
     );
 
     if (existingEducation) {
-      return res.status(400).json({ message: 'Education entry already exists' });
+      return res
+        .status(400)
+        .json({ message: "Education entry already exists" });
     }
 
     // Add new education entry to the education array
@@ -107,22 +108,23 @@ router.post('/education', async (req, res) => {
       degreeType: req.body.degreeType,
       degreeName: req.body.degreeName,
       startDate: req.body.startDate,
-      endDate: req.body.endDate || 'Present',
-      details: req.body.details
+      endDate: req.body.endDate || "Present",
+      details: req.body.details,
     };
 
     user.resume.education.push(newEducation);
     await user.save();
-    res.status(200).json({ message: 'Education added successfully', data: newEducation });
+    res
+      .status(200)
+      .json({ message: "Education added successfully", data: newEducation });
   } catch (error) {
-    console.error('Error saving education:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("Error saving education:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
-
 // Remove Education instance
-router.delete('/education/:id', ensureAuthenticated, async (req, res) => {
+router.delete("/education/:id", async (req, res) => {
   try {
     const userId = req.user.id; // Get the user ID from the authenticated session
     const educationId = req.params.id; // Get the education ID from the route parameter
@@ -130,44 +132,51 @@ router.delete('/education/:id', ensureAuthenticated, async (req, res) => {
     // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { 'resume.education': { _id: educationId } } }, // Use the correct path to remove the education entry
+      { $pull: { "resume.education": { _id: educationId } } }, // Use the correct path to remove the education entry
       { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found or education entry not found' });
+      return res
+        .status(404)
+        .json({ message: "User not found or education entry not found" });
     }
 
     // Return the updated education list as part of the response
-    res.json({ message: 'Education entry removed successfully', education: user.resume.education });
+    res.json({
+      message: "Education entry removed successfully",
+      education: user.resume.education,
+    });
   } catch (err) {
-    console.error('Error deleting education entry:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error deleting education entry:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Skills
-router.get('/skills', async (req, res) => {
+router.get("/skills", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     // Check if resume.education exists
     if (user.resume && user.resume.skills) {
-        res.status(200).json(user.resume.skills);
+      res.status(200).json(user.resume.skills);
     } else {
-        res.status(200).json({ message: 'No skills found (skill issue)', data: null });
+      res
+        .status(200)
+        .json({ message: "No skills found (skill issue)", data: null });
     }
-} catch (error) {
-    console.error('Error retrieving skills:', error);
-    res.status(500).json({ message: 'Error retrieving skills' });
-}
+  } catch (error) {
+    console.error("Error retrieving skills:", error);
+    res.status(500).json({ message: "Error retrieving skills" });
+  }
 });
 
-router.post('/skills', async (req, res) => {
+router.post("/skills", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from JWT
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const newSkill = {
       skill: req.body.skill,
@@ -177,162 +186,351 @@ router.post('/skills', async (req, res) => {
 
     user.resume.skills.push(newSkill);
     await user.save();
-    res.status(200).json({ message: 'Skills added successfully', data: newSkill });
+    res
+      .status(200)
+      .json({ message: "Skills added successfully", data: newSkill });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding skill', error });
+    res.status(500).json({ message: "Error adding skill", error });
   }
 });
 
-router.delete('/skills/:id', async (req, res) => {
-  try{
-  const userId = req.user._id;
-  const skillId = req.params.id; 
+router.delete("/skills/:id", async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const skillId = req.params.id;
 
-      // Find the user and remove the specific education entry from the resume
+    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { 'resume.skills': { _id: skillId } } }, // Use the correct path to remove the education entry
+      { $pull: { "resume.skills": { _id: skillId } } }, // Use the correct path to remove the education entry
       { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found or education entry not found' });
+      return res
+        .status(404)
+        .json({ message: "User not found or education entry not found" });
     }
 
     // Return the updated education list as part of the response
-    res.json({ message: 'Skill removed successfully', experience: user.resume.skills });
+    res.json({
+      message: "Skill removed successfully",
+      experience: user.resume.skills,
+    });
   } catch (err) {
-    console.error('Error deleting skill:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error deleting skill:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Volunteer
-router.get('/volunteer', async (req, res) => {
+router.get("/volunteer", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user.resume.volunteer || []);
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving volunteer experiences', error });
+    res
+      .status(500)
+      .json({ message: "Error retrieving volunteer experiences", error });
   }
 });
 
-router.post('/volunteer', async (req, res) => {
-  console.log('Volunteer Experience Submitted:', req.body);
+router.post("/volunteer", async (req, res) => {
+  console.log("Volunteer Experience Submitted:", req.body);
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const newVolunteer = {
       organization: req.body.organization,
       role: req.body.role,
       startDate: req.body.startDate,
-      endDate: req.body.endDate || 'Present',
-      responsibilities: req.body.responsibilities || []
+      endDate: req.body.endDate || "Present",
+      responsibilities: req.body.responsibilities || [],
     };
 
     user.resume.volunteer.push(newVolunteer);
     await user.save();
-    res.status(200).json({ message: 'Volunteer experience added successfully', data: newVolunteer });
+    res
+      .status(200)
+      .json({
+        message: "Volunteer experience added successfully",
+        data: newVolunteer,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding volunteer experience', error });
+    res
+      .status(500)
+      .json({ message: "Error adding volunteer experience", error });
   }
 });
 
-router.delete('/volunteer/:id', async (req, res) => {
-  try{
-  const userId = req.user._id; // Get the logged-in user's ID
-  const volunteerId = req.params.id; // Get the experience ID from the request parameters
+router.delete("/volunteer/:id", async (req, res) => {
+  try {
+    const userId = req.user._id; // Get the logged-in user's ID
+    const volunteerId = req.params.id; // Get the experience ID from the request parameters
 
-      // Find the user and remove the specific education entry from the resume
+    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { 'resume.volunteer': { _id: volunteerId } } }, // Use the correct path to remove the education entry
+      { $pull: { "resume.volunteer": { _id: volunteerId } } }, // Use the correct path to remove the education entry
       { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found or education entry not found' });
+      return res
+        .status(404)
+        .json({ message: "User not found or education entry not found" });
     }
 
     // Return the updated education list as part of the response
-    res.json({ message: 'Volunteer entry removed successfully', experience: user.resume.volunteer });
+    res.json({
+      message: "Volunteer entry removed successfully",
+      experience: user.resume.volunteer,
+    });
   } catch (err) {
-    console.error('Error deleting volunteer entry:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error deleting volunteer entry:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Experience
 // Get all experiences
-router.get('/experience', async (req, res) => {
+router.get("/experience", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user.resume.experience || []);
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving experiences', error });
+    res.status(500).json({ message: "Error retrieving experiences", error });
   }
 });
 
 // Add a new experience
-router.post('/experience', async (req, res) => {
+router.post("/experience", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const newExperience = {
       jobTitle: req.body.jobTitle,
       company: req.body.company,
       startDate: req.body.startDate,
-      endDate: req.body.endDate || 'Present',
-      responsibilities: req.body.responsibilities || []
+      endDate: req.body.endDate || "Present",
+      responsibilities: req.body.responsibilities || [],
     };
 
     user.resume.experience.push(newExperience);
     await user.save();
-    res.status(200).json({ message: 'Experience added successfully', data: newExperience });
+    res
+      .status(200)
+      .json({ message: "Experience added successfully", data: newExperience });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding experience', error });
+    res.status(500).json({ message: "Error adding experience", error });
   }
 });
 
 // Remove an experience
-router.delete('/experience/:id', async (req, res) => {
-  try{
-  const userId = req.user._id; // Get the logged-in user's ID
-  const experienceId = req.params.id; // Get the experience ID from the request parameters
+router.delete("/experience/:id", async (req, res) => {
+  try {
+    const userId = req.user._id; // Get the logged-in user's ID
+    const experienceId = req.params.id; // Get the experience ID from the request parameters
 
-      // Find the user and remove the specific education entry from the resume
+    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { 'resume.experience': { _id: experienceId } } }, // Use the correct path to remove the education entry
+      { $pull: { "resume.experience": { _id: experienceId } } }, // Use the correct path to remove the education entry
       { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found or education entry not found' });
+      return res
+        .status(404)
+        .json({ message: "User not found or education entry not found" });
     }
 
     // Return the updated education list as part of the response
-    res.json({ message: 'Experience entry removed successfully', experience: user.resume.experience });
+    res.json({
+      message: "Experience entry removed successfully",
+      experience: user.resume.experience,
+    });
   } catch (err) {
-    console.error('Error deleting experience entry:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error deleting experience entry:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-router.get('/summary', async (req, res) => {
+router.get("/summary", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json(user.resume|| []);
+    res.status(200).json(user.resume || []);
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving resume', error });
+    res.status(500).json({ message: "Error retrieving resume", error });
+  }
+});
+
+// Generate resume route
+router.get("/generate-resume", async (req, res) => {
+  try {
+    const user = await User.findById(req.userId); // Use req.userId from the token
+    console.log("User ID in POST route:", req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Check if resume exists
+    if (user.resume) {
+      return res.status(200).json(user.resume);
+    } else {
+      return res.status(200).json({ message: "No resume found", data: null });
+    }
+  } catch (error) {
+    console.error("Error retrieving resume:", error);
+    return res.status(500).json({ message: "Error retrieving resume" });
+  }
+});
+
+// POST route to generate resume
+const http = require("https");
+
+router.post("/generate-resume", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId); // Ensure req.userId is set correctly by your verifyToken middleware
+    if (!user) return res.status(404).send("<h1>User not found</h1>");
+
+    // Create the prompt based on the user's information
+    const prompt = `
+  Please create a polished, professional resume based on the following information, ensuring it is formatted for 
+  easy readability and presentation:
+
+  **Name:** ${user.resume.basicInfo.firstName} ${
+      user.resume.basicInfo.lastName
+    }  
+  **Email:** ${user.resume.basicInfo.emailAddress}  
+
+  **Contact Information:**  
+  - **Phone Number:** ${user.resume.basicInfo.phone || "N/A"}  
+  - **Location:** ${user.resume.basicInfo.address || "N/A"}  
+
+  **Skills:**  
+  ${
+    user.resume.skills.length > 0
+      ? user.resume.skills.join(", ")
+      : "No skills provided"
+  }  
+
+  **Professional Experience:**  
+  ${
+    user.resume.experience.length > 0
+      ? user.resume.experience
+          .map(
+            (exp) =>
+              `- **Role:** ${exp.jobTitle} at ${exp.company} (${
+                exp.startDate
+              } - ${exp.endDate || "Present"})  
+         **Responsibilities:** ${
+           exp.responsibilities.join(", ") || "Not provided"
+         }  
+         **Achievements:** Highlight any key contributions or successes in this role, inferred from the responsibilities and 
+         skills provided.
+      `
+          )
+          .join("\n")
+      : "No experience provided"
+  }  
+
+  **Education:**  
+  ${
+    user.resume.education.length > 0
+      ? user.resume.education
+          .map(
+            (ed) =>
+              `- **Degree:** ${ed.degreeName} from ${ed.schoolName} (${
+                ed.startDate
+              } - ${ed.endDate || "Present"})  
+         **Details:** ${ed.details || "Not provided"}  
+      `
+          )
+          .join("\n")
+      : "No education provided"
+  }  
+
+  **Volunteer Experience:**  
+  ${
+    user.resume.volunteer.length > 0
+      ? user.resume.volunteer
+          .map(
+            (vol) =>
+              `- **Organization:** ${vol.organization}  
+         **Role:** ${vol.role} (${vol.startDate} - ${
+                vol.endDate || "Present"
+              })  
+         **Responsibilities:** ${
+           vol.responsibilities.join(", ") || "Not provided"
+         }  
+      `
+          )
+          .join("\n")
+      : "No volunteer experience provided"
+  }  
+
+  Please ensure that this response is a complete and visually appealing resume layout, 
+  using appropriate headings and bullet points for clarity. This resume should be ready for submission, 
+  free of any extraneous information not typically included in a professional resume.
+`;
+    console.log("Generated Resume Prompt:", prompt);
+
+    const options = {
+      method: "POST",
+      hostname: "infinite-gpt.p.rapidapi.com",
+      port: null,
+      path: "/infinite-gpt",
+      headers: {
+        "x-rapidapi-key": "b9af377cacmshfbfa26786ebc1bcp163d65jsne1158cf2c8b5",
+        "x-rapidapi-host": "infinite-gpt.p.rapidapi.com",
+        "Content-Type": "application/json",
+      },
+    };
+
+    const reqApi = http.request(options, (resApi) => {
+      const chunks = [];
+
+      resApi.on("data", (chunk) => {
+        chunks.push(chunk);
+      });
+
+      resApi.on("end", () => {
+        const body = Buffer.concat(chunks).toString();
+        if (resApi.statusCode !== 200) {
+          return res.status(500).json({ message: "Error generating resume" });
+        }
+
+        const responseBody = JSON.parse(body); // Assuming the body is JSON
+        const msg = responseBody.msg || "No message returned"; // Extract msg field
+
+        // Return the msg as JSON response
+        res.json({ msg });
+      });
+    });
+
+    reqApi.on("error", (error) => {
+      console.error("Error with API request:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
+
+    reqApi.write(
+      JSON.stringify({
+        query: prompt,
+        sysMsg: "You are a friendly Chatbot that creates professional resumes.",
+      })
+    );
+
+    reqApi.end();
+  } catch (error) {
+    console.error(error); // Log error for debugging
+    res.status(500).json({ message: "Error generating resume" });
   }
 });
 

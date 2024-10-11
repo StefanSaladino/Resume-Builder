@@ -10,8 +10,7 @@
  * - firstName: First name of the user
  * - lastName: Last name of the user
  * - isVerified: Indicates if the user's email is verified
- * - resume: Represents the user's resume; a more specific type 
- *   can be defined if desired.
+ * - resume: Represents the user's resume
  */
 
 export interface User {

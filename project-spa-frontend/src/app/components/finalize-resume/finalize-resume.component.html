@@ -1,0 +1,14 @@
+<div>
+  <h1>Your Generated Resume</h1>
+  <button (click)="generateResume()">Generate Resume</button>
+
+  <div *ngIf="generatedResume" class="resume-container">
+    <!-- Display the generated resume as plain text -->
+    <pre>{{ generatedResume }}</pre>
+  </div>
+
+  <!-- Display error message if there's an error -->
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+</div>

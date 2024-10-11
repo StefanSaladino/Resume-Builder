@@ -52,7 +52,7 @@ export class SummaryComponent implements OnInit {
 
   onNext() {
     // Proceed to final submission or other actions
-    this.router.navigate(['/resume/confirmation']); // Change as necessary
+    this.router.navigate(['/resume/generate-resume']); // Change as necessary
   }
 
   onBack() {

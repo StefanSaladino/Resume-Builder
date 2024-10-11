@@ -12,9 +12,9 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CommonModule } from '@angular/common';
+import { FinalizeResumeComponent } from './components/finalize-resume/finalize-resume.component';
 
 // Declare the routes array
-//TODO: IMPLEMENT AUTH GUARD
 export const routes: Routes = [
   { path: '', redirectTo: 'resume/basic-info', pathMatch: 'full' },
   { path: 'resume/basic-info', component: BasicInfoComponent, canActivate: [AuthGuard] },
@@ -23,6 +23,7 @@ export const routes: Routes = [
   { path: 'resume/volunteer', component: VolunteerComponent, canActivate: [AuthGuard] },
   { path: 'resume/skills', component: SkillsComponent, canActivate: [AuthGuard] },
   { path: 'resume/summary', component: SummaryComponent, canActivate: [AuthGuard] },
+  { path: 'resume/generate-resume', component: FinalizeResumeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: '**', redirectTo: 'login' }

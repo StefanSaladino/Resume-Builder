@@ -3,11 +3,11 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
+  <nav class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <!-- Display greeting if user is logged in -->
       <li *ngIf="isLoggedIn" class="nav-item">
-        <span class="navbar-text">Hello, {{ firstName }}</span>
+        <span class="nav-link disabled">Hello, {{ firstName }}</span>
       </li>
       <!-- Login link if not logged in -->
       <li *ngIf="!isLoggedIn" class="nav-item">
@@ -22,7 +22,7 @@
         <span class="nav-link disabled">NOT LOGGED IN!</span>
       </li>
     </ul>
-  </div>
+  </nav>
 </nav>
 
 <h1>

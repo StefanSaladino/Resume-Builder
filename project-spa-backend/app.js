@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 var User = require('./models/user'); // Import the user model
 const authRouter = require('./routes/auth'); // Auth routes
+
 var dotenv = require('dotenv');
 
 
@@ -25,6 +26,7 @@ var corsOptions = {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const resumeRoutes = require('./routes/components');
+const apiRoute = require('./routes/openAi');
 
 var app = express();
 
@@ -36,7 +38,6 @@ var app = express();
 // });
 app.use(express.static(path.join(__dirname, 'views')));
 app.set('view engine', 'hbs');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -78,6 +79,8 @@ app.use('/users', usersRouter);
 app.use('/', authRouter);
 // resume component routes
 app.use('/resume', resumeRoutes);
+// api call route
+app.use('/api', apiRoute);
 
 // Connect to MongoDB
 mongoose
