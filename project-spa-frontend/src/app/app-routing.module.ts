@@ -13,10 +13,11 @@ import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CommonModule } from '@angular/common';
 import { FinalizeResumeComponent } from './components/finalize-resume/finalize-resume.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 // Declare the routes array
 export const routes: Routes = [
-  { path: '', redirectTo: 'resume/basic-info', pathMatch: 'full' },
+  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
   { path: 'resume/basic-info', component: BasicInfoComponent, canActivate: [AuthGuard] },
   { path: 'resume/education', component: EducationComponent, canActivate: [AuthGuard] },
   { path: 'resume/experience', component: ExperienceComponent, canActivate: [AuthGuard] },
@@ -26,7 +27,8 @@ export const routes: Routes = [
   { path: 'resume/generate-resume', component: FinalizeResumeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: 'login' }
+  { path: 'landing-page', component: LandingPageComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: 'landing-page' }
 ];
 
 @NgModule({
