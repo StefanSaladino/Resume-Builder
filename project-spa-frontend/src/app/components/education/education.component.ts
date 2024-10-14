@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-education',
@@ -13,6 +14,14 @@ import { catchError, of, tap } from 'rxjs';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './education.component.html',
   styleUrls: ['./education.component.css'],
+  animations: [
+    trigger('flyInAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(-20px)', opacity: 0 }), // Start position
+        animate('300ms ease-in', style({ transform: 'translateY(0)', opacity: 1 })) // End position
+      ]),
+    ]),
+  ],
 })
 export class EducationComponent implements OnInit {
   educationForm!: FormGroup;

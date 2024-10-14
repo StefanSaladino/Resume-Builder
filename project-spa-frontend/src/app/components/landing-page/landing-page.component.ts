@@ -1,20 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap, catchError, of } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './landing-page.component.html',
-  styleUrl: './landing-page.component.css'
+  styleUrls: ['./landing-page.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1s ease-in', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class LandingPageComponent implements OnInit {
+  typedText: string = '';
+  fullText: string =
+    "You've got a dictionary in one hand and a thesaurus in the other. Meanwhile, you're frantically scouring google to figure out which buzzwords™ employers are searching for this week. Stop stressing. We've got you.";
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -24,7 +37,7 @@ export class LandingPageComponent implements OnInit {
   ngOnInit(): void {
     this.checkLogin();
     this.handleScrollEvent();
-    this.addPathHoverEffect();
+    this.simulateTypingEffect();
   }
 
   checkLogin() {
@@ -50,60 +63,49 @@ export class LandingPageComponent implements OnInit {
   }
 
   handleScrollEvent(): void {
-    // Get the SVG path element to modify its shape during scrolling
     const curve = document.getElementById('curve') as unknown as SVGPathElement;
-    let lastKnownScrollPosition = 0; // Variable to store the last known scroll position
-    const defaultCurveValue = 350; // The default value for the curve's control point
-    const curveRate = 3; // The rate at which the curve changes based on scroll
-    let ticking = false; // Flag to prevent multiple requests in a single animation frame
-  
-    // Add a scroll event listener to the window
+    let lastKnownScrollPosition = 0;
+    const defaultCurveValue = 350;
+    const curveRate = 3;
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-      lastKnownScrollPosition = window.scrollY; // Update the last known scroll position
-  
-      // Check if the ticking flag is false to avoid multiple requests
+      lastKnownScrollPosition = window.scrollY;
+
       if (!ticking) {
-        // Request the next animation frame
         window.requestAnimationFrame(() => {
-          // Adjust the curve based on the current scroll position
           this.adjustCurve(curve, lastKnownScrollPosition, defaultCurveValue, curveRate);
-          ticking = false; // Reset the ticking flag
+          ticking = false;
         });
-        ticking = true; // Set the ticking flag to true to avoid additional requests
+        ticking = true;
       }
     });
   }
-  
+
   adjustCurve(curve: SVGPathElement, scrollPos: number, defaultCurveValue: number, curveRate: number) {
-    // Check if the scroll position is within the valid range
     if (scrollPos >= 0 && scrollPos < defaultCurveValue) {
-      // Calculate the new curve value based on the scroll position
       const curveValue = defaultCurveValue - scrollPos / curveRate;
-  
-      // Update the 'd' attribute of the path to change its shape
       curve.setAttribute(
         'd',
         `M 800 300 Q 400 ${curveValue} 0 300 L 0 0 L 800 0 L 800 300 Z`
       );
     }
   }
-  
-  addPathHoverEffect(): void {
-    // Get the SVG path element to apply hover effects
-    const pathElement = document.getElementById('curve');
-  
-    if (pathElement) {
-      // Add mouseover event listener to change the curve when hovered
-      pathElement.addEventListener('mouseover', () => {
-        // Set the 'd' attribute to a new value for the hover effect
-        pathElement.setAttribute('d', 'M 800 300 Q 400 250 0 300 L 0 0 L 800 0 L 800 300 Z');
-      });
-  
-      // Add mouseout event listener to revert the curve when not hovered
-      pathElement.addEventListener('mouseout', () => {
-        // Reset the 'd' attribute to its original value
-        pathElement.setAttribute('d', 'M 800 300 Q 400 350 0 300 L 0 0 L 800 0 L 800 300 Z');
-      });
-    }
+
+  simulateTypingEffect(): void {
+    let currentIndex = 0;
+    const typingSpeed = 37;
+
+    const typeNextChar = () => {
+      if (currentIndex < this.fullText.length) {
+        const nextChar = this.fullText[currentIndex];
+        this.typedText += nextChar;
+
+        currentIndex++;
+        setTimeout(typeNextChar, typingSpeed);
+      }
+    };
+
+    typeNextChar();
   }
 }

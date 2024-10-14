@@ -5,10 +5,12 @@ import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthInterceptor } from '../services/auth.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
     CommonModule,
     BrowserModule,
     AppRoutingModule,

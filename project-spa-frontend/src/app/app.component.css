@@ -2,8 +2,33 @@ small{
     color: red;
 }
 
-nav li {
-    padding: 1em;
+nav{
+    padding: 0.5em;
 }
 
-  
+nav li {
+    padding: 0.5em;
+}
+
+/* Optional custom styles for navbar */
+.navbar {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Increase font size for brand */
+    font-weight: bold;
+}
+
+.nav-link {
+    font-size: 1rem; /* Standard font size for links */
+    transition: color 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.nav-link:hover {
+    color: #ffc107 !important; /* Highlight link on hover (Bootstrap warning color) */
+}
+
+a:hover{
+    cursor: pointer;
+}

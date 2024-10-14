@@ -1,52 +1,69 @@
 <!-- List of Added Educations -->
-<div *ngFor="let edu of educations; let i = index">
-  <p>{{ edu.schoolName }} - {{ edu.degreeName }} ({{ edu.startDate }} - {{ edu.endDate || 'Present' }})</p>
-  <button (click)="removeEducation(i)">Remove</button>
+<div *ngFor="let edu of educations; let i = index" class="card education-entry animate-entry">
+  <p class="fw-bold card-header">{{ edu.schoolName }}</p>  
+  <p class = "card-body">{{ edu.degreeName }} ({{ edu.startDate }} - {{ edu.endDate || 'Present' }})
+  <button class="btn btn-danger btn-sm" (click)="removeEducation(i)">Remove</button></p>
 </div>
 
+<div id="add-button">
 <!-- Add Another Education Button (Visible only when form is hidden) -->
-<button *ngIf="!showForm" (click)="showEducationForm()">Add Another Education</button>
+<button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="showEducationForm()">Add Another Education</button>
+</div>
 
 <!-- Education Form (Visible if there are no educations or when user clicks 'Add Another Education') -->
-<div *ngIf="showForm">
-  <form [formGroup]="educationForm" (ngSubmit)="onAddEducation($event)">
+<div *ngIf="showForm" class="mt-4">
+  <form [formGroup]="educationForm" (ngSubmit)="onAddEducation($event)" class="container mt-5 p-4 border rounded shadow">
+    <h2 class="text-center mb-4">Add Schooling</h2>
+
     <!-- School Name -->
-    <label for="schoolName">School Name:</label>
-    <input id="schoolName" formControlName="schoolName" type="text" required>
+    <div class="mb-3">
+      <label for="schoolName" class="form-label">School Name:</label>
+      <input id="schoolName" formControlName="schoolName" type="text" class="form-control" required>
+    </div>
 
     <!-- Start Date -->
-    <label for="startDate">Start Date (mm/yyyy):</label>
-    <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" required>
-    <div *ngIf="educationForm.controls['startDate'].invalid && educationForm.controls['startDate'].touched">
-      <small>Please enter a valid start date in mm/yyyy format.</small>
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Start Date (mm/yyyy):</label>
+      <input id="startDate" formControlName="startDate" type="text" class="form-control" placeholder="mm/yyyy" required>
+      <div *ngIf="educationForm.controls['startDate'].invalid && educationForm.controls['startDate'].touched" class="text-danger">
+        <small>Please enter a valid start date in mm/yyyy format.</small>
+      </div>
     </div>
 
     <!-- End Date (optional) -->
-    <label for="endDate">End Date (mm/yyyy):</label>
-    <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy">
-    <div *ngIf="educationForm.controls['endDate'].invalid && educationForm.controls['endDate'].touched">
-      <small>Please enter a valid end date in mm/yyyy format.</small>
+    <div class="mb-3">
+      <label for="endDate" class="form-label">End Date (mm/yyyy):</label>
+      <input id="endDate" formControlName="endDate" type="text" class="form-control" placeholder="mm/yyyy">
+      <div *ngIf="educationForm.controls['endDate'].invalid && educationForm.controls['endDate'].touched" class="text-danger">
+        <small>Please enter a valid end date in mm/yyyy format.</small>
+      </div>
     </div>
 
     <!-- Degree Type -->
-    <label for="degreeType">Degree Type:</label>
-    <input id="degreeType" formControlName="degreeType" type="text" required>
+    <div class="mb-3">
+      <label for="degreeType" class="form-label">Degree Type:</label>
+      <input id="degreeType" formControlName="degreeType" type="text" class="form-control" required>
+    </div>
 
     <!-- Degree Name -->
-    <label for="degreeName">Degree Name:</label>
-    <input id="degreeName" formControlName="degreeName" type="text" required>
+    <div class="mb-3">
+      <label for="degreeName" class="form-label">Degree Name:</label>
+      <input id="degreeName" formControlName="degreeName" type="text" class="form-control" required>
+    </div>
 
     <!-- Details -->
-    <label for="details">Details:</label>
-    <textarea id="details" formControlName="details"></textarea>
+    <div class="mb-3">
+      <label for="details" class="form-label">Details:</label>
+      <textarea id="details" formControlName="details" class="form-control"></textarea>
+    </div>
 
-    <button type="submit">Add Education</button>
-    <button type="button" (click)="cancelNewEducation()">Cancel</button>
+    <button type="submit" class="btn btn-success">Add Education</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelNewEducation()">Cancel</button>
   </form>
 </div>
 
 <!-- Navigation Buttons -->
-<div>
-  <button (click)="onBack()">Back</button>
-  <button (click)="onNext()" [disabled]="educations.length === 0">Next</button>
+<div class="d-flex justify-content-between mt-4">
+  <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="educations.length === 0">Next</button>
 </div>

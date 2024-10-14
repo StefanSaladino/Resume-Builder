@@ -1,20 +1,30 @@
 <div class="svg-container">
     <!-- SVG curve -->
-    <svg viewBox="0 0 800 400" class="svg"> <!-- Increased height by adjusting viewBox -->
-      <path id="curve" fill="#787473" d="M 800 300 Q 400 400 0 300 L 0 0 L 800 0 L 800 300 Z"></path>
+    <svg viewBox="0 0 800 400" preserveAspectRatio="none" class="svg">
+      <path id="curve" fill="#f77070" d="M 800 300 Q 400 350 0 300 L 0 0 L 800 0 L 800 300 Z"></path>
     </svg>
     
-    <!-- Centered content inside the SVG -->
-    <div class="content-inside-svg d-flex flex-column justify-content-center align-items-center text-white">
-      <h2>Resumes should be easier. Now they can be.</h2>
-      <p>You've got a dictionary in one hand and a thesaurus in the other. Meanwhile,
-        you're frantically scouring google to figure out which buzzwords&trade; employers are
-        searching for this week. Stop stressing. We've got you.
+    
+  <!-- Centered content inside the SVG -->
+  <div class="content-inside-svg d-flex flex-column justify-content-center align-items-center text-white">
+    <h2>Resumes should be easier. Now they can be.</h2>
+    <p id="typingParagraph" [innerHTML]="typedText"></p>
+  </div>
+</div>
+
+
+<div class="blurb-section">
+    <div class="blurb-content">
+      <h3>Why I Built This</h3>
+      <p>
+        Creating a resume can be tedious and time-consuming. Every moment spent crafting the perfect format and wording is precious time that could be spent applying to jobs. 
+        That's why I built this tool— to make the resume creation process faster and easier, so you can focus on what really matters.
       </p>
     </div>
   </div>
-  
-  <div class="container-fluid content-section d-flex flex-column justify-content-center align-items-center">
+
+
+  <div id= "jumbo" class="container-fluid content-section d-flex flex-column justify-content-center align-items-center">
     <div class="jumbotron text-center mt-5">
       <h1 class="display-4">Welcome to the Resume Builder!</h1>
       <p class="lead">Create a professional resume with just a few easy steps.</p>
@@ -29,4 +39,5 @@
       <a class="btn btn-outline-secondary ml-2" routerLink="/resume/skills">Skills</a>
     </div>
   </div>
+
   

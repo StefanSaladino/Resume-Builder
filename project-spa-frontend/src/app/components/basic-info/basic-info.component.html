@@ -1,24 +1,47 @@
-<form [formGroup]="basicInfoForm" (ngSubmit)="onNext()">
-    <!-- Email -->
-    <label for="emailAddress">Email:</label>
-    <input id="emailAddress" formControlName="emailAddress" type="email" required>
-    
-    <!-- First Name -->
-    <label for="firstName">First Name:</label>
-    <input id="firstName" formControlName="firstName" type="text" required>
-    
-    <!-- Last Name -->
-    <label for="lastName">Last Name:</label>
-    <input id="lastName" formControlName="lastName" type="text" required>
-    
-    <!-- Phone Number -->
-    <label for="phone">Phone Number:</label>
-    <input id="phone" formControlName="phone" type="tel" required>
-    
-    <!-- Address -->
-    <label for="address">Address:</label>
-    <input id="address" formControlName="address" type="text" required>
-    
-    <button click="onNext()" [disabled]="!basicInfoForm.valid">Next</button>
-  </form>
-  
+<form [formGroup]="basicInfoForm" (ngSubmit)="onNext()" class="container mt-5 p-4 border rounded shadow">
+  <section id="main">
+  <h2 class="text-center mb-4">Basic Information</h2>
+
+  <div class="mb-3">
+    <label for="emailAddress" class="form-label">Email:</label>
+    <input id="emailAddress" formControlName="emailAddress" type="email" class="form-control" required>
+    <div *ngIf="basicInfoForm.get('emailAddress')?.invalid && basicInfoForm.get('emailAddress')?.touched" class="text-danger">
+      Please enter a valid email.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="firstName" class="form-label">First Name:</label>
+    <input id="firstName" formControlName="firstName" type="text" class="form-control" required>
+    <div *ngIf="basicInfoForm.get('firstName')?.invalid && basicInfoForm.get('firstName')?.touched" class="text-danger">
+      First Name is required.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="lastName" class="form-label">Last Name:</label>
+    <input id="lastName" formControlName="lastName" type="text" class="form-control" required>
+    <div *ngIf="basicInfoForm.get('lastName')?.invalid && basicInfoForm.get('lastName')?.touched" class="text-danger">
+      Last Name is required.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="phone" class="form-label">Phone Number:</label>
+    <input id="phone" formControlName="phone" type="tel" class="form-control" required>
+    <div *ngIf="basicInfoForm.get('phone')?.invalid && basicInfoForm.get('phone')?.touched" class="text-danger">
+      Phone Number is required.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="address" class="form-label">Address:</label>
+    <input id="address" formControlName="address" type="text" class="form-control" required>
+    <div *ngIf="basicInfoForm.get('address')?.invalid && basicInfoForm.get('address')?.touched" class="text-danger">
+      Address is required.
+    </div>
+  </div>
+
+  <button click="onNext()" class="btn btn-primary" [disabled]="!basicInfoForm.valid">Next</button>
+</section>
+</form>

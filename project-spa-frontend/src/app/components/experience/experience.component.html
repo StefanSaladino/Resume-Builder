@@ -1,90 +1,78 @@
-<!-- Experience form: initially hidden, shown only when adding a new experience -->
-<form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()" *ngIf="showForm" class="experience-form">
-
-  <!-- Company Name -->
-  <div>
-    <label for="company">Company Name:</label>
-    <input
-      id="company"
-      formControlName="company"
-      type="text"
-      required
-    />
-    <div *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched">
-      <small class="error">Company name is required.</small>
-    </div>
-  </div>
-
-  <!-- Job Title -->
-  <div>
-    <label for="jobTitle">Job Title:</label>
-    <input id="jobTitle" formControlName="jobTitle" type="text" required />
-    <div *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched">
-      <small class="error">Job title is required.</small>
-    </div>
-  </div>
-
-  <!-- Start Date -->
-  <div>
-    <label for="startDate">Start Date (mm/yyyy):</label>
-    <input
-      id="startDate"
-      formControlName="startDate"
-      type="text"
-      placeholder="mm/yyyy"
-      required
-    />
-    <div *ngIf="experienceForm.controls['startDate'].invalid && experienceForm.controls['startDate'].touched">
-      <small>Please enter a valid start date in mm/yyyy format.</small>
-    </div>
-  </div>
-
-  <!-- End Date (optional) -->
-  <div>
-    <label for="endDate">End Date (mm/yyyy):</label>
-    <input
-      id="endDate"
-      formControlName="endDate"
-      type="text"
-      placeholder="mm/yyyy"
-    />
-    <div *ngIf="experienceForm.controls['endDate'].invalid && experienceForm.controls['endDate'].touched">
-      <small>Please enter a valid end date in mm/yyyy format.</small>
-    </div>
-  </div>
-
-  <!-- Responsibilities -->
-  <div>
-    <label for="responsibilities">Responsibilities:</label>
-    <div formArrayName="responsibilities">
-      <div *ngFor="let responsibility of responsibilities.controls; let i = index">
-        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" />
-        <button type="button" (click)="removeResponsibility(i)">Remove</button>
-      </div>
-    </div>
-    <button type="button" (click)="addResponsibility()">Add Responsibility</button>
-  </div>
-
-  <!-- Save and Cancel buttons -->
-  <div class="form-actions">
-    <button type="submit">Save Experience</button>
-    <button type="button" (click)="cancelExperience()">Cancel</button>
-  </div>
-</form>
-
-<!-- Display list of saved experiences -->
-<div *ngFor="let exp of experiences; let i = index" class="experience-entry">
-  <h3>{{ exp.jobTitle }} at {{ exp.company }}</h3>
-  <p>{{ exp.startDate }} - {{ exp.endDate }}</p>
+<!-- List of Added Experiences -->
+<div *ngFor="let exp of experiences; let i = index" class="card experience-entry animate-entry">
+  <p class="fw-bold card-header">{{ exp.jobTitle }} at {{ exp.company }}</p>
+  <p class="card-body">{{ exp.startDate }} - {{ exp.endDate || 'Present' }}</p>
   <ul>
     <li *ngFor="let responsibility of exp.responsibilities">{{ responsibility }}</li>
   </ul>
-  <button (click)="removeExperience(i)">Remove Experience</button>
+  <button class="btn btn-danger btn-sm" (click)="removeExperience(i)">Remove</button>
 </div>
 
-<!-- Button to add another experience (shown only when not adding an experience) -->
-<button *ngIf="!showForm" (click)="toggleForm()">Add Another Experience</button>
+<div id="add-button">
+  <!-- Add Another Experience Button (Visible only when form is hidden) -->
+  <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">Add Another Experience</button>
+</div>
 
-<!-- Navigation buttons -->
-<button (click)="onBack()">Back</button>
-<button (click)="onNext()">Next</button>
+<!-- Experience Form (Visible if there are no experiences or when user clicks 'Add Another Experience') -->
+<div *ngIf="showForm" class="mt-4">
+  <form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()" class="container mt-5 p-4 border rounded shadow">
+    <h2 class="text-center mb-4">Add Work Experience</h2>
+
+    <!-- Company Name -->
+    <div class="mb-3">
+      <label for="company" class="form-label">Company Name:</label>
+      <input id="company" formControlName="company" type="text" class="form-control" required>
+      <div *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched" class="text-danger">
+        <small>Company name is required.</small>
+      </div>
+    </div>
+
+    <!-- Job Title -->
+    <div class="mb-3">
+      <label for="jobTitle" class="form-label">Job Title:</label>
+      <input id="jobTitle" formControlName="jobTitle" type="text" class="form-control" required>
+      <div *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched" class="text-danger">
+        <small>Job title is required.</small>
+      </div>
+    </div>
+
+    <!-- Start Date -->
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Start Date (mm/yyyy):</label>
+      <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" class="form-control" required>
+      <div *ngIf="experienceForm.controls['startDate'].invalid && experienceForm.controls['startDate'].touched" class="text-danger">
+        <small>Please enter a valid start date in mm/yyyy format.</small>
+      </div>
+    </div>
+
+    <!-- End Date (optional) -->
+    <div class="mb-3">
+      <label for="endDate" class="form-label">End Date (mm/yyyy):</label>
+      <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy" class="form-control">
+      <div *ngIf="experienceForm.controls['endDate'].invalid && experienceForm.controls['endDate'].touched" class="text-danger">
+        <small>Please enter a valid end date in mm/yyyy format.</small>
+      </div>
+    </div>
+
+    <!-- Responsibilities -->
+    <div class="mb-3">
+      <label for="responsibilities" class="form-label">Responsibilities:</label>
+      <div formArrayName="responsibilities">
+        <div *ngFor="let responsibility of responsibilities.controls; let i = index">
+          <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" class="form-control" />
+          <button type="button" (click)="removeResponsibility(i)" class="btn btn-danger btn-sm mt-2">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-secondary mt-2" (click)="addResponsibility()">Add Responsibility</button>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Experience</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelExperience()">Cancel</button>
+  </form>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="d-flex justify-content-between mt-4">
+  <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="experiences.length === 0">Next</button>
+</div>
