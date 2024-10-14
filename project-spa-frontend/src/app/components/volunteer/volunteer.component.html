@@ -1,90 +1,80 @@
-<!-- Volunteer form: initially hidden, shown only when adding a new volunteer experience -->
-<form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()" *ngIf="showForm" class="volunteer-form">
+<!-- List of Added Volunteer Experiences -->
+<div *ngFor="let vol of volunteers; let i = index" class="card volunteer-entry animate-entry">
+  <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
+  <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || 'Present' }}</p>
+  <ul>
+    <li *ngFor="let responsibility of vol.responsibilities">{{ responsibility }}</li>
+  </ul>
+  <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">Remove</button>
+</div>
+
+<div id="add-button">
+  <!-- Add Another Volunteer Experience Button (Visible only when form is hidden) -->
+  <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleVolunteerForm()">Add Another Volunteer Experience</button>
+</div>
+
+<!-- Volunteer Form (Visible only when adding a new volunteer experience) -->
+<form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()" *ngIf="showForm" class="volunteer-form container mt-5 p-4 border rounded shadow">
+  
+  <h2 class="text-center mb-4">Add Volunteer Experience</h2>
 
   <!-- Organization Name -->
-  <div>
-    <label for="organization">Organization Name:</label>
-    <input
-      id="organization"
-      formControlName="organization"
-      type="text"
-      required
-    />
-    <div *ngIf="volunteerForm.get('organization')?.invalid && volunteerForm.get('organization')?.touched">
-      <small class="error">Name of organization is required.</small>
+  <div class="mb-3">
+    <label for="organization" class="form-label">Organization Name:</label>
+    <input id="organization" formControlName="organization" type="text" class="form-control" required />
+    <div *ngIf="volunteerForm.get('organization')?.invalid && volunteerForm.get('organization')?.touched" class="text-danger">
+      <small>Name of organization is required.</small>
     </div>
   </div>
 
   <!-- Role -->
-  <div>
-    <label for="role">Role:</label>
-    <input id="role" formControlName="role" type="text" required />
-    <div *ngIf="volunteerForm.get('role')?.invalid && volunteerForm.get('role')?.touched">
-      <small class="error">Name of role is required.</small>
+  <div class="mb-3">
+    <label for="role" class="form-label">Role:</label>
+    <input id="role" formControlName="role" type="text" class="form-control" required />
+    <div *ngIf="volunteerForm.get('role')?.invalid && volunteerForm.get('role')?.touched" class="text-danger">
+      <small>Name of role is required.</small>
     </div>
   </div>
 
   <!-- Start Date -->
-  <div>
-    <label for="startDate">Start Date (mm/yyyy):</label>
-    <input
-      id="startDate"
-      formControlName="startDate"
-      type="text"
-      placeholder="mm/yyyy"
-      required
-    />
-    <div *ngIf="volunteerForm.controls['startDate'].invalid && volunteerForm.controls['startDate'].touched">
+  <div class="mb-3">
+    <label for="startDate" class="form-label">Start Date (mm/yyyy):</label>
+    <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" class="form-control" required />
+    <div *ngIf="volunteerForm.controls['startDate'].invalid && volunteerForm.controls['startDate'].touched" class="text-danger">
       <small>Please enter a valid start date in mm/yyyy format.</small>
     </div>
   </div>
 
   <!-- End Date (optional) -->
-  <div>
-    <label for="endDate">End Date (mm/yyyy):</label>
-    <input
-      id="endDate"
-      formControlName="endDate"
-      type="text"
-      placeholder="mm/yyyy"
-    />
-    <div *ngIf="volunteerForm.controls['endDate'].invalid && volunteerForm.controls['endDate'].touched">
+  <div class="mb-3">
+    <label for="endDate" class="form-label">End Date (mm/yyyy):</label>
+    <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy" class="form-control" />
+    <div *ngIf="volunteerForm.controls['endDate'].invalid && volunteerForm.controls['endDate'].touched" class="text-danger">
       <small>Please enter a valid end date in mm/yyyy format.</small>
     </div>
   </div>
 
   <!-- Responsibilities -->
-  <div>
-    <label for="responsibilities">Responsibilities:</label>
+  <div class="mb-3">
+    <label for="responsibilities" class="form-label">Responsibilities:</label>
     <div formArrayName="responsibilities">
       <div *ngFor="let responsibility of responsibilities.controls; let i = index">
-        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" />
-        <button type="button" (click)="removeResponsibility(i)">Remove</button>
+        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" class="form-control" />
+        <button type="button" (click)="removeResponsibility(i)" class="btn btn-danger btn-sm mt-2">Remove</button>
       </div>
     </div>
-    <button type="button" (click)="addResponsibility()">Add Responsibility</button>
+    <button type="button" class="btn btn-sm btn-secondary mt-2" (click)="addResponsibility()">Add Responsibility</button>
   </div>
 
   <!-- Save and Cancel buttons -->
   <div class="form-actions">
-    <button type="submit">Add Volunteer Experience</button>
-    <button type="button" (click)="cancelVolunteer()">Cancel</button>
+    <button type="submit" class="btn btn-success">Add Volunteer Experience</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelVolunteer()">Cancel</button>
   </div>
 </form>
 
-<!-- Display list of volunteer experiences -->
-<div *ngFor="let vol of volunteers; let i = index" class="volunteer-entry">
-  <h3>{{ vol.role }} at {{ vol.organization }}</h3>
-  <p>{{ vol.startDate }} - {{ vol.endDate }}</p>
-  <ul>
-    <li *ngFor="let responsibility of vol.responsibilities">{{ responsibility }}</li>
-  </ul>
-  <button (click)="removeVolunteer(i)">Remove Volunteer Experience</button>
+<!-- Navigation Buttons -->
+<div class="d-flex justify-content-between mt-4">
+  <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="volunteers.length === 0">Next</button>
 </div>
-
-<!-- Button to add another volunteer experience (shown only when not adding an experience) -->
-<button *ngIf="!showForm" (click)="toggleVolunteerForm()">Add Another Volunteer Experience</button>
-
-<!-- Navigation buttons -->
-<button (click)="onBack()">Back</button>
-<button (click)="onNext()">Next</button>

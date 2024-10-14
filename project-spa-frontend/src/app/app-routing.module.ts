@@ -27,7 +27,7 @@ export const routes: Routes = [
   { path: 'resume/generate-resume', component: FinalizeResumeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'landing-page', component: LandingPageComponent, canActivate: [AuthGuard] },
+  { path: 'landing-page', component: LandingPageComponent },
   { path: '**', redirectTo: 'landing-page' }
 ];
 

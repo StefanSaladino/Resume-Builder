@@ -1,34 +1,47 @@
-<!-- Display list of skills -->
-<div *ngFor="let skill of skills; let i = index">
-  <h3>{{ skill.skill }}</h3>
-  <p>Proficiency (or years of experience): {{ skill.proficiency }}</p>
-  <button (click)="removeSkill(i)">Remove</button>
+<!-- Display List of Skills -->
+<div *ngFor="let skill of skills; let i = index" class="card skill-entry animate-entry">
+  <h3 class="fw-bold card-header">{{ skill.skill }}</h3>
+  <p class="card-body">Proficiency (or years of experience): {{ skill.proficiency }}</p>
+  <button class="btn btn-danger btn-sm" (click)="removeSkill(i)">Remove</button>
 </div>
 
-<!-- Form should be hidden initially unless there are 0 skills -->
-<form [formGroup]="skillsForm" *ngIf="showForm || skills.length === 0" (ngSubmit)="onAddSkill()">
-  <div>
-    <label for="skill">Skill Name:</label>
-    <input id="skill" formControlName="skill" type="text" required />
+<div id="add-button">
+  <!-- Add Another Skill Button (Visible only when form is hidden and there are existing skills) -->
+  <button id="add" *ngIf="!showForm && skills.length > 0" class="btn btn-primary mt-3" (click)="toggleForm()">Add Another Skill</button>
+</div>
+
+<!-- Skill Form (Visible only when adding a new skill or if there are no skills) -->
+<form [formGroup]="skillsForm" *ngIf="showForm || skills.length === 0" (ngSubmit)="onAddSkill()" class="skills-form container mt-5 p-4 border rounded shadow">
+
+  <h2 class="text-center mb-4">Add Skill</h2>
+
+  <!-- Skill Name -->
+  <div class="mb-3">
+    <label for="skill" class="form-label">Skill Name:</label>
+    <input id="skill" formControlName="skill" type="text" class="form-control" required />
   </div>
 
-  <div>
-    <label for="proficiency">Proficiency:</label>
-    <input id="proficiency" formControlName="proficiency" type="text" required />
+  <!-- Proficiency -->
+  <div class="mb-3">
+    <label for="proficiency" class="form-label">Proficiency:</label>
+    <input id="proficiency" formControlName="proficiency" type="text" class="form-control" required />
   </div>
 
-  <div>
-    <label for="description">Add a short description paragraph about the skill:</label>
-    <textarea id="description" formControlName="description" required></textarea>
+  <!-- Description -->
+  <div class="mb-3">
+    <label for="description" class="form-label">Add a Short Description Paragraph About the Skill:</label>
+    <textarea id="description" formControlName="description" class="form-control" required></textarea>
   </div>
 
-  <button type="submit">Save Skill</button>
-  <button type="button" (click)="cancelSkill()">Cancel</button> <!-- Allow the user to cancel adding a skill -->
+  <!-- Save and Cancel buttons -->
+  <div class="form-actions">
+    <button type="submit" class="btn btn-success">Save Skill</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelSkill()">Cancel</button>
+  </div>
 </form>
 
-<!-- Button to add another skill, only shown when there are skills and form is hidden -->
-<button *ngIf="!showForm && skills.length > 0" (click)="toggleForm()">Add Another Skill</button>
-
-<!-- Navigation buttons -->
-<button (click)="onBack()">Back</button>
-<button (click)="onNext()">Next</button>
+<!-- Navigation Buttons -->
+<div class="d-flex justify-content-between mt-4">
+  <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="skills.length === 0">Next</button>
+</div>

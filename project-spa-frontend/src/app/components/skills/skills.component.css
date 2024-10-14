@@ -1,0 +1,62 @@
+.card {
+    width: 33vw;
+    margin-left: 2em;
+    margin-top: 1em;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card button {
+    width: 33%;
+    margin-top: 1em;
+}
+
+.skill-entry {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skill-entry.animate-entry {
+    opacity: 0;
+    transform: translateX(500px);
+    animation: flyIn 0.5s forwards;
+}
+
+@keyframes flyIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Add spacing to the form */
+.skills-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Add spacing between fields */
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+button {
+    margin-right: 10px;
+}
+
+/* Center the add button */
+#add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.d-flex {
+    margin: 0 4em 2em 4em;
+}

@@ -1,0 +1,74 @@
+.summary-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-section h3 {
+    border-bottom: 2px solid #f77070;
+    padding-bottom: 10px;
+    color: #f77070;
+}
+
+.btn-primary {
+    margin-top: 10px;
+}
+
+.navigation-buttons {
+    margin-top: 20px;
+}
+
+.text-danger {
+    text-align: center;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 1s forwards; /* Adjust duration as needed */
+  }
+
+  .fade-in2 {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 2s forwards; /* Adjust duration as needed */
+  }
+  
+  .fade-in3 {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 3s forwards; /* Adjust duration as needed */
+  }
+  
+  .fade-in4 {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 4s forwards; /* Adjust duration as needed */
+  }
+
+  .fade-in5 {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 5s forwards; /* Adjust duration as needed */
+  }
+
+  .item{
+    border-bottom: solid 4px black;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

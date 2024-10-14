@@ -1,67 +1,66 @@
 <div class="summary-container" *ngIf="resume; else loading">
-    <h2>Resume Summary</h2>
-  
-    <div class="summary-section" *ngIf="resume.basicInfo">
-      <h3>Basic Info</h3>
-      <p>First Name: {{ resume.basicInfo.firstName }}</p>
-      <p>Last Name: {{ resume.basicInfo.lastName }}</p>
-      <p>Email: {{ resume.basicInfo.emailAddress }}</p>
-      <p>Phone: {{ resume.basicInfo.phone }}</p>
-      <button (click)="editSection('basic-info')">Edit Basic Info</button>
-    </div>
-  
-    <div class="summary-section" *ngIf="resume.education && resume.education.length > 0">
-      <h3>Education</h3>
-      <div *ngFor="let education of resume.education">
-        <p>Institution: {{ education.schoolName }}</p>
-        <p>Degree: {{ education.degreeType }} in {{ education.degreeName }}</p>
-        <p>Start Date: {{ education.startDate }}</p>
-        <p>End Date: {{ education.endDate }}</p>
-      </div>
-      <button (click)="editSection('education')">Edit Education</button>
-    </div>
-  
-    <div class="summary-section" *ngIf="resume.skills && resume.skills.length > 0">
-      <h3>Skills</h3>
-      <div *ngFor="let skill of resume.skills">
-        <p>Skill: {{ skill.skill }}</p>
-        <p>Proficiency: {{ skill.proficiency }}</p>
-        <p>Description: {{ skill.description }}</p>
-      </div>
-      <button (click)="editSection('skills')">Edit Skills</button>
-    </div>
-  
-    <div class="summary-section" *ngIf="resume.experience && resume.experience.length > 0">
-      <h3>Experience</h3>
-      <div *ngFor="let experience of resume.experience">
-        <p>Company: {{ experience.company }}</p>
-        <p>Role: {{ experience.jobTitle }}</p>
-        <p>Start Date: {{ experience.startDate }}</p>
-        <p>End Date: {{ experience.endDate }}</p>
-      </div>
-      <button (click)="editSection('experience')">Edit Experience</button>
-    </div>
-  
-    <div class="summary-section" *ngIf="resume.volunteer && resume.volunteer.length > 0">
-      <h3>Volunteer</h3>
-      <div *ngFor="let volunteer of resume.volunteer">
-        <p>Organization: {{ volunteer.organization }}</p>
-        <p>Role: {{ volunteer.role }}</p>
-        <p>Start Date: {{ volunteer.startDate }}</p>
-        <p>End Date: {{ volunteer.endDate }}</p>
-      </div>
-      <button (click)="editSection('volunteer')">Edit Volunteer</button>
-    </div>
-  
-    <div class="navigation-buttons">
-      <button (click)="onBack()">Back</button>
-      <button (click)="onNext()">Next</button>
-    </div>
+  <h2>Resume Summary</h2>
+
+  <div class="summary-section fade-in" *ngIf="resume.basicInfo">
+    <h3>Basic Info</h3>
+    <p>First Name: {{ resume.basicInfo.firstName }}</p>
+    <p>Last Name: {{ resume.basicInfo.lastName }}</p>
+    <p>Email: {{ resume.basicInfo.emailAddress }}</p>
+    <p>Phone: {{ resume.basicInfo.phone }}</p>
+    <button class="btn btn-primary" (click)="editSection('basic-info')">Edit Basic Info</button>
   </div>
-  
-  <ng-template #loading>
-    <p>Loading resume data...</p>
-  </ng-template>
-  
-  <p *ngIf="errorMessage">{{ errorMessage }}</p>
-  
+
+  <div class="summary-section fade-in2" *ngIf="resume.education && resume.education.length > 0">
+    <h3>Education</h3>
+    <div class='item' *ngFor="let education of resume.education">
+      <p>Institution: {{ education.schoolName }}</p>
+      <p>Degree: {{ education.degreeType }} in {{ education.degreeName }}</p>
+      <p>Start Date: {{ education.startDate }}</p>
+      <p>End Date: {{ education.endDate }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="editSection('education')">Edit Education</button>
+  </div>
+
+  <div class="summary-section fade-in3" *ngIf="resume.skills && resume.skills.length > 0">
+    <h3>Skills</h3>
+    <div class='item' *ngFor="let skill of resume.skills">
+      <p>Skill: {{ skill.skill }}</p>
+      <p>Proficiency: {{ skill.proficiency }}</p>
+      <p>Description: {{ skill.description }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="editSection('skills')">Edit Skills</button>
+  </div>
+
+  <div class="summary-section fade-in4" *ngIf="resume.experience && resume.experience.length > 0">
+    <h3>Experience</h3>
+    <div class='item' *ngFor="let experience of resume.experience">
+      <p>Company: {{ experience.company }}</p>
+      <p>Role: {{ experience.jobTitle }}</p>
+      <p>Start Date: {{ experience.startDate }}</p>
+      <p>End Date: {{ experience.endDate }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="editSection('experience')">Edit Experience</button>
+  </div>
+
+  <div class="summary-section fade-in5" *ngIf="resume.volunteer && resume.volunteer.length > 0">
+    <h3>Volunteer</h3>
+    <div class='item' *ngFor="let volunteer of resume.volunteer">
+      <p>Organization: {{ volunteer.organization }}</p>
+      <p>Role: {{ volunteer.role }}</p>
+      <p>Start Date: {{ volunteer.startDate }}</p>
+      <p>End Date: {{ volunteer.endDate }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="editSection('volunteer')">Edit Volunteer</button>
+  </div>
+
+  <div class="d-flex justify-content-between mt-4">
+    <button class="btn btn-secondary" (click)="onBack()">Back</button>
+    <button class="btn btn-success" (click)="onNext()">Next</button>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>Loading resume data...</p>
+</ng-template>
+
+<p *ngIf="errorMessage">{{ errorMessage }}</p>
