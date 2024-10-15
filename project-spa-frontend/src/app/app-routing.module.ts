@@ -14,6 +14,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { CommonModule } from '@angular/common';
 import { FinalizeResumeComponent } from './components/finalize-resume/finalize-resume.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { MiscellaneousComponent } from './components/miscellaneous/miscellaneous.component';
 
 // Declare the routes array
 export const routes: Routes = [
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'resume/skills', component: SkillsComponent, canActivate: [AuthGuard] },
   { path: 'resume/summary', component: SummaryComponent, canActivate: [AuthGuard] },
   { path: 'resume/generate-resume', component: FinalizeResumeComponent, canActivate: [AuthGuard] },
+  { path: 'resume/miscellaneous', component: MiscellaneousComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'landing-page', component: LandingPageComponent },

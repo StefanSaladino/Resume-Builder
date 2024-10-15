@@ -40,7 +40,7 @@ export class LoginComponent {
           tap((response: any) => {
             if (response.success) {
               // Navigate to the next page if login is successful
-              this.router.navigate(['/landing-page']);
+              this.router.navigate(['resume/basic-info']);
             }
           }),
           catchError((error) => {

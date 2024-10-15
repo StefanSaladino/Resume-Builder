@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 var User = require('./models/user'); // Import the user model
 const authRouter = require('./routes/auth'); // Auth routes
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 var dotenv = require('dotenv');
 
@@ -68,6 +69,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/python-api', createProxyMiddleware({
+  target: 'http://localhost:5000', 
+  changeOrigin: true
+}));
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());

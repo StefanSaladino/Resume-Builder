@@ -253,12 +253,10 @@ router.post("/volunteer", async (req, res) => {
 
     user.resume.volunteer.push(newVolunteer);
     await user.save();
-    res
-      .status(200)
-      .json({
-        message: "Volunteer experience added successfully",
-        data: newVolunteer,
-      });
+    res.status(200).json({
+      message: "Volunteer experience added successfully",
+      data: newVolunteer,
+    });
   } catch (error) {
     res
       .status(500)
@@ -403,83 +401,69 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     // Create the prompt based on the user's information
     const prompt = `
   Please create a polished, professional resume based on the following information, ensuring it is formatted for 
-  easy readability and presentation:
+  easy readability and presentation. Pretend you are creating a resume written by a human. In your response, I do not require any info other than the resume itself.
+  You must not add any comments about what you've done or the prompt. The entirety of the response must be strictly
+  limited to the resume content and should not include any summaries or closing statements. Assume that your response 
+  will be taken and submitted directly to an employer.
 
-  **Name:** ${user.resume.basicInfo.firstName} ${
-      user.resume.basicInfo.lastName
-    }  
-  **Email:** ${user.resume.basicInfo.emailAddress}  
+  The following formatting template should not actually be included in the resume, rather it is a guideline for 
+  how to respond.
 
-  **Contact Information:**  
-  - **Phone Number:** ${user.resume.basicInfo.phone || "N/A"}  
-  - **Location:** ${user.resume.basicInfo.address || "N/A"}  
-
-  **Skills:**  
-  ${
-    user.resume.skills.length > 0
-      ? user.resume.skills.join(", ")
-      : "No skills provided"
-  }  
-
-  **Professional Experience:**  
-  ${
-    user.resume.experience.length > 0
-      ? user.resume.experience
-          .map(
-            (exp) =>
-              `- **Role:** ${exp.jobTitle} at ${exp.company} (${
-                exp.startDate
-              } - ${exp.endDate || "Present"})  
-         **Responsibilities:** ${
-           exp.responsibilities.join(", ") || "Not provided"
-         }  
-         **Achievements:** Highlight any key contributions or successes in this role, inferred from the responsibilities and 
-         skills provided.
-      `
-          )
-          .join("\n")
-      : "No experience provided"
-  }  
-
-  **Education:**  
-  ${
-    user.resume.education.length > 0
-      ? user.resume.education
-          .map(
-            (ed) =>
-              `- **Degree:** ${ed.degreeName} from ${ed.schoolName} (${
-                ed.startDate
-              } - ${ed.endDate || "Present"})  
-         **Details:** ${ed.details || "Not provided"}  
-      `
-          )
-          .join("\n")
-      : "No education provided"
-  }  
-
-  **Volunteer Experience:**  
-  ${
-    user.resume.volunteer.length > 0
-      ? user.resume.volunteer
-          .map(
-            (vol) =>
-              `- **Organization:** ${vol.organization}  
-         **Role:** ${vol.role} (${vol.startDate} - ${
-                vol.endDate || "Present"
-              })  
-         **Responsibilities:** ${
-           vol.responsibilities.join(", ") || "Not provided"
-         }  
-      `
-          )
-          .join("\n")
-      : "No volunteer experience provided"
-  }  
+  **Formatting Template:**  
+  - Use a clean and professional font (e.g., Arial, Calibri, or Times New Roman) in size 10-12 for body text.
+  - Ensure section headings are bold and slightly larger (e.g., size 14-16).
+  - Maintain consistent spacing between sections (at least one blank line).
+  - Use bullet points for lists (skills, responsibilities, achievements).
+  - Align text to the left for a traditional layout, with the name at the top center.
+  - Consider adding a line under the name for separation from contact information.
 
   Please ensure that this response is a complete and visually appealing resume layout, 
-  using appropriate headings and bullet points for clarity. This resume should be ready for submission, 
-  free of any extraneous information not typically included in a professional resume.
+  using appropriate headings and bullet points for clarity. This resume should be ready for submission.
+  Take the information the user has provided and expand on it to make the user's resume more impressive. 
+  Make the resume sound more erudite and professional.
+  You may infer accomplishments from the provided information. Also create a brief profile based on the user's provided data.
+  Please ensure that all section headings are bold and centered, and separate each section with an underline. 
+  Remove any extraneous characters (like asterisks) around headings.
+
+
+  ACTUAL RESUME CONTENT STARTS HERE:
+
+                    ${user.resume.basicInfo.firstName} ${user.resume.basicInfo.lastName} 
+                            ${user.resume.basicInfo.address || "N/A"}  
+              ${user.resume.basicInfo.phone || "N/A"}   | ${user.resume.basicInfo.emailAddress}
+
+
+  (PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON)
+  PROFILE SUMMARY:
+
+  Skills:  
+  ${user.resume.skills.length > 0 ? user.resume.skills.join(", ") : "No skills provided"}  
+
+  Professional Experience:  
+  ${user.resume.experience.length > 0 ? user.resume.experience.map(exp => `
+    - **Role:** ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${exp.endDate || "Present"})  
+      **Responsibilities:** ${exp.responsibilities.join(", ") || "Not provided"}  
+      **Achievements:** Highlight any key contributions or successes in this role, inferred from the responsibilities provided.  
+  `).join("\n") : "No experience provided"}  
+
+  Education:  
+  ${user.resume.education.length > 0 ? user.resume.education.map(ed => `
+    - Degree: ${ed.degreeName} from ${ed.schoolName} (${ed.startDate} - ${ed.endDate || "Present"})  
+      Details: ${ed.details || "Not provided"}  
+  `).join("\n") : "No education provided"}  
+
+  Volunteer Experience:  
+  ${user.resume.volunteer.length > 0 ? user.resume.volunteer.map(vol => `
+    - Organization: ${vol.organization}  
+      Role: ${vol.role} (${vol.startDate} - ${vol.endDate || "Present"})  
+      Responsibilities: ${vol.responsibilities.join(", ") || "Not provided"}  
+  `).join("\n") : "No volunteer experience provided"}  
+
+  RESUME SHOULD END HERE. NO ADDITIONAL CONTENT AT THE END.
+
 `;
+
+  
     console.log("Generated Resume Prompt:", prompt);
 
     const options = {
@@ -488,7 +472,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
       port: null,
       path: "/infinite-gpt",
       headers: {
-        "x-rapidapi-key": "b9af377cacmshfbfa26786ebc1bcp163d65jsne1158cf2c8b5",
+        "x-rapidapi-key": "9bbd770d55mshbcbbe367ee48fa0p1a1c49jsn490561015f76",
         "x-rapidapi-host": "infinite-gpt.p.rapidapi.com",
         "Content-Type": "application/json",
       },
@@ -501,16 +485,19 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
         chunks.push(chunk);
       });
 
-      resApi.on("end", () => {
+      resApi.on("end", async () => {
         const body = Buffer.concat(chunks).toString();
         if (resApi.statusCode !== 200) {
           return res.status(500).json({ message: "Error generating resume" });
         }
-
+      
         const responseBody = JSON.parse(body); // Assuming the body is JSON
         const msg = responseBody.msg || "No message returned"; // Extract msg field
-
-        // Return the msg as JSON response
+      
+        // Save the generated resume to the user record
+        user.resume.generatedResume = msg; // Use msg instead of generatedResume
+        await user.save();
+      
         res.json({ msg });
       });
     });
@@ -523,7 +510,8 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     reqApi.write(
       JSON.stringify({
         query: prompt,
-        sysMsg: "You are a friendly Chatbot that creates professional resumes.",
+        sysMsg:
+          "You are a friendly Chatbot that creates professional resumes.",
       })
     );
 

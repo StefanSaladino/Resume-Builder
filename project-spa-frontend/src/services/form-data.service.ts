@@ -2,8 +2,8 @@
 This service is responsible for managing and storing form data 
 across different sections of the resume builder application, 
 including basic information, education, experience, volunteer work, 
-and skills. It also provides methods for fetching resume data 
-from the backend and resetting the form data.*/
+skills, and miscellaneous information. It also provides methods for 
+fetching resume data from the backend and resetting the form data.*/
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -19,6 +19,7 @@ export class FormDataService {
     experience: [],
     volunteer: [],
     skills: [],
+    miscellaneous: [], // New field for miscellaneous data
   };
 
   private apiUrl = 'http://localhost:4200/backend';
@@ -70,6 +71,15 @@ export class FormDataService {
     return this.formData.skills;
   }
 
+  // Miscellaneous
+  addMiscellaneous(data: any) {
+    this.formData.miscellaneous.push(data);
+  }
+
+  getMiscellaneous() {
+    return this.formData.miscellaneous;
+  }
+
   // Get All Data
   getFormData() {
     return this.formData;
@@ -87,6 +97,7 @@ export class FormDataService {
       experience: [],
       volunteer: [],
       skills: [],
+      miscellaneous: [], // Resetting miscellaneous as well
     };
   }
 }

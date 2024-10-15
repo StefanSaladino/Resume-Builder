@@ -30,6 +30,7 @@ export class FinalizeResumeComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkLogin(); // Check user login status when component loads
+    this.loadExistingResume();
   }
 
   checkLogin() {
@@ -39,11 +40,32 @@ export class FinalizeResumeComponent implements OnInit {
     this.http.get<any[]>('http://localhost:4200/backend/user', { headers })
       .subscribe(user => {
         this.userInfo = user; // Set user data from backend
-        this.generateResume(); // Call the generateResume method
       }, error => {
         console.error('Error fetching user data:', error); // Log error in case of failure
         this.errorMessage = 'Failed to fetch user data. Please try again.'; // Set error message
       });
+  }
+
+  loadExistingResume() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.error('No token found in localStorage');
+      return;
+    }
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http.get<any>('http://localhost:4200/backend/resume/generate-resume', { headers })
+      .subscribe(
+        (response) => {
+          if (response && response.generatedResume) {
+            this.generatedResume = response.generatedResume;
+          }
+        },
+        error => {
+          console.error('Error fetching saved resume:', error);
+        }
+      );
   }
 
   generateResume() {
@@ -58,15 +80,58 @@ export class FinalizeResumeComponent implements OnInit {
     this.resumeService.generateResume({}, headers).subscribe(
       (response: any) => {
         if (response && response.msg) {
-          this.generatedResume = response.msg; // Assign the msg string received from backend
+          this.generatedResume = response.msg;
+          
+          // Save the generated resume to the backend
+          this.saveGeneratedResume();
         } else {
           console.error('Failed to generate resume');
         }
       },
       error => {
         console.error('Error during resume generation:', error);
-        this.errorMessage = 'An unexpected error occurred. Please check the console.';
       }
     );
   }
+
+  
+  
+  saveGeneratedResume() {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    this.http.post('http://localhost:4200/backend/resume/generate-resume', 
+      { generatedResume: this.generatedResume }, 
+      { headers }
+    ).subscribe(
+      (response) => {
+        console.log('Resume saved successfully');
+      },
+      error => {
+        console.error('Error saving resume:', error);
+      }
+    );
+  }
+  
+  downloadResume() {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http.post('http://localhost:4200/python-api/generate-doc', 
+      { userId: this.userInfo._id },  // Pass the userId to Python API
+      { headers, responseType: 'blob' }
+    ).subscribe(
+      (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume.docx';
+        a.click();
+      },
+      error => {
+        console.error('Error downloading resume:', error);
+      }
+    );
+  }
+  
 }

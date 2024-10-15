@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 
-//Define skills sub schema
+// Define skills sub-schema
 const SkillsSchema = new mongoose.Schema({
     skill: {type: String, required: true},
     proficiency: {type: String, required: true},
@@ -14,7 +14,7 @@ const ExperienceSchema = new mongoose.Schema({
   company: { type: String, required: true },
   startDate: { type: String, required: true },  // Stored as mm/yyyy string
   endDate: { type: String },  // Optional, defaults to 'Present'
-  responsibilities: [{ type: String, required: true }]  // Array of strings // Array of responsibilities
+  responsibilities: [{ type: String, required: true }]  // Array of responsibilities
 });
 
 const VolunteerSchema = new mongoose.Schema({
@@ -35,6 +35,17 @@ const EducationSchema = new mongoose.Schema({
   details: { type: String }
 });
 
+// Define miscellaneous sub-schema with enum type
+const MiscellaneousSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  type: { 
+    type: String, 
+    enum: ['extracurricular', 'language', 'certificate'], // Enum for dropdown
+    required: true 
+  }
+});
+
 // Define resume sub-schema for user data
 const ResumeSchema = new mongoose.Schema({
   basicInfo: {
@@ -47,7 +58,9 @@ const ResumeSchema = new mongoose.Schema({
   education: [EducationSchema],  // Store multiple education entries
   skills: [SkillsSchema],
   volunteer: [VolunteerSchema],
-  experience: [ExperienceSchema]
+  experience: [ExperienceSchema],
+  miscellaneous: [MiscellaneousSchema],  // Updated with enum type
+  generatedResume: { type: String }
 });
 
 // Updated UserSchema to ensure resume is initialized

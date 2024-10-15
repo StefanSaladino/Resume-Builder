@@ -1,0 +1,3 @@
+# project-spa-backend/python-api/requirements.txt
+flask
+python-docx

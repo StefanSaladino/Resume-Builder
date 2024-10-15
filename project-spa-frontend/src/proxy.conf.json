@@ -7,6 +7,14 @@
         "^/backend": ""
       },
       "changeOrigin": true
+    },
+    "/python-api": {
+      "target": "http://localhost:5000",
+      "secure": false,
+      "pathRewrite": {
+        "^/python-api": ""
+      },
+      "changeOrigin": true
     }
 }
   
