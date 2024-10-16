@@ -58,6 +58,7 @@ export class ExperienceComponent implements OnInit {
     }
   }
 
+  //TODO: ADD TO VALIDATE DATE PATTERN: Start date must be before today's date
   validateDateFormat(control: any) {
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
     if (!datePattern.test(control.value)) {
@@ -66,6 +67,7 @@ export class ExperienceComponent implements OnInit {
     return null;
   }
 
+  //TODO: ADD TO VALIDATE DATE PATTERN: End date must be before present date and after start date.
   validateOptionalEndDate(control: any) {
     if (!control.value || control.value.trim() === '') {
       return null; // Empty value is valid (no end date provided)

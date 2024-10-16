@@ -49,11 +49,13 @@ export class EducationComponent implements OnInit {
     this.fetchEducationEntries();
   }
 
+  //TODO: ADD TO VALIDATE DATE PATTERN: start date must be after present date
   validateDateFormat(control: any) {
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
     return datePattern.test(control.value) ? null : { invalidDate: true };
   }
 
+  //TODO: ADD TO VALIDATE DATE PATTERN: End date must be before present date and after start date.
   validateOptionalEndDate(control: any) {
     if (!control.value || control.value.trim() === '') {
       return null;
