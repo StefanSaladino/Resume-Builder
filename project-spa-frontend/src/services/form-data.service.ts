@@ -97,7 +97,7 @@ export class FormDataService {
       experience: [],
       volunteer: [],
       skills: [],
-      miscellaneous: [], // Resetting miscellaneous as well
+      miscellaneous: [], 
     };
   }
 }

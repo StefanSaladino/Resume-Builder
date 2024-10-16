@@ -5,6 +5,10 @@
   <ul>
     <li *ngFor="let responsibility of exp.responsibilities">{{ responsibility }}</li>
   </ul>
+  <!-- Achievements section (optional) -->
+  <p *ngIf="exp.achievements" class="card-body">
+    <strong>Achievements:</strong> {{ exp.achievements }}
+  </p>
   <button class="btn btn-danger btn-sm" (click)="removeExperience(i)">Remove</button>
 </div>
 
@@ -64,6 +68,12 @@
         </div>
       </div>
       <button type="button" class="btn btn-secondary btn-sm mt-2" (click)="addResponsibility()">Add Responsibility</button>
+    </div>
+
+    <!-- Achievements (optional) -->
+    <div class="mb-3">
+      <label for="achievements" class="form-label">Achievements (Optional):</label>
+      <textarea id="achievements" formControlName="achievements" class="form-control" placeholder="Describe your key achievements at this job"></textarea>
     </div>
 
     <button type="submit" class="btn btn-success">Save Experience</button>

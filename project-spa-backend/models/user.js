@@ -14,7 +14,8 @@ const ExperienceSchema = new mongoose.Schema({
   company: { type: String, required: true },
   startDate: { type: String, required: true },  // Stored as mm/yyyy string
   endDate: { type: String },  // Optional, defaults to 'Present'
-  responsibilities: [{ type: String, required: true }]  // Array of responsibilities
+  responsibilities: [{ type: String, required: true }],  // Array of responsibilities
+  achievements: [{type: String}]
 });
 
 const VolunteerSchema = new mongoose.Schema({
@@ -55,11 +56,11 @@ const ResumeSchema = new mongoose.Schema({
     phone: String,
     address: String,
   },
-  education: [EducationSchema],  // Store multiple education entries
+  education: [EducationSchema],
   skills: [SkillsSchema],
   volunteer: [VolunteerSchema],
   experience: [ExperienceSchema],
-  miscellaneous: [MiscellaneousSchema],  // Updated with enum type
+  miscellaneous: [MiscellaneousSchema],
   generatedResume: { type: String }
 });
 

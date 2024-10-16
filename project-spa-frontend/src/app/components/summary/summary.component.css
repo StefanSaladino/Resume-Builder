@@ -40,25 +40,31 @@
   .fade-in2 {
     opacity: 0;
     transform: translateY(-20px);
-    animation: fadeIn 2s forwards; /* Adjust duration as needed */
+    animation: fadeIn 1.5s forwards; /* Adjust duration as needed */
   }
   
   .fade-in3 {
     opacity: 0;
     transform: translateY(-20px);
-    animation: fadeIn 3s forwards; /* Adjust duration as needed */
+    animation: fadeIn 2s forwards; /* Adjust duration as needed */
   }
   
   .fade-in4 {
     opacity: 0;
     transform: translateY(-20px);
-    animation: fadeIn 4s forwards; /* Adjust duration as needed */
+    animation: fadeIn 2.5s forwards; /* Adjust duration as needed */
   }
 
   .fade-in5 {
     opacity: 0;
     transform: translateY(-20px);
-    animation: fadeIn 5s forwards; /* Adjust duration as needed */
+    animation: fadeIn 3s forwards; /* Adjust duration as needed */
+  }
+
+  .fade-in6 {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 3.5s forwards; /* Adjust duration as needed */
   }
 
   .item{

@@ -19,9 +19,9 @@
       <div class="mb-3">
         <label for="type" class="form-label">Type:</label>
         <select id="type" formControlName="type" class="form-control" required>
-          <option value="Certificate">Certificate</option>
-          <option value="Language">Language</option>
-          <option value="Extracurricular">Extracurricular</option>
+          <option value="certificate">Certificate</option>
+          <option value="language">Language</option>
+          <option value="extracurricular">Extracurricular</option>
         </select>
         <div *ngIf="miscForm.get('type')?.invalid && miscForm.get('type')?.touched" class="text-danger">
           <small>Type is required.</small>

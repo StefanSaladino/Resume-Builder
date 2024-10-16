@@ -56,6 +56,6 @@ export class SummaryComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/resume/skills']);
+    this.router.navigate(['/resume/miscellaneous']);
   }
 }
