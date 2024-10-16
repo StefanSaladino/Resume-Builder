@@ -665,7 +665,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
       port: null,
       path: "/infinite-gpt",
       headers: {
-        "x-rapidapi-key": "9bbd770d55mshbcbbe367ee48fa0p1a1c49jsn490561015f76",
+        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
         "x-rapidapi-host": "infinite-gpt.p.rapidapi.com",
         "Content-Type": "application/json",
       },
