@@ -537,7 +537,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     }
     
     
-    (PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON)
+    (PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON. DO NOT ACTUALLY WRITE WHAT IS CONTAINED IN BRACKETS.)
     PROFILE SUMMARY:
     
     Skills:  
@@ -599,15 +599,13 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
         : "No volunteer experience provided"
     }  
     
-    Miscellaneous:
-    
     ${
-      user.resume.miscellaneous.filter((misc) => misc.type === "Language")
+      user.resume.miscellaneous.filter((misc) => misc.type === "language")
         .length > 0
         ? `
     Languages  
     ${user.resume.miscellaneous
-      .filter((misc) => misc.type === "Language")
+      .filter((misc) => misc.type === "language")
       .map(
         (misc) => `
       - ${misc.title}: ${misc.description}
@@ -619,12 +617,12 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     }
     
     ${
-      user.resume.miscellaneous.filter((misc) => misc.type === "Certificates")
+      user.resume.miscellaneous.filter((misc) => misc.type === "certificate")
         .length > 0
         ? `
     Certificates  
     ${user.resume.miscellaneous
-      .filter((misc) => misc.type === "Certificates")
+      .filter((misc) => misc.type === "certificate")
       .map(
         (misc) => `
       - ${misc.title}: ${misc.description}
@@ -637,12 +635,12 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     
     ${
       user.resume.miscellaneous.filter(
-        (misc) => misc.type === "Extracurricular"
+        (misc) => misc.type === "extracurricular"
       ).length > 0
         ? `
     Other Achievements
     ${user.resume.miscellaneous
-      .filter((misc) => misc.type === "Extracurricular")
+      .filter((misc) => misc.type === "extracurricular")
       .map(
         (misc) => `
       - ${misc.title}: ${misc.description}
