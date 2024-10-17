@@ -7,6 +7,7 @@ fetching resume data from the backend and resetting the form data.*/
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -100,4 +101,5 @@ export class FormDataService {
       miscellaneous: [], 
     };
   }
+  
 }

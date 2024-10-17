@@ -75,6 +75,43 @@ export class ExperienceComponent implements OnInit {
   }
 
   onAddExperience() {
+    const formValue = this.experienceForm.value;
+    
+    // Date validation logic
+    const startDate = formValue.startDate;
+    const endDate = formValue.endDate;
+  
+    // Check if the start date and end date formats are valid
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
+    const isValidStartDate = datePattern.test(startDate);
+    const isValidEndDate = !endDate || endDate === 'Present' || datePattern.test(endDate);
+  
+    if (!isValidStartDate) {
+      this.experienceForm.get('startDate')?.setErrors({ invalidDateFormat: true });
+    }
+  
+    if (!isValidEndDate) {
+      this.experienceForm.get('endDate')?.setErrors({ invalidDateFormat: true });
+    }
+  
+    if (isValidStartDate && isValidEndDate) {
+      // Check if end date is not before start date or in the future
+      const [startMonth, startYear] = startDate.split('/').map(Number);
+      const start = new Date(startYear, startMonth - 1);
+  
+      if (endDate !== 'Present') {
+        const [endMonth, endYear] = endDate.split('/').map(Number);
+        const end = new Date(endYear, endMonth - 1);
+        const today = new Date();
+  
+        if (end > today) {
+          this.experienceForm.get('endDate')?.setErrors({ endDateInFuture: true });
+        }
+  
+        if (end < start) {
+          this.experienceForm.get('endDate')?.setErrors({ endDateBeforeStartDate: true });
+        }
+      }
     if (this.experienceForm.valid) {
       const formValue = this.experienceForm.value;
       if (!formValue.endDate) {
@@ -96,6 +133,7 @@ export class ExperienceComponent implements OnInit {
       this.experienceForm.markAllAsTouched();
     }
   }
+}
 
   editExperience(index: number) {
     const experienceToEdit = this.experiences[index];

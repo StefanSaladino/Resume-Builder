@@ -44,23 +44,62 @@
       <input id="schoolName" formControlName="schoolName" type="text" class="form-control" required>
     </div>
 
-    <!-- Start Date -->
+    <!-- Start Date Field -->
     <div class="mb-3">
-      <label for="startDate" class="form-label">Start Date (mm/yyyy):</label>
-      <input id="startDate" formControlName="startDate" type="text" class="form-control" placeholder="mm/yyyy" required>
-      <div *ngIf="educationForm.controls['startDate'].invalid && educationForm.controls['startDate'].touched" class="text-danger">
-        <small>Please enter a valid start date in mm/yyyy format.</small>
+      <label for="startDate">Start Date (MM/YYYY)</label>
+      <input
+        type="text"
+        id="startDate"
+        formControlName="startDate"
+        class="form-control"
+        placeholder="MM/YYYY"
+      />
+
+      <!-- Error Message for Invalid Start Date Format -->
+      <div
+        *ngIf="educationForm.get('startDate')?.errors?.['invalidDateFormat'] && educationForm.get('startDate')?.touched"
+        class="text-danger"
+      >
+        Invalid start date format. Please use MM/YYYY.
       </div>
     </div>
 
-    <!-- End Date (optional) -->
+    <!-- End Date Field -->
     <div class="mb-3">
-      <label for="endDate" class="form-label">End Date (mm/yyyy):</label>
-      <input id="endDate" formControlName="endDate" type="text" class="form-control" placeholder="mm/yyyy">
-      <div *ngIf="educationForm.controls['endDate'].invalid && educationForm.controls['endDate'].touched" class="text-danger">
-        <small>Please enter a valid end date in mm/yyyy format.</small>
+      <label for="endDate">End Date (MM/YYYY or 'Present')</label>
+      <input
+        type="text"
+        id="endDate"
+        formControlName="endDate"
+        class="form-control"
+        placeholder="MM/YYYY or 'Present'"
+      />
+
+      <!-- Error Message for Invalid End Date Format -->
+      <div
+        *ngIf="educationForm.get('endDate')?.errors?.['invalidDateFormat'] && educationForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        Invalid end date format. Please use MM/YYYY or 'Present'.
+      </div>
+
+      <!-- Error Message for End Date Before Start Date -->
+      <div
+        *ngIf="educationForm.get('endDate')?.errors?.['endDateBeforeStartDate'] && educationForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        End date cannot be before the start date.
+      </div>
+
+      <!-- Error Message for End Date in Future -->
+      <div
+        *ngIf="educationForm.get('endDate')?.errors?.['endDateInFuture'] && educationForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        End date cannot be in the future.
       </div>
     </div>
+
 
     <!-- Degree Type -->
     <div class="mb-3">

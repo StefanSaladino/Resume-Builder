@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap, catchError, of } from 'rxjs';
 
-//TODO: implement an impact/accomplishments property of the volunteer component.
+
 @Component({
   selector: 'app-volunteer',
   standalone: true,
@@ -34,8 +34,8 @@ export class VolunteerComponent implements OnInit {
     this.volunteerForm = this.fb.group({
       organization: ['', Validators.required],
       role: ['', Validators.required],
-      startDate: ['', [Validators.required, this.validateDateFormat]],
-      endDate: ['', this.validateOptionalEndDate],
+      startDate: ['', [Validators.required]],
+      endDate: [''],
       responsibilities: this.fb.array(
         [this.fb.control('')],
         Validators.required
@@ -63,49 +63,68 @@ export class VolunteerComponent implements OnInit {
     }
   }
 
-  //TODO: ADD TO VALIDATE DATE PATTERN: Start date must be before present date.
-  validateDateFormat(control: any) {
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
-    if (!datePattern.test(control.value)) {
-      return { invalidDate: true };
-    }
-    return null;
-  }
-
-  //TODO: ADD TO VALIDATE DATE PATTERN: End date must be before present date and after start date.
-  validateOptionalEndDate(control: any) {
-    if (!control.value || control.value.trim() === '') {
-      return null; // Empty value is valid (no end date provided)
-    }
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
-    if (!datePattern.test(control.value)) {
-      return { invalidDate: true }; // Invalid date format
-    }
-    return null; // Valid date format
-  }
-
   onAddVolunteer() {
-    if (this.volunteerForm.valid) {
-      const formValue = this.volunteerForm.value;
-      if (!formValue.endDate) {
-        formValue.endDate = 'Present';
+    const formValue = this.volunteerForm.value;
+    
+    // Date validation logic
+    const startDate = formValue.startDate;
+    const endDate = formValue.endDate;
+  
+    // Check if the start date and end date formats are valid
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
+    const isValidStartDate = datePattern.test(startDate);
+    const isValidEndDate = !endDate || endDate === 'Present' || datePattern.test(endDate);
+  
+    if (!isValidStartDate) {
+      this.volunteerForm.get('startDate')?.setErrors({ invalidDateFormat: true });
+    }
+  
+    if (!isValidEndDate) {
+      this.volunteerForm.get('endDate')?.setErrors({ invalidDateFormat: true });
+    }
+  
+    if (isValidStartDate && isValidEndDate) {
+      // Check if end date is not before start date or in the future
+      const [startMonth, startYear] = startDate.split('/').map(Number);
+      const start = new Date(startYear, startMonth - 1);
+  
+      if (endDate !== 'Present') {
+        const [endMonth, endYear] = endDate.split('/').map(Number);
+        const end = new Date(endYear, endMonth - 1);
+        const today = new Date();
+  
+        if (end > today) {
+          this.volunteerForm.get('endDate')?.setErrors({ endDateInFuture: true });
+        }
+  
+        if (end < start) {
+          this.volunteerForm.get('endDate')?.setErrors({ endDateBeforeStartDate: true });
+        }
       }
-
-      if (this.editingIndex !== null) {
-        this.updateVolunteer(formValue, this.editingIndex);
+  
+      // Proceed only if the form is valid after date validation
+      if (this.volunteerForm.valid) {
+        if (!formValue.endDate) {
+          formValue.endDate = 'Present';
+        }
+  
+        if (this.editingIndex !== null) {
+          this.updateVolunteer(formValue, this.editingIndex);
+        } else {
+          this.saveVolunteerToBackend(formValue);
+        }
+  
+        this.volunteerForm.reset();
+        this.responsibilities.clear();
+        this.addResponsibility();
+        this.showForm = false;
+        this.isEditing = false; // Reset after adding or editing
       } else {
-        this.saveVolunteerToBackend(formValue);
+        this.volunteerForm.markAllAsTouched();
       }
-
-      this.volunteerForm.reset();
-      this.responsibilities.clear();
-      this.addResponsibility();
-      this.showForm = false;
-      this.isEditing = false; // Reset after adding or editing
-    } else {
-      this.volunteerForm.markAllAsTouched();
     }
   }
+  
 
   saveVolunteerToBackend(volunteer: any) {
     console.log('Saving volunteer experience:', volunteer);

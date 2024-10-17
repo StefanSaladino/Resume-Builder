@@ -4,11 +4,16 @@
 </div>
 
 <!-- List of Added Experiences -->
-<div *ngFor="let exp of experiences; let i = index" class="card experience-entry animate-entry">
+<div
+  *ngFor="let exp of experiences; let i = index"
+  class="card experience-entry animate-entry"
+>
   <p class="fw-bold card-header">{{ exp.jobTitle }} at {{ exp.company }}</p>
-  <p class="card-body">{{ exp.startDate }} - {{ exp.endDate || 'Present' }}</p>
+  <p class="card-body">{{ exp.startDate }} - {{ exp.endDate || "Present" }}</p>
   <ul>
-    <li *ngFor="let responsibility of exp.responsibilities">{{ responsibility }}</li>
+    <li *ngFor="let responsibility of exp.responsibilities">
+      {{ responsibility }}
+    </li>
   </ul>
   <!-- Achievements section (optional) -->
   <p *ngIf="exp.achievements" class="card-body">
@@ -16,26 +21,55 @@
   </p>
   <!-- Edit and Remove buttons -->
   <div class="d-flex justify-content-between">
-  <button class="btn btn-warning btn-sm me-2" (click)="editExperience(i)">Edit</button>
-  <button class="btn btn-danger btn-sm" (click)="removeExperience(i)">Remove</button>
+    <button class="btn btn-warning btn-sm me-2" (click)="editExperience(i)">
+      Edit
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="removeExperience(i)">
+      Remove
+    </button>
   </div>
 </div>
 
 <div id="add-button">
   <!-- Add Another Experience Button (Visible only when form is hidden) -->
-  <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">Add Another Experience</button>
+  <button
+    id="add"
+    *ngIf="!showForm"
+    class="btn btn-primary mt-3"
+    (click)="toggleForm()"
+  >
+    Add Another Experience
+  </button>
 </div>
 
 <!-- Experience Form (Visible if there are no experiences or when user clicks 'Add Another Experience') -->
 <div *ngIf="showForm" class="mt-4">
-  <form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()" class="container mt-5 p-4 border rounded shadow">
-    <h2 class="text-center mb-4">{{ isEditing ? 'Edit Work Experience' : 'Add Work Experience' }}</h2>
+  <form
+    [formGroup]="experienceForm"
+    (ngSubmit)="onAddExperience()"
+    class="container mt-5 p-4 border rounded shadow"
+  >
+    <h2 class="text-center mb-4">
+      {{ isEditing ? "Edit Work Experience" : "Add Work Experience" }}
+    </h2>
 
     <!-- Company Name -->
     <div class="mb-3">
       <label for="company" class="form-label">Company Name:</label>
-      <input id="company" formControlName="company" type="text" class="form-control" required>
-      <div *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched" class="text-danger">
+      <input
+        id="company"
+        formControlName="company"
+        type="text"
+        class="form-control"
+        required
+      />
+      <div
+        *ngIf="
+          experienceForm.get('company')?.invalid &&
+          experienceForm.get('company')?.touched
+        "
+        class="text-danger"
+      >
         <small>Company name is required.</small>
       </div>
     </div>
@@ -43,27 +77,77 @@
     <!-- Job Title -->
     <div class="mb-3">
       <label for="jobTitle" class="form-label">Job Title:</label>
-      <input id="jobTitle" formControlName="jobTitle" type="text" class="form-control" required>
-      <div *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched" class="text-danger">
+      <input
+        id="jobTitle"
+        formControlName="jobTitle"
+        type="text"
+        class="form-control"
+        required
+      />
+      <div
+        *ngIf="
+          experienceForm.get('jobTitle')?.invalid &&
+          experienceForm.get('jobTitle')?.touched
+        "
+        class="text-danger"
+      >
         <small>Job title is required.</small>
       </div>
     </div>
 
-    <!-- Start Date -->
+    <!-- Start Date Field -->
     <div class="mb-3">
-      <label for="startDate" class="form-label">Start Date (mm/yyyy):</label>
-      <input id="startDate" formControlName="startDate" type="text" placeholder="mm/yyyy" class="form-control" required>
-      <div *ngIf="experienceForm.controls['startDate'].invalid && experienceForm.controls['startDate'].touched" class="text-danger">
-        <small>Please enter a valid start date in mm/yyyy format.</small>
+      <label for="startDate">Start Date (MM/YYYY)</label>
+      <input
+        type="text"
+        id="startDate"
+        formControlName="startDate"
+        class="form-control"
+        placeholder="MM/YYYY"
+      />
+
+      <!-- Error Message for Invalid Start Date Format -->
+      <div
+        *ngIf="experienceForm.get('startDate')?.errors?.['invalidDateFormat'] && experienceForm.get('startDate')?.touched"
+        class="text-danger"
+      >
+        Invalid start date format. Please use MM/YYYY.
       </div>
     </div>
 
-    <!-- End Date (optional) -->
+    <!-- End Date Field -->
     <div class="mb-3">
-      <label for="endDate" class="form-label">End Date (mm/yyyy):</label>
-      <input id="endDate" formControlName="endDate" type="text" placeholder="mm/yyyy" class="form-control">
-      <div *ngIf="experienceForm.controls['endDate'].invalid && experienceForm.controls['endDate'].touched" class="text-danger">
-        <small>Please enter a valid end date in mm/yyyy format.</small>
+      <label for="endDate">End Date (MM/YYYY or 'Present')</label>
+      <input
+        type="text"
+        id="endDate"
+        formControlName="endDate"
+        class="form-control"
+        placeholder="MM/YYYY or 'Present'"
+      />
+
+      <!-- Error Message for Invalid End Date Format -->
+      <div
+        *ngIf="experienceForm.get('endDate')?.errors?.['invalidDateFormat'] && experienceForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        Invalid end date format. Please use MM/YYYY or 'Present'.
+      </div>
+
+      <!-- Error Message for End Date Before Start Date -->
+      <div
+        *ngIf="experienceForm.get('endDate')?.errors?.['endDateBeforeStartDate'] && experienceForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        End date cannot be before the start date.
+      </div>
+
+      <!-- Error Message for End Date in Future -->
+      <div
+        *ngIf="experienceForm.get('endDate')?.errors?.['endDateInFuture'] && experienceForm.get('endDate')?.touched"
+        class="text-danger"
+      >
+        End date cannot be in the future.
       </div>
     </div>
 
@@ -71,26 +155,68 @@
     <div class="mb-3">
       <label for="responsibilities" class="form-label">Responsibilities:</label>
       <div formArrayName="responsibilities">
-        <div *ngFor="let responsibility of responsibilities.controls; let i = index">
-          <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" class="form-control" />
-          <button type="button" (click)="removeResponsibility(i)" class="btn btn-danger btn-sm mt-2">Remove</button>
+        <div
+          *ngFor="
+            let responsibility of responsibilities.controls;
+            let i = index
+          "
+        >
+          <input
+            [formControlName]="i"
+            placeholder="Responsibility {{ i + 1 }}"
+            class="form-control"
+          />
+          <button
+            type="button"
+            (click)="removeResponsibility(i)"
+            class="btn btn-danger btn-sm mt-2"
+          >
+            Remove
+          </button>
         </div>
       </div>
-      <button type="button" class="btn btn-secondary btn-sm mt-2" (click)="addResponsibility()">Add Responsibility</button>
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm mt-2"
+        (click)="addResponsibility()"
+      >
+        Add Responsibility
+      </button>
     </div>
 
     <!-- Achievements (optional) -->
     <div class="mb-3">
-      <label for="achievements" class="form-label">Achievements (Optional):</label>
-      <textarea id="achievements" formControlName="achievements" class="form-control" placeholder="Describe your key achievements at this job"></textarea>
+      <label for="achievements" class="form-label"
+        >Achievements (Optional):</label
+      >
+      <textarea
+        id="achievements"
+        formControlName="achievements"
+        class="form-control"
+        placeholder="Describe your key achievements at this job"
+      ></textarea>
     </div>
-    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Experience' : 'Save Experience' }}</button>
-    <button type="button" class="btn btn-secondary" (click)="cancelExperience()">Cancel</button>
+    <button type="submit" class="btn btn-success">
+      {{ isEditing ? "Update Experience" : "Save Experience" }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="cancelExperience()"
+    >
+      Cancel
+    </button>
   </form>
 </div>
 
 <!-- Navigation Buttons -->
 <div class="d-flex justify-content-between mt-4">
   <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
-  <button class="btn btn-success" (click)="onNext()" [disabled]="experiences.length === 0">Next</button>
+  <button
+    class="btn btn-success"
+    (click)="onNext()"
+    [disabled]="experiences.length === 0"
+  >
+    Next
+  </button>
 </div>
