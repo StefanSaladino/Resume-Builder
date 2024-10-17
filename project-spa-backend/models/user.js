@@ -6,7 +6,7 @@ const SkillsSchema = new mongoose.Schema({
     skill: {type: String, required: true},
     proficiency: {type: String, required: true},
     description: {type: String},
-})
+});
 
 // Define work experience sub-schema
 const ExperienceSchema = new mongoose.Schema({
@@ -23,8 +23,9 @@ const VolunteerSchema = new mongoose.Schema({
   role: { type: String, required: true },
   startDate: { type: String, required: true },
   endDate: { type: String },
-  responsibilities: [{ type: String, required: true }]
-})
+  responsibilities: [{ type: String, required: true }],
+  impact: { type: String }
+});
 
 // Define education sub-schema
 const EducationSchema = new mongoose.Schema({
@@ -55,6 +56,7 @@ const ResumeSchema = new mongoose.Schema({
     lastName: String,
     phone: String,
     address: String,
+    desiredField: String
   },
   education: [EducationSchema],
   skills: [SkillsSchema],

@@ -1,3 +1,8 @@
+<div class="pageTitle">
+<h1>{{resume.basicInfo.firstName}} {{ resume.basicInfo.lastName }} : A Summary</h1>
+<small>Here's looking at you kid.</small>
+</div>
+
 <div class="summary-container" *ngIf="resume; else loading">
   <h2>Resume Summary</h2>
 
@@ -38,7 +43,7 @@
       <p>Role: {{ experience.jobTitle }}</p>
       <p>Start Date: {{ experience.startDate }}</p>
       <p>End Date: {{ experience.endDate }}</p>
-      <p *ngIf="experience.achievements"><strong>Achievements:</strong> {{ experience.achievements }}</p>
+      <p *ngIf="experience.achievements">Achievements: {{ experience.achievements }}</p>
     </div>
     <button class="btn btn-primary" (click)="editSection('experience')">Edit Experience</button>
   </div>  

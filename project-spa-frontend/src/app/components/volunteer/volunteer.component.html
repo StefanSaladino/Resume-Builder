@@ -1,11 +1,20 @@
+<div class="pageTitle">
+  <h1>Volunteer Experiences</h1>
+  <small>I don't have a pun for this. Deal with it</small>
+</div>
+
 <!-- List of Added Volunteer Experiences -->
 <div *ngFor="let vol of volunteers; let i = index" class="card volunteer-entry animate-entry">
   <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
   <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || 'Present' }}</p>
   <ul>
+    <h4>Responsibilities:</h4>
     <li *ngFor="let responsibility of vol.responsibilities">{{ responsibility }}</li>
   </ul>
+  <div class="d-flex justify-content-between">
+  <button class="btn btn-warning btn-sm me-2" (click)="editVolunteer(i)">Edit</button>
   <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">Remove</button>
+  </div>
 </div>
 
 <div id="add-button">
@@ -16,7 +25,7 @@
 <!-- Volunteer Form (Visible only when adding a new volunteer experience) -->
 <form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()" *ngIf="showForm" class="volunteer-form container mt-5 p-4 border rounded shadow">
   
-  <h2 class="text-center mb-4">Add Volunteer Experience</h2>
+  <h2 class="text-center mb-4">{{ isEditing ? 'Edit Volunteer Experience' : 'Add Volunteer Experience' }}</h2>
 
   <!-- Organization Name -->
   <div class="mb-3">
@@ -66,9 +75,14 @@
     <button type="button" class="btn btn-sm btn-secondary mt-2" (click)="addResponsibility()">Add Responsibility</button>
   </div>
 
+  <div class="mb-3">
+    <label for="impact" class="form-label">Impact (Optional):</label>
+    <textarea id="impact" formControlName="impact" class="form-control" placeholder="Add a small paragraph about the impact this role had in the community"></textarea>
+  </div>
+
   <!-- Save and Cancel buttons -->
   <div class="form-actions">
-    <button type="submit" class="btn btn-success">Add Volunteer Experience</button>
+    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Volunteer Experience' : 'Save Volunteer Experience' }}</button>
     <button type="button" class="btn btn-secondary" (click)="cancelVolunteer()">Cancel</button>
   </div>
 </form>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
@@ -19,12 +19,15 @@ export class VolunteerComponent implements OnInit {
   volunteerForm!: FormGroup;
   volunteers: any[] = [];
   showForm: boolean = false;
+  editingIndex: number | null = null;
+  isEditing: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private formDataService: FormDataService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -34,6 +37,7 @@ export class VolunteerComponent implements OnInit {
       startDate: ['', [Validators.required, this.validateDateFormat]],
       endDate: ['', this.validateOptionalEndDate],
       responsibilities: this.fb.array([this.fb.control('')], Validators.required),
+      impact:['']
     });
 
     this.fetchVolunteerEntries();
@@ -78,26 +82,24 @@ export class VolunteerComponent implements OnInit {
   }
 
   onAddVolunteer() {
-    // Add new volunteer entry
     if (this.volunteerForm.valid) {
       const formValue = this.volunteerForm.value;
       if (!formValue.endDate) {
         formValue.endDate = 'Present';
       }
 
-      // Log the form values to console
-      console.log('Form Values:', formValue);
+      if (this.editingIndex !== null) {
+        this.updateVolunteer(formValue, this.editingIndex);
+      } else {
+        this.saveVolunteerToBackend(formValue);
+      }
 
-      this.volunteers.push(formValue);
-      this.saveVolunteerToBackend(formValue);
       this.volunteerForm.reset();
-      this.responsibilities.clear(); // Reset responsibilities array after adding experience
-      this.addResponsibility(); // Add the first responsibility field back
-
-      // Hide the form after adding the experience
+      this.responsibilities.clear();
+      this.addResponsibility();
       this.showForm = false;
+      this.isEditing = false; // Reset after adding or editing
     } else {
-      // Trigger form validation if there are errors
       this.volunteerForm.markAllAsTouched();
     }
   }
@@ -135,6 +137,44 @@ export class VolunteerComponent implements OnInit {
     this.responsibilities.clear();
     this.addResponsibility();
     this.showForm = false; // Hide the form when canceled
+  }
+
+  editVolunteer(index: number) {
+    const volunteerToEdit = this.volunteers[index];
+    this.volunteerForm.patchValue(volunteerToEdit);
+    this.responsibilities.clear();
+    volunteerToEdit.responsibilities.forEach((resp: string) => {
+      this.responsibilities.push(this.fb.control(resp, Validators.required));
+    });
+    this.showForm = true;
+    this.isEditing = true;
+    this.editingIndex = index;
+  }
+
+  updateVolunteer(volunteer: any, index: number) {
+    const updatedVolunteer = { ...this.volunteers[index], ...volunteer };
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .put(
+        `http://localhost:4200/backend/resume/volunteer/${updatedVolunteer._id}`,
+        updatedVolunteer,
+        { headers }
+      )
+      .pipe(
+        tap(() => {
+          this.volunteers[index] = updatedVolunteer;
+        }),
+        catchError((error) => {
+          console.error('Error updating volunteer entry:', error);
+          return of(error);
+        })
+      )
+      .subscribe();
+
+    this.isEditing = false; // Reset after updating
+    this.editingIndex = null;
   }
 
   //TODO: add remove function to form data for the purposes of polymorphism

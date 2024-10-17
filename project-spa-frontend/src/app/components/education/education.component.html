@@ -1,19 +1,42 @@
-<!-- List of Added Educations -->
-<div *ngFor="let edu of educations; let i = index" class="card education-entry animate-entry">
-  <p class="fw-bold card-header">{{ edu.schoolName }}</p>  
-  <p class = "card-body">{{ edu.degreeName }} ({{ edu.startDate }} - {{ edu.endDate || 'Present' }})
-  <button class="btn btn-danger btn-sm" (click)="removeEducation(i)">Remove</button></p>
+<div class="pageTitle">
+  <h1>Your Education</h1>
+  <small>Be school, stay in cool.</small>
 </div>
 
+<!-- List of Added Educations -->
+<table class="table table-striped table-hover education-table animate-table">
+  <thead class="thead-light">
+    <tr>
+      <th>School Name</th>
+      <th>Degree</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let edu of educations; let i = index" class="education-entry animate-entry">
+      <td>{{ edu.schoolName }}</td>
+      <td>{{ edu.degreeName }}</td>
+      <td>{{ edu.startDate }}</td>
+      <td>{{ edu.endDate || 'Present' }}</td>
+      <td>
+        <button class="btn btn-warning btn-sm" (click)="editEducation(edu, i)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="removeEducation(i)">Remove</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 <div id="add-button">
-<!-- Add Another Education Button (Visible only when form is hidden) -->
-<button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="showEducationForm()">Add Another Education</button>
+  <!-- Add Another Education Button (Visible only when form is hidden and not in edit mode) -->
+  <button id="add" *ngIf="!showForm && !isEditing && educations.length > 0" class="btn btn-primary mt-3" (click)="showEducationForm()">Add Another Education</button>
 </div>
 
 <!-- Education Form (Visible if there are no educations or when user clicks 'Add Another Education') -->
 <div *ngIf="showForm" class="mt-4">
-  <form [formGroup]="educationForm" (ngSubmit)="onAddEducation($event)" class="container mt-5 p-4 border rounded shadow">
-    <h2 class="text-center mb-4">Add Schooling</h2>
+  <form [formGroup]="educationForm" (ngSubmit)="onAddOrUpdateEducation($event)" class="container mt-5 p-4 border rounded shadow">
+    <h2 class="text-center mb-4">{{ isEditing ? 'Edit Education' : 'Add Schooling' }}</h2>
 
     <!-- School Name -->
     <div class="mb-3">
@@ -57,7 +80,7 @@
       <textarea id="details" formControlName="details" class="form-control"></textarea>
     </div>
 
-    <button type="submit" class="btn btn-success">Add Education</button>
+    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Education' : 'Add Education' }}</button>
     <button type="button" class="btn btn-secondary" (click)="cancelNewEducation()">Cancel</button>
   </form>
 </div>

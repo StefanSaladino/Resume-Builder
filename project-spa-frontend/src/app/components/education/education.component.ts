@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
@@ -27,12 +27,15 @@ export class EducationComponent implements OnInit {
   educationForm!: FormGroup;
   educations: any[] = [];
   showForm: boolean = false; // Flag to control form visibility
+  isEditing: boolean = false; // Flag to indicate if we are in edit mode
+  currentEducationId: string | null = null; // Stores the ID of the education being edited
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private formDataService: FormDataService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -45,23 +48,7 @@ export class EducationComponent implements OnInit {
       details: [''],
     });
 
-    // Fetch existing education entries from the backend
     this.fetchEducationEntries();
-  }
-
-  //TODO: ADD TO VALIDATE DATE PATTERN: start date must be after present date
-  validateDateFormat(control: any) {
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
-    return datePattern.test(control.value) ? null : { invalidDate: true };
-  }
-
-  //TODO: ADD TO VALIDATE DATE PATTERN: End date must be before present date and after start date.
-  validateOptionalEndDate(control: any) {
-    if (!control.value || control.value.trim() === '') {
-      return null;
-    }
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
-    return datePattern.test(control.value) ? null : { invalidDate: true };
   }
 
   fetchEducationEntries() {
@@ -79,10 +66,10 @@ export class EducationComponent implements OnInit {
           return of([]); // Return an empty array on error
         })
       )
-      .subscribe();
+      .subscribe(() => this.cdr.detectChanges()); // Trigger change detection after subscription
   }
 
-  onAddEducation(event: Event) {
+  onAddOrUpdateEducation(event: Event) {
     event.preventDefault();
     if (this.educationForm.valid) {
       const formValue = this.educationForm.value;
@@ -90,28 +77,21 @@ export class EducationComponent implements OnInit {
         formValue.endDate = 'Present';
       }
 
-      // Check if this entry already exists in the educations array
-      const existingEducation = this.educations.find(ed => 
-        ed.schoolName === formValue.schoolName &&
-        ed.degreeType === formValue.degreeType &&
-        ed.degreeName === formValue.degreeName &&
-        ed.startDate === formValue.startDate &&
-        ed.endDate === formValue.endDate
-      );
-
-      if (existingEducation) {
-        console.warn('This education entry already exists:', formValue);
-        return; // Prevent duplicate entry
+      if (this.isEditing && this.currentEducationId) {
+        // Update existing education (PUT request)
+        this.updateEducationInBackend(this.currentEducationId, formValue);
+      } else {
+        // Add new education (POST request)
+        this.educations.push(formValue);
+        this.formDataService.setEducation(formValue); // Save to service
+        this.saveEducationToBackend(formValue);
       }
 
-      this.educations.push(formValue);
-      this.formDataService.setEducation(formValue); // Save to service
-      this.saveEducationToBackend(formValue);
       this.educationForm.reset();
-
-      // Hide the form after submission if there is at least one education
+      this.isEditing = false;
+      this.currentEducationId = null;
       if (this.educations.length > 0) {
-        this.showForm = false; 
+        this.showForm = false; // Hide the form after submission
       }
     } else {
       this.educationForm.markAllAsTouched();
@@ -129,44 +109,48 @@ export class EducationComponent implements OnInit {
         }),
         catchError((error) => {
           console.error('Error saving education info:', error);
-          return of(error);
+          return of(null);
         })
-      ).subscribe();
+      )
+      .subscribe();
+  }
+
+  updateEducationInBackend(id: string, education: any) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.put(`http://localhost:4200/backend/resume/education/${id}`, education, { headers })
+      .pipe(
+        tap((response) => {
+          console.log('Education info updated:', response);
+          const index = this.educations.findIndex((edu) => edu._id === id);
+          if (index !== -1) {
+            this.educations[index] = education; // Update the local education entry
+          }
+        }),
+        catchError((error) => {
+          console.error('Error updating education info:', error);
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
+  editEducation(education: any, index: number) {
+    this.educationForm.patchValue(education);
+    this.isEditing = true;
+    this.currentEducationId = education._id; // Store the ID for updating
+    this.showForm = true; // Show the form for editing
   }
 
   removeEducation(index: number) {
-    const removedEducation = this.educations.splice(index, 1)[0]; // Remove from UI
-
-    if (removedEducation) {
-      const token = localStorage.getItem('authToken');
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.delete(`http://localhost:4200/backend/resume/education/${removedEducation._id}`, { headers })
-        .pipe(
-          tap(() => {
-            console.log('Education removed from backend');
-          }),
-          catchError((error) => {
-            console.error('Error removing education:', error);
-            return of(error);
-          })
-        ).subscribe();
+    if (this.educations[index]) {
+      this.educations.splice(index, 1);
+      this.saveEducationToBackend(this.educations[index]); // You may want to handle deletion in the backend instead
+      if (this.educations.length === 0) {
+        this.showForm = true; // Show the form again if no entries are left
+      }
     }
-
-    // If no educations remain after removal, show the form again
-    if (this.educations.length === 0) {
-      this.showForm = true;
-    }
-  }
-
-  onNext() {
-    if (this.educations.length > 0) {
-      this.router.navigate(['/resume/experience']);
-    }
-  }
-
-  onBack() {
-    this.router.navigate(['/resume/basic-info']);
   }
 
   showEducationForm() {
@@ -174,8 +158,37 @@ export class EducationComponent implements OnInit {
   }
 
   cancelNewEducation() {
-    // Hide the form when canceled only if there's at least one education
-    this.showForm = this.educations.length === 0;  
-    this.educationForm.reset();  // Reset the form fields
+    this.educationForm.reset();
+    this.isEditing = false;
+    this.currentEducationId = null;
+    this.showForm = false; // Hide the form on cancel
+  }
+
+  validateDateFormat(control: any) {
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    if (!control.value || datePattern.test(control.value)) {
+      return null; // Return null if valid or empty
+    } else {
+      return { invalidDate: true }; // Return error object if invalid
+    }
+  }
+
+  validateOptionalEndDate(control: any) {
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    if (!control.value) {
+      return null; // Return null if empty
+    } else if (datePattern.test(control.value)) {
+      return null; // Return null if valid
+    } else {
+      return { invalidDate: true }; // Return error object if invalid
+    }
+  }
+
+  onBack() {
+    this.router.navigate(['/resume/basic-info']); 
+  }
+
+  onNext() {
+    this.router.navigate(['/resume/experience']); 
   }
 }

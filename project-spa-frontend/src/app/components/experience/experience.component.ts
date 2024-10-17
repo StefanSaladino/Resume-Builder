@@ -17,7 +17,9 @@ import { tap, catchError, of } from 'rxjs';
 export class ExperienceComponent implements OnInit {
   experienceForm!: FormGroup;
   experiences: any[] = [];
-  showForm: boolean = false; // Controls the visibility of the form
+  showForm: boolean = false;
+  editingIndex: number | null = null;
+  isEditing: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,33 +34,27 @@ export class ExperienceComponent implements OnInit {
       company: ['', Validators.required],
       startDate: ['', [Validators.required, this.validateDateFormat]],
       endDate: ['', this.validateOptionalEndDate],
-      responsibilities: this.fb.array(
-        [this.fb.control('')],
-        Validators.required
-      ),
+      responsibilities: this.fb.array([this.fb.control('')], Validators.required),
+      achievements: ['', Validators.required] 
     });
 
     this.fetchExperienceEntries();
   }
 
-  // Get responsibilities form array for dynamic controls
   get responsibilities(): FormArray {
     return this.experienceForm.get('responsibilities') as FormArray;
   }
 
-  // Function to add a responsibility field
   addResponsibility() {
     this.responsibilities.push(this.fb.control('', Validators.required));
   }
 
-  // Function to remove a responsibility field by index
   removeResponsibility(index: number) {
     if (this.responsibilities.length > 1) {
       this.responsibilities.removeAt(index);
     }
   }
 
-  //TODO: ADD TO VALIDATE DATE PATTERN: Start date must be before today's date
   validateDateFormat(control: any) {
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
     if (!datePattern.test(control.value)) {
@@ -67,55 +63,63 @@ export class ExperienceComponent implements OnInit {
     return null;
   }
 
-  //TODO: ADD TO VALIDATE DATE PATTERN: End date must be before present date and after start date.
   validateOptionalEndDate(control: any) {
     if (!control.value || control.value.trim() === '') {
-      return null; // Empty value is valid (no end date provided)
+      return null;
     }
-    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // mm/yyyy format
+    const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
     if (!datePattern.test(control.value)) {
-      return { invalidDate: true }; // Invalid date format
+      return { invalidDate: true };
     }
-    return null; // Valid date format
+    return null;
   }
 
   onAddExperience() {
-    // Add new experience entry
     if (this.experienceForm.valid) {
       const formValue = this.experienceForm.value;
       if (!formValue.endDate) {
         formValue.endDate = 'Present';
       }
 
-      // Log the form values to console
-      console.log('Form Values:', formValue);
+      if (this.editingIndex !== null) {
+        this.updateExperience(formValue, this.editingIndex);
+      } else {
+        this.saveExperienceToBackend(formValue);
+      }
 
-      this.experiences.push(formValue);
-      this.saveExperienceToBackend(formValue);
       this.experienceForm.reset();
-      this.responsibilities.clear(); // Reset responsibilities array after adding experience
-      this.addResponsibility(); // Add the first responsibility field back
-
-      // Hide the form after adding the experience
+      this.responsibilities.clear();
+      this.addResponsibility();
       this.showForm = false;
+      this.isEditing = false; // Reset after adding or editing
     } else {
-      // Trigger form validation if there are errors
       this.experienceForm.markAllAsTouched();
     }
   }
 
+  editExperience(index: number) {
+    const experienceToEdit = this.experiences[index];
+    this.experienceForm.patchValue(experienceToEdit);
+    this.responsibilities.clear();
+    experienceToEdit.responsibilities.forEach((resp: string) => {
+      this.responsibilities.push(this.fb.control(resp, Validators.required));
+    });
+    this.showForm = true;
+    this.isEditing = true; // Set to true when editing
+    this.editingIndex = index;
+  }
+
   cancelExperience() {
-    // Reset the form and hide it
     this.experienceForm.reset();
     this.responsibilities.clear();
     this.addResponsibility();
-    this.showForm = false; // Hide the form when canceled
+    this.showForm = false;
+    this.isEditing = false; // Reset when canceling
+    this.editingIndex = null;
   }
 
   removeExperience(index: number) {
     const removedExperience = this.experiences[index];
-    console.log('Attempting to remove experience:', removedExperience); // Log the experience being removed
-
     if (removedExperience && removedExperience._id) {
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -127,7 +131,6 @@ export class ExperienceComponent implements OnInit {
         )
         .pipe(
           tap(() => {
-            console.log('Experience removed from backend');
             this.experiences.splice(index, 1);
           }),
           catchError((error) => {
@@ -136,16 +139,10 @@ export class ExperienceComponent implements OnInit {
           })
         )
         .subscribe();
-    } else {
-      console.error(
-        'Experience to remove does not exist or has no ID:',
-        removedExperience
-      );
     }
   }
 
   saveExperienceToBackend(experience: any) {
-    console.log('Saving experience:', experience);
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
@@ -155,47 +152,71 @@ export class ExperienceComponent implements OnInit {
       })
       .pipe(
         tap((response: any) => {
-          console.log('Work experience saved:', response);
-          // Check if the ID is present in the response
-          if (response._id) {
-            this.experiences.push({ ...experience, _id: response._id });
-          } else {
-            console.error('No ID returned from backend.');
-          }
+          this.experiences.push({ ...experience, _id: response._id });
         }),
         catchError((error) => {
-          console.error('Error saving work experience:', error);
+          console.error('Error saving experience:', error);
           return of(error);
         })
       )
       .subscribe();
   }
 
+  updateExperience(experience: any, index: number) {
+    const updatedExperience = { ...this.experiences[index], ...experience };
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .put(
+        `http://localhost:4200/backend/resume/experience/${updatedExperience._id}`,
+        updatedExperience,
+        { headers }
+      )
+      .pipe(
+        tap(() => {
+          this.experiences[index] = updatedExperience;
+        }),
+        catchError((error) => {
+          console.error('Error updating experience:', error);
+          return of(error);
+        })
+      )
+      .subscribe();
+
+    this.isEditing = false; // Reset after updating
+    this.editingIndex = null;
+  }
+
   fetchExperienceEntries() {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>('http://localhost:4200/backend/resume/experience', { headers })
+    this.http
+      .get<any[]>('http://localhost:4200/backend/resume/experience', {
+        headers,
+      })
       .pipe(
         tap((response) => {
-          this.experiences = response; // Assign the response to the educations array
-          this.showForm = this.experiences.length === 0; // Show form only if no entries exist
+          this.experiences = response;
+          this.showForm = this.experiences.length === 0;
         }),
         catchError((error) => {
-          console.error('Error fetching education entries:', error);
-          return of([]); // Return an empty array on error
+          console.error('Error fetching experiences:', error);
+          return of([]);
         })
       )
       .subscribe();
   }
 
   toggleForm() {
-    // Show or hide the form
     this.showForm = !this.showForm;
+    this.isEditing = false; // Reset when toggling form
+    this.editingIndex = null;
   }
 
   onNext() {
-    this.formDataService.addExperience(this.experienceForm.value);
+    this.formDataService.addExperience(this.experiences);
     this.router.navigate(['/resume/volunteer']);
   }
 

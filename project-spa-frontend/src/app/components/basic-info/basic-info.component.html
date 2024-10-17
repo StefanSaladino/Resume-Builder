@@ -1,3 +1,8 @@
+<div class="pageTitle">
+  <h1>Your Basic Info</h1>
+  <small>How is "tell us about yourself" actually the toughest interview question?</small>
+</div>
+
 <form [formGroup]="basicInfoForm" (ngSubmit)="onNext()" class="container mt-5 p-4 border rounded shadow">
   <section id="main">
   <h2 class="text-center mb-4">Basic Information</h2>
@@ -40,6 +45,11 @@
     <div *ngIf="basicInfoForm.get('address')?.invalid && basicInfoForm.get('address')?.touched" class="text-danger">
       Address is required.
     </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="desiredField" class="form-label">Please Enter Your Desired Occupational Field:</label>
+    <input id="desiredField" formControlName="desiredField" type="text" class="form-control" required>
   </div>
 
   <button click="onNext()" class="btn btn-primary" [disabled]="!basicInfoForm.valid">Next</button>

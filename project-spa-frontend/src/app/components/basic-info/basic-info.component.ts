@@ -33,6 +33,7 @@ export class BasicInfoComponent implements OnInit {
       lastName: ['', Validators.required],
       phone: ['', Validators.required],
       address: ['', Validators.required],
+      desiredField: ['', Validators.required],
     });
 
     // Attempt to load existing basic info

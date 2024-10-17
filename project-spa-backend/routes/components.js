@@ -34,6 +34,7 @@ router.post("/basic-info", async (req, res) => {
       lastName: req.body.lastName,
       phone: req.body.phone,
       address: req.body.address,
+      desiredField: req.body.desiredField
     };
 
     await user.save(); // Save changes to the database
@@ -153,6 +154,42 @@ router.delete("/education/:id", async (req, res) => {
   }
 });
 
+router.put("/education/:_id", async (req, res, next) => {
+  try {
+    // Find the user by the authenticated user's ID
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get the education ID from the route parameters
+    const educationId = req.params._id;
+
+    // Find the specific education entry by its _id in the user's resume
+    const educationEntry = user.resume.education.id(educationId);
+    if (!educationEntry) {
+      return res.status(404).json({ message: "Education entry not found" });
+    }
+
+    // Update the education entry fields
+    educationEntry.schoolName = req.body.schoolName || educationEntry.schoolName;
+    educationEntry.degreeType = req.body.degreeType || educationEntry.degreeType;
+    educationEntry.degreeName = req.body.degreeName || educationEntry.degreeName;
+    educationEntry.startDate = req.body.startDate || educationEntry.startDate;
+    educationEntry.endDate = req.body.endDate || educationEntry.endDate;
+    educationEntry.details = req.body.details || educationEntry.details;
+
+    // Save the updated user document
+    await user.save();
+
+    // Respond with the updated education entry
+    res.status(200).json(educationEntry);
+  } catch (error) {
+    // Handle any errors
+    next(error);
+  }
+});
+
+
+
 // Skills
 router.get("/skills", async (req, res) => {
   try {
@@ -249,6 +286,7 @@ router.post("/volunteer", async (req, res) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate || "Present",
       responsibilities: req.body.responsibilities || [],
+      impact: req.body.impact || null,
     };
 
     user.resume.volunteer.push(newVolunteer);
@@ -290,6 +328,40 @@ router.delete("/volunteer/:id", async (req, res) => {
   } catch (err) {
     console.error("Error deleting volunteer entry:", err);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/volunteer/:_id", async (req, res, next) => {
+  try {
+    // Find the user by their authenticated user ID
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get the experience ID from the route parameters
+    const volId = req.params._id;
+
+    // Find the specific experience entry by its _id in the user's resume
+    const volEntry = user.resume.volunteer.id(volId);
+    if (!volEntry) {
+      return res.status(404).json({ message: "Volunteer entry not found" });
+    }
+
+    // Update the experience entry fields
+    volEntry.organization = req.body.organization || volEntry.organization;
+    volEntry.role = req.body.role || volEntry.role;
+    volEntry.startDate = req.body.startDate || volEntry.startDate;
+    volEntry.endDate = req.body.endDate || volEntry.endDate;
+    volEntry.responsibilities = req.body.responsibilities || volEntry.responsibilities;
+    volEntry.impact = req.body.impact || volEntry.impact;
+
+    // Save the updated user document
+    await user.save();
+
+    // Respond with the updated experience entry
+    res.status(200).json(volEntry);
+  } catch (error) {
+    // Handle any errors
+    next(error);
   }
 });
 
@@ -360,6 +432,41 @@ router.delete("/experience/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.put("/experience/:_id", async (req, res, next) => {
+  try {
+    // Find the user by their authenticated user ID
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get the experience ID from the route parameters
+    const experienceId = req.params._id;
+
+    // Find the specific experience entry by its _id in the user's resume
+    const experienceEntry = user.resume.experience.id(experienceId);
+    if (!experienceEntry) {
+      return res.status(404).json({ message: "Experience entry not found" });
+    }
+
+    // Update the experience entry fields
+    experienceEntry.jobTitle = req.body.jobTitle || experienceEntry.jobTitle;
+    experienceEntry.company = req.body.company || experienceEntry.company;
+    experienceEntry.startDate = req.body.startDate || experienceEntry.startDate;
+    experienceEntry.endDate = req.body.endDate || experienceEntry.endDate;
+    experienceEntry.responsibilities = req.body.responsibilities || experienceEntry.responsibilities;
+    experienceEntry.achievements = req.body.achievements || experienceEntry.achievements;
+
+    // Save the updated user document
+    await user.save();
+
+    // Respond with the updated experience entry
+    res.status(200).json(experienceEntry);
+  } catch (error) {
+    // Handle any errors
+    next(error);
+  }
+});
+
 
 // Get all miscellaneous entries
 router.get("/miscellaneous", async (req, res) => {
@@ -504,7 +611,8 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     easy readability and presentation. Pretend you are creating a resume written by a human. In your response, I do not require any info other than the resume itself.
     You must not add any comments about what you've done or the prompt. The entirety of the response must be strictly
     limited to the resume content and should not include any summaries or closing statements. Assume that your response 
-    will be taken and submitted directly to an employer.
+    will be taken and submitted directly to an employer. The current user is looking for a job in ${user.resume.basicInfo.desiredField},
+    so you may tailor the resume to be as desirable as possible to employers in that field.
     
     The following formatting template should not actually be included in the resume, rather it is a guideline for 
     how to respond.
@@ -526,18 +634,14 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     Remove any extraneous characters (like asterisks) around headings.
     
     
-    ACTUAL RESUME CONTENT STARTS HERE:
+    ACTUAL RESUME CONTENT STARTS HERE: 
     
-                    ${user.resume.basicInfo.firstName} ${
-      user.resume.basicInfo.lastName
-    } 
+                    ${user.resume.basicInfo.firstName} ${user.resume.basicInfo.lastName} 
                             ${user.resume.basicInfo.address || "N/A"}  
-              ${user.resume.basicInfo.phone || "N/A"}   | ${
-      user.resume.basicInfo.emailAddress
-    }
+                ${user.resume.basicInfo.phone || "N/A"} | ${user.resume.basicInfo.emailAddress}
     
     
-    (PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON. DO NOT ACTUALLY WRITE WHAT IS CONTAINED IN BRACKETS.)
+    (NOTE: PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON. DO NOT ACTUALLY WRITE WHAT IS CONTAINED IN BRACKETS.)
     PROFILE SUMMARY:
     
     Skills:  
@@ -553,13 +657,13 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
       ? user.resume.experience
           .map(
             (exp) => `
-    - **Role:** ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${
+     Role: ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${
               exp.endDate || "Present"
             })  
-      **Responsibilities:** ${
+      Responsibilities: ${
         exp.responsibilities.join(", ") || "Not provided"
       }  
-      ${exp.achievements ? `**Achievements:** ${exp.achievements}` : ""}  
+      ${exp.achievements ? `Achievements: ${exp.achievements}` : ""}  
   `
           )
           .join("\n")
@@ -592,12 +696,17 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
               (vol) => `
       - Organization: ${vol.organization}  
         Role: ${vol.role} (${vol.startDate} - ${vol.endDate || "Present"})  
-        Responsibilities: ${vol.responsibilities.join(", ") || "Not provided"}  
+        Responsibilities: ${vol.responsibilities.join(", ") || "Not provided"}
+        Impact: ${vol.impact}  
     `
             )
             .join("\n")
         : "No volunteer experience provided"
-    }  
+    }
+    
+    (NOTE: Please take the user's written impact and alter it to sound more impressive and emphasize the
+    benefits to the community. If no impact is provided, infer the impact from the responsibilities the
+    user provided.)
     
     ${
       user.resume.miscellaneous.filter((misc) => misc.type === "language")

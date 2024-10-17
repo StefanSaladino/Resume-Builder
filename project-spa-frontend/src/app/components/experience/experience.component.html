@@ -1,3 +1,8 @@
+<div class="pageTitle">
+  <h1>Work Experience</h1>
+  <small>"At this job we're like family"... if you hate your family.</small>
+</div>
+
 <!-- List of Added Experiences -->
 <div *ngFor="let exp of experiences; let i = index" class="card experience-entry animate-entry">
   <p class="fw-bold card-header">{{ exp.jobTitle }} at {{ exp.company }}</p>
@@ -9,7 +14,11 @@
   <p *ngIf="exp.achievements" class="card-body">
     <strong>Achievements:</strong> {{ exp.achievements }}
   </p>
+  <!-- Edit and Remove buttons -->
+  <div class="d-flex justify-content-between">
+  <button class="btn btn-warning btn-sm me-2" (click)="editExperience(i)">Edit</button>
   <button class="btn btn-danger btn-sm" (click)="removeExperience(i)">Remove</button>
+  </div>
 </div>
 
 <div id="add-button">
@@ -20,7 +29,7 @@
 <!-- Experience Form (Visible if there are no experiences or when user clicks 'Add Another Experience') -->
 <div *ngIf="showForm" class="mt-4">
   <form [formGroup]="experienceForm" (ngSubmit)="onAddExperience()" class="container mt-5 p-4 border rounded shadow">
-    <h2 class="text-center mb-4">Add Work Experience</h2>
+    <h2 class="text-center mb-4">{{ isEditing ? 'Edit Work Experience' : 'Add Work Experience' }}</h2>
 
     <!-- Company Name -->
     <div class="mb-3">
@@ -75,8 +84,7 @@
       <label for="achievements" class="form-label">Achievements (Optional):</label>
       <textarea id="achievements" formControlName="achievements" class="form-control" placeholder="Describe your key achievements at this job"></textarea>
     </div>
-
-    <button type="submit" class="btn btn-success">Save Experience</button>
+    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Experience' : 'Save Experience' }}</button>
     <button type="button" class="btn btn-secondary" (click)="cancelExperience()">Cancel</button>
   </form>
 </div>

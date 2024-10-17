@@ -1,43 +1,63 @@
 .resume-card {
-    background-color: #f8f9fa; /* Light background color for the card */
-    border: 1px solid #dee2e6; /* Border color */
-    border-radius: 0.25rem; /* Rounded corners */
-  }
-  
-  .resume-content {
-    white-space: pre-wrap; /* Ensures whitespace is preserved */
-    overflow-x: auto; /* Allows horizontal scrolling for long lines */
-    font-family: 'Courier New', Courier, monospace; /* Monospace font for better readability */
-    font-size: 14px; /* Font size */
-  }
-  
-  .error {
-    font-size: 1rem; /* Font size for error messages */
-  }
+    background-color: #f8f9fa;
+    /* Light background color for the card */
+    border: 1px solid #dee2e6;
+    /* Border color */
+    border-radius: 0.25rem;
+    /* Rounded corners */
+}
 
-  .resume-container {
-    font-family: Arial, sans-serif; /* Use a clean, readable font */
-    margin: 20px; /* Add margin around the resume */
-  }
-  
-  h1 {
-    text-align: center; /* Center the main title */
-  }
-  
-  h2 {
-    font-weight: bold; /* Make section headings bold */
-    text-align: center; /* Center the section headings */
-    margin-top: 20px; /* Space above headings */
-  }
-  
-  .section {
-    margin-bottom: 20px; /* Space below each section */
-    border-bottom: 1px solid #ccc; /* Underline between sections */
-    padding-bottom: 10px; /* Space below the content */
-  }
-  
-  .resume-content {
-    white-space: pre-wrap; /* Preserve formatting */
-  }
-  
-  
+.resume-content {
+    white-space: pre-wrap;
+    /* Ensures whitespace is preserved */
+    overflow-x: auto;
+    /* Allows horizontal scrolling for long lines */
+    font-family: 'Courier New', Courier, monospace;
+    /* Monospace font for better readability */
+    font-size: 14px;
+    /* Font size */
+}
+
+.error {
+    font-size: 1rem;
+    /* Font size for error messages */
+}
+
+.resume-container {
+    font-family: Arial, sans-serif;
+    /* Use a clean, readable font */
+    margin: 20px;
+    /* Add margin around the resume */
+}
+
+h1 {
+    text-align: center;
+    /* Center the main title */
+}
+
+h2 {
+    font-weight: bold;
+    /* Make section headings bold */
+    text-align: center;
+    /* Center the section headings */
+    margin-top: 20px;
+    /* Space above headings */
+}
+
+.section {
+    margin-bottom: 20px;
+    /* Space below each section */
+    border-bottom: 1px solid #ccc;
+    /* Underline between sections */
+    padding-bottom: 10px;
+    /* Space below the content */
+}
+
+.resume-content {
+    white-space: pre-wrap;
+    /* Preserve formatting */
+}
+
+button{
+    margin: 0.75em;
+}
