@@ -1,25 +1,18 @@
-.card {
-    width: 33vw;
-    margin-left: 2em;
-    margin-top: 1em;
+/* Table Styling */
+.skill-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
 }
 
-.card-body {
-    display: flex;
-    flex-direction: column;
+.skill-table th, .skill-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.card button {
-    width: 33%;
-    margin-top: 1em;
-}
-
-.skill-entry {
-    background-color: #f8f9fa;
-    border-radius: 8px;
+.skill-entry td {
     padding: 8px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .skill-entry.animate-entry {
@@ -57,6 +50,7 @@ button {
     justify-content: center;
 }
 
+/* Styling for navigation buttons */
 .d-flex {
     margin: 0 4em 2em 4em;
 }

@@ -18,6 +18,8 @@ export class MiscellaneousComponent implements OnInit {
   miscForm!: FormGroup;
   miscellaneous: any[] = [];
   showForm: boolean = false;
+  editingIndex: number | null = null;
+  isEditing: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,9 +30,9 @@ export class MiscellaneousComponent implements OnInit {
 
   ngOnInit() {
     this.miscForm = this.fb.group({
-      type: ['', Validators.required], // Type of accomplishment: certificate, language, etc.
-      title: ['', Validators.required], // Title of the certificate, language, or accomplishment
-      description: [''], // Optional description field
+      type: ['', Validators.required], 
+      title: ['', Validators.required], 
+      description: [''], 
     });
 
     this.fetchMiscellaneousEntries();
@@ -38,20 +40,55 @@ export class MiscellaneousComponent implements OnInit {
 
   // Add new entry to the list
   onAddMiscellaneous() {
-    if (this.miscForm.valid) {
-      const formValue = this.miscForm.value;
+      if (this.miscForm.valid) {
+        const formValue = this.miscForm.value;
+  
+        if (this.editingIndex !== null) {
+          this.updateMisc(formValue, this.editingIndex);
+        } else {
+          this.saveMiscellaneousToBackend(formValue);
+        }
+  
+        this.miscForm.reset();
+        this.showForm = false;
+        this.isEditing = false; // Reset after adding or editing
+      } else {
+        this.miscForm.markAllAsTouched();
+      }
+  }
 
-      console.log('Miscellaneous Form Values:', formValue);
+  editMisc(index: number) {
+    const miscToEdit = this.miscellaneous[index];
+    this.miscForm.patchValue(miscToEdit);
+    this.showForm = true;
+    this.isEditing = true;
+    this.editingIndex = index;
+  }
 
-      this.miscellaneous.push(formValue);
-      this.saveMiscellaneousToBackend(formValue);
-      this.miscForm.reset();
+  updateMisc(misc: any, index: number) {
+    const updatedMisc = { ...this.miscellaneous[index], ...misc };
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      // Hide the form after adding the entry
-      this.showForm = false;
-    } else {
-      this.miscForm.markAllAsTouched();
-    }
+    this.http
+      .put(
+        `http://localhost:4200/backend/resume/miscellaneous/${updatedMisc._id}`,
+        updatedMisc,
+        { headers }
+      )
+      .pipe(
+        tap(() => {
+          this.miscellaneous[index] = updatedMisc;
+        }),
+        catchError((error) => {
+          console.error('Error updating miscellaneous:', error);
+          return of(error);
+        })
+      )
+      .subscribe();
+
+    this.isEditing = false; // Reset after updating
+    this.editingIndex = null;
   }
 
   cancelMiscellaneous() {

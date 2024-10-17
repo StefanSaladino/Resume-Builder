@@ -34,7 +34,7 @@ router.post("/basic-info", async (req, res) => {
       lastName: req.body.lastName,
       phone: req.body.phone,
       address: req.body.address,
-      desiredField: req.body.desiredField
+      desiredField: req.body.desiredField,
     };
 
     await user.save(); // Save changes to the database
@@ -170,9 +170,12 @@ router.put("/education/:_id", async (req, res, next) => {
     }
 
     // Update the education entry fields
-    educationEntry.schoolName = req.body.schoolName || educationEntry.schoolName;
-    educationEntry.degreeType = req.body.degreeType || educationEntry.degreeType;
-    educationEntry.degreeName = req.body.degreeName || educationEntry.degreeName;
+    educationEntry.schoolName =
+      req.body.schoolName || educationEntry.schoolName;
+    educationEntry.degreeType =
+      req.body.degreeType || educationEntry.degreeType;
+    educationEntry.degreeName =
+      req.body.degreeName || educationEntry.degreeName;
     educationEntry.startDate = req.body.startDate || educationEntry.startDate;
     educationEntry.endDate = req.body.endDate || educationEntry.endDate;
     educationEntry.details = req.body.details || educationEntry.details;
@@ -187,8 +190,6 @@ router.put("/education/:_id", async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 // Skills
 router.get("/skills", async (req, res) => {
@@ -257,6 +258,37 @@ router.delete("/skills/:id", async (req, res) => {
   } catch (err) {
     console.error("Error deleting skill:", err);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/skills/:_id", async (req, res, next) => {
+  try {
+    // Find the user by their authenticated user ID
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get the experience ID from the route parameters
+    const skillId = req.params._id;
+
+    // Find the specific experience entry by its _id in the user's resume
+    const skillEntry = user.resume.skills.id(skillId);
+    if (!skillEntry) {
+      return res.status(404).json({ message: "Skill not found" });
+    }
+
+    // Update the experience entry fields
+    skillEntry.skill = req.body.skill || skillEntry.skill;
+    skillEntry.proficiency = req.body.proficiency || skillEntry.proficiency;
+    skillEntry.description = req.body.description || skillEntry.description;
+
+    // Save the updated user document
+    await user.save();
+
+    // Respond with the updated experience entry
+    res.status(200).json(skillEntry);
+  } catch (error) {
+    // Handle any errors
+    next(error);
   }
 });
 
@@ -351,7 +383,8 @@ router.put("/volunteer/:_id", async (req, res, next) => {
     volEntry.role = req.body.role || volEntry.role;
     volEntry.startDate = req.body.startDate || volEntry.startDate;
     volEntry.endDate = req.body.endDate || volEntry.endDate;
-    volEntry.responsibilities = req.body.responsibilities || volEntry.responsibilities;
+    volEntry.responsibilities =
+      req.body.responsibilities || volEntry.responsibilities;
     volEntry.impact = req.body.impact || volEntry.impact;
 
     // Save the updated user document
@@ -453,8 +486,10 @@ router.put("/experience/:_id", async (req, res, next) => {
     experienceEntry.company = req.body.company || experienceEntry.company;
     experienceEntry.startDate = req.body.startDate || experienceEntry.startDate;
     experienceEntry.endDate = req.body.endDate || experienceEntry.endDate;
-    experienceEntry.responsibilities = req.body.responsibilities || experienceEntry.responsibilities;
-    experienceEntry.achievements = req.body.achievements || experienceEntry.achievements;
+    experienceEntry.responsibilities =
+      req.body.responsibilities || experienceEntry.responsibilities;
+    experienceEntry.achievements =
+      req.body.achievements || experienceEntry.achievements;
 
     // Save the updated user document
     await user.save();
@@ -466,7 +501,6 @@ router.put("/experience/:_id", async (req, res, next) => {
     next(error);
   }
 });
-
 
 // Get all miscellaneous entries
 router.get("/miscellaneous", async (req, res) => {
@@ -607,49 +641,148 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
 
     // Create the prompt based on the user's information
     const prompt = `
+    (Here is an example resume. IT IS VERY IMPORTANT to note that you may use this as a TEMPLATE ONLY. ALL INFO RETURNED IN THE ACTUAL RESUME SHOULD
+    BE FROM THE USER. DO NOT UNDER ANY CIRCUMSTANCES RETURN ANY INFORMATION FROM THE EXAMPLE RESUME.
+
+    JOHN DOE
+    123 Maple Street, Springfield, IL
+    (555) 123-4567 | johndoe@example.com
+
+    PROFILE
+    Innovative and results-driven Software Developer with over two years of hands-on experience creating dynamic, scalable web and mobile applications. Recently graduated with a Computer Programming Diploma while working full-time in the retail industry, demonstrating exceptional time management and work ethic. Proficient in both front-end and back-end development, with a proven track record of building robust applications, implementing efficient solutions, and excelling in team-based environments. Passionate about learning new technologies and delivering high-impact digital products.
+
+    TECHNICAL SKILLS
+
+    Front-End Development
+
+    UI/UX Design:
+    Created intuitive, responsive user interfaces using Adobe XD, Figma, and Sketch. Transformed wireframes into functional front-end code with HTML, CSS, and JavaScript.
+
+    JavaScript Frameworks:
+    Built dynamic applications using React, Angular, and Vue.js, incorporating best practices for modular, scalable code.
+
+    Performance Optimization:
+    Applied techniques like lazy loading, minification, and asset management to enhance performance and user experience.
+
+    Back-End Development
+
+    API Development & Integration:
+    Designed and implemented RESTful APIs, integrating third-party services and secure authentication protocols (OAuth, JWT).
+
+    Database Management:
+    Designed and optimized relational (MySQL) and non-relational (MongoDB) databases. Developed complex SQL queries and schemas to support efficient data retrieval and manipulation.
+
+    Server-Side Programming:
+    Created scalable back-end systems using Node.js and Python, focusing on building maintainable services with robust security features.
+
+    DevOps & Cloud
+
+    CI/CD Pipelines:
+    Integrated continuous deployment pipelines, ensuring smooth application rollouts.
+
+    Cloud Computing:
+    Familiar with AWS services, leveraging tools like RDS for database management and hosting scalable applications.
+
+    Mobile Development
+
+    Kotlin & Android:
+    Developed and deployed multiple Android mobile applications, focusing on seamless user experience and clean, maintainable code.
+
+    EDUCATION
+
+    Computer Programming Diploma
+    Springfield Community College, Springfield, IL | 2023 - 2024
+    Graduated while balancing full-time employment in the retail industry.
+    Dean’s List honoree throughout the program.
+
+    Bachelor of Arts in English & Psychology
+    State University, Springfield, IL | 2013 - 2018
+    Developed critical thinking, communication, and research skills.
+
+    KEY PROJECTS
+
+    Web Application Development
+    Developed multiple full-stack web applications, utilizing the MEAN and MERN stacks.
+    Integrated secure user authentication, dynamic data management, and real-time updates.
+    Enhanced performance and user engagement through responsive design and optimized back-end architecture.
+
+    Mobile Application Development
+    Built Android applications in Kotlin, implementing key features like offline functionality, API integration, and user authentication.
+    Delivered polished, performance-optimized apps with a focus on clean UI and UX.
+
+    EMPLOYMENT EXPERIENCE
+
+    Retail Associate
+    SuperMart | 2020 - 2021, 2022 - Present
+    Managed day-to-day operations while ensuring customer satisfaction and efficient handling of inventory.
+    Developed exceptional problem-solving and leadership skills, which transitioned into my technical project work.
+
+    Logistics Coordinator
+    Global Shipping Co. | 2021 - 2022
+    Led and coordinated team operations to ensure timely and safe transport of goods.
+
+    Customer Service Representative
+    City Transit Authority | 2022
+    Handled customer inquiries and emergencies, requiring clear communication and rapid problem-solving in high-stress situations.
+
+    VOLUNTEER EXPERIENCE
+
+    Treasurer
+    Springfield Tech Club | 2023 - Present
+    Managed financial operations, budget planning, and allocation of club resources to promote member engagement in tech-driven projects.
+
+    Assistant Coach
+    Springfield Youth Hockey League | 2013 - 2016
+    Fostered teamwork and leadership in youth athletes while developing strategic game plans.
+
+    OTHER ACHIEVEMENTS
+
+    Member of Springfield Community College Dean’s List
+    CPR/First Aid Certified
+    Active Contributor to GitHub: Public repositories showcasing my work in web and mobile development.
+
+    References available upon request
+    NOTE: THIS IS THE END OF THE EXAMPLE RESUME. YOU ARE TO USE THIS AS AN EXAMPLE FOR LAYOUT ONLY.)
+
+
     Please create a polished, professional resume based on the following information, ensuring it is formatted for 
     easy readability and presentation. Pretend you are creating a resume written by a human. In your response, I do not require any info other than the resume itself.
-    You must not add any comments about what you've done or the prompt. The entirety of the response must be strictly
-    limited to the resume content and should not include any summaries or closing statements. Assume that your response 
-    will be taken and submitted directly to an employer. The current user is looking for a job in ${user.resume.basicInfo.desiredField},
-    so you may tailor the resume to be as desirable as possible to employers in that field.
-    
-    The following formatting template should not actually be included in the resume, rather it is a guideline for 
-    how to respond.
-    
-    **Formatting Template:**  
-    - Use a clean and professional font (e.g., Arial, Calibri, or Times New Roman) in size 10-12 for body text.
-    - Ensure section headings are bold and slightly larger (e.g., size 14-16).
-    - Maintain consistent spacing between sections (at least one blank line).
-    - Use bullet points for lists (skills, responsibilities, achievements).
-    - Align text to the left for a traditional layout, with the name at the top center.
-    - Consider adding a line under the name for separation from contact information.
-    
-    Please ensure that this response is a complete and visually appealing resume layout, 
-    using appropriate headings and bullet points for clarity. This resume should be ready for submission.
-    Take the information the user has provided and expand on it to make the user's resume more impressive. 
-    Make the resume sound more erudite and professional.
-    You may infer accomplishments from the provided information. Also create a brief profile based on the user's provided data.
-    Please ensure that all section headings are bold and centered, and separate each section with an underline. 
-    Remove any extraneous characters (like asterisks) around headings.
+    You must not add any comments about what you've done or the prompt. (IMPORTANT: The entirety of the response must be strictly
+    limited to the resume content and should not include any summaries or closing statements. Do not actually write anything contained in the brackets). Assume that your response 
+    will be taken and submitted directly to an employer. The current user is looking for a job in ${
+      user.resume.basicInfo.desiredField
+    }, so you may tailor the resume to be as desirable as possible to employers in that field.
     
     
-    ACTUAL RESUME CONTENT STARTS HERE: 
+    (ACTUAL RESUME CONTENT STARTS HERE:) 
     
-                    ${user.resume.basicInfo.firstName} ${user.resume.basicInfo.lastName} 
+                    ${user.resume.basicInfo.firstName} ${
+      user.resume.basicInfo.lastName
+    } 
                             ${user.resume.basicInfo.address || "N/A"}  
-                ${user.resume.basicInfo.phone || "N/A"} | ${user.resume.basicInfo.emailAddress}
+                ${user.resume.basicInfo.phone || "N/A"} | ${
+      user.resume.basicInfo.emailAddress
+    }
     
     
     (NOTE: PROFILE SUMMARY GOES HERE. WRITE THIS IN FIRST PERSON. DO NOT ACTUALLY WRITE WHAT IS CONTAINED IN BRACKETS.)
     PROFILE SUMMARY:
     
-    Skills:  
+    Skills: 
     ${
       user.resume.skills.length > 0
-        ? user.resume.skills.join(", ")
+        ? user.resume.skills
+          .map(
+            (skill) =>
+              `${skill.skill} (Proficiency: ${skill.proficiency}${
+                skill.description ? `, Description: ${skill.description}` : ""
+              })`
+          )
+          .join(", ")
         : "No skills provided"
-    }  
+    }
+    (NOTE: Please make all user skills sound as impressive and comprehensive as possible. Take the user's description
+    of the skill and make it sound as professionally appealing as possible. Include this under the skills heading as well.)
     
       Professional Experience:
   ${
@@ -660,9 +793,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
      Role: ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${
               exp.endDate || "Present"
             })  
-      Responsibilities: ${
-        exp.responsibilities.join(", ") || "Not provided"
-      }  
+      Responsibilities: ${exp.responsibilities.join(", ") || "Not provided"}  
       ${exp.achievements ? `Achievements: ${exp.achievements}` : ""}  
   `
           )
@@ -724,6 +855,23 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     `
         : ""
     }
+
+    ${
+      user.resume.miscellaneous.filter((misc) => misc.type === "project")
+        .length > 0
+        ? `
+    Projects
+    ${user.resume.miscellaneous
+      .filter((misc) => misc.type === "project")
+      .map(
+        (misc) => `
+      - ${misc.title}: ${misc.description}
+    `
+      )
+      .join("\n")}
+    `
+        : ""
+    }
     
     ${
       user.resume.miscellaneous.filter((misc) => misc.type === "certificate")
@@ -760,7 +908,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
         : ""
     }
     
-    RESUME SHOULD END HERE. NO ADDITIONAL CONTENT AT THE END.
+    (NOTE: RESUME SHOULD END HERE. NO ADDITIONAL CONTENT AT THE END)
     
     `;
 
@@ -810,7 +958,7 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     reqApi.write(
       JSON.stringify({
         query: prompt,
-        sysMsg: "You are a friendly Chatbot that creates professional resumes.",
+        sysMsg: "You create polished, complete, and professional resumes that are ready to submit.",
       })
     );
 

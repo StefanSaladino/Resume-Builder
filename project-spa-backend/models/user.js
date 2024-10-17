@@ -43,7 +43,7 @@ const MiscellaneousSchema = new mongoose.Schema({
   description: { type: String },
   type: { 
     type: String, 
-    enum: ['extracurricular', 'language', 'certificate'], // Enum for dropdown
+    enum: ['extracurricular', 'language', 'certificate', 'project'], // Enum for dropdown
     required: true 
   }
 });

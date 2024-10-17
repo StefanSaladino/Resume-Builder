@@ -18,6 +18,8 @@ export class SkillsComponent implements OnInit {
   skillsForm!: FormGroup;
   skills: any[] = [];
   showForm: boolean = false;
+  editingIndex: number | null = null;
+  isEditing: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -30,7 +32,7 @@ export class SkillsComponent implements OnInit {
     this.skillsForm = this.fb.group({
       skill: ['', Validators.required],
       proficiency: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
     });
 
     this.fetchSkills(); // Load the skills list on component init
@@ -59,16 +61,18 @@ export class SkillsComponent implements OnInit {
   onAddSkill() {
     if (this.skillsForm.valid) {
       const formValue = this.skillsForm.value;
-      
-      // Log the form values
-      console.log('Skill Form Values:', formValue);
 
-      this.skills.push(formValue); // Add the new skill to the list
-      this.saveSkillToBackend(formValue); // Save to backend
-      this.skillsForm.reset(); // Reset the form after adding
-      this.showForm = false; // Hide the form
+      if (this.editingIndex !== null) {
+        this.updateSkill(formValue, this.editingIndex);
+      } else {
+        this.saveSkillToBackend(formValue);
+      }
+
+      this.skillsForm.reset();
+      this.showForm = false;
+      this.isEditing = false; // Reset after adding or editing
     } else {
-      this.skillsForm.markAllAsTouched(); // Validate the form
+      this.skillsForm.markAllAsTouched();
     }
   }
 
@@ -115,6 +119,40 @@ export class SkillsComponent implements OnInit {
     } else {
       console.error('Skill to remove does not exist or has no ID:', removedSkill);
     }
+  }
+
+  editSkill(index: number) {
+    const skillToEdit = this.skills[index];
+    this.skillsForm.patchValue(skillToEdit);
+    this.showForm = true;
+    this.isEditing = true;
+    this.editingIndex = index;
+  }
+
+  updateSkill(skill: any, index: number) {
+    const updatedSkill = { ...this.skills[index], ...skill };
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .put(
+        `http://localhost:4200/backend/resume/skills/${updatedSkill._id}`,
+        updatedSkill,
+        { headers }
+      )
+      .pipe(
+        tap(() => {
+          this.skills[index] = updatedSkill;
+        }),
+        catchError((error) => {
+          console.error('Error updating skill:', error);
+          return of(error);
+        })
+      )
+      .subscribe();
+
+    this.isEditing = false; // Reset after updating
+    this.editingIndex = null;
   }
 
   // Show or hide the skill form

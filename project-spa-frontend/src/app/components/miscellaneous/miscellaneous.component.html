@@ -7,12 +7,15 @@
 <div *ngFor="let misc of miscellaneous; let i = index" class="card misc-entry animate-entry">
     <p class="fw-bold card-header">{{ misc.type }}: {{ misc.title }}</p>
     <p class="card-body">{{ misc.description }}</p>
+    <div class="d-flex justify-content-between">
     <button class="btn btn-danger btn-sm" (click)="removeMiscellaneous(i)">Remove</button>
+    <button class="btn btn-warning btn-sm" (click)="editMisc(i)">Edit</button>
+    </div>
   </div>
   
   <div id="add-button">
     <!-- Add Miscellaneous Entry Button (Visible only when form is hidden) -->
-    <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">Add Miscellaneous</button>
+    <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">{{ isEditing ? 'Edit Miscellaneous' : 'Add Miscellaneous' }}</button>
   </div>
   
   <!-- Miscellaneous Form (Visible when user clicks 'Add Miscellaneous') -->
@@ -27,6 +30,7 @@
           <option value="certificate">Certificate</option>
           <option value="language">Language</option>
           <option value="extracurricular">Extracurricular</option>
+          <option value="project">Project</option>
         </select>
         <div *ngIf="miscForm.get('type')?.invalid && miscForm.get('type')?.touched" class="text-danger">
           <small>Type is required.</small>
@@ -48,7 +52,7 @@
         <textarea id="description" formControlName="description" rows="3" class="form-control"></textarea>
       </div>
   
-      <button type="submit" class="btn btn-success">Save Miscellaneous</button>
+      <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Miscellaneous' : 'Save Miscellaneous' }}</button>
       <button type="button" class="btn btn-secondary" (click)="cancelMiscellaneous()">Cancel</button>
     </form>
   </div>

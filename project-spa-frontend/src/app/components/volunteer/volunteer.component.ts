@@ -13,7 +13,7 @@ import { tap, catchError, of } from 'rxjs';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './volunteer.component.html',
-  styleUrl: './volunteer.component.css'
+  styleUrl: './volunteer.component.css',
 })
 export class VolunteerComponent implements OnInit {
   volunteerForm!: FormGroup;
@@ -36,30 +36,33 @@ export class VolunteerComponent implements OnInit {
       role: ['', Validators.required],
       startDate: ['', [Validators.required, this.validateDateFormat]],
       endDate: ['', this.validateOptionalEndDate],
-      responsibilities: this.fb.array([this.fb.control('')], Validators.required),
-      impact:['']
+      responsibilities: this.fb.array(
+        [this.fb.control('')],
+        Validators.required
+      ),
+      impact: [''],
     });
 
     this.fetchVolunteerEntries();
   }
 
-      // Get responsibilities form array for dynamic controls
-      get responsibilities(): FormArray {
-        return this.volunteerForm.get('responsibilities') as FormArray;
-      }
-    
-      // Function to add a responsibility field
-      addResponsibility() {
-        this.responsibilities.push(this.fb.control('', Validators.required));
-      }
-    
-      // Function to remove a responsibility field by index
-      removeResponsibility(index: number) {
-        if (this.responsibilities.length > 1) {
-          this.responsibilities.removeAt(index);
-        }
-      }
-  
+  // Get responsibilities form array for dynamic controls
+  get responsibilities(): FormArray {
+    return this.volunteerForm.get('responsibilities') as FormArray;
+  }
+
+  // Function to add a responsibility field
+  addResponsibility() {
+    this.responsibilities.push(this.fb.control('', Validators.required));
+  }
+
+  // Function to remove a responsibility field by index
+  removeResponsibility(index: number) {
+    if (this.responsibilities.length > 1) {
+      this.responsibilities.removeAt(index);
+    }
+  }
+
   //TODO: ADD TO VALIDATE DATE PATTERN: Start date must be before present date.
   validateDateFormat(control: any) {
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
@@ -214,7 +217,8 @@ export class VolunteerComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>('http://localhost:4200/backend/resume/volunteer', { headers })
+    this.http
+      .get<any[]>('http://localhost:4200/backend/resume/volunteer', { headers })
       .pipe(
         tap((response) => {
           this.volunteers = response; // Assign the response to the educations array
@@ -239,6 +243,6 @@ export class VolunteerComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/resume/experience']); 
+    this.router.navigate(['/resume/experience']);
   }
 }
