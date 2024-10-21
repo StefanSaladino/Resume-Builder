@@ -122,16 +122,21 @@ export class FinalizeResumeComponent implements OnInit {
       { headers, responseType: 'blob' }
     ).subscribe(
       (blob) => {
+        // Create a download link
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'resume.docx';
+        a.download = 'resume.docx';  // Name of the downloaded file
         a.click();
+        
+        // Clean up the URL object
+        window.URL.revokeObjectURL(url);
       },
       error => {
         console.error('Error downloading resume:', error);
       }
     );
   }
+  
   
 }

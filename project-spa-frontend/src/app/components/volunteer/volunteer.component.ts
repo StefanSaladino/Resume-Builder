@@ -92,6 +92,11 @@ export class VolunteerComponent implements OnInit {
         const [endMonth, endYear] = endDate.split('/').map(Number);
         const end = new Date(endYear, endMonth - 1);
         const today = new Date();
+
+        // Check if start date is in the future
+        if (start > today) {
+          this.volunteerForm.get('startDate')?.setErrors({ startDateInFuture: true });
+        }
   
         if (end > today) {
           this.volunteerForm.get('endDate')?.setErrors({ endDateInFuture: true });

@@ -98,11 +98,17 @@ export class ExperienceComponent implements OnInit {
       // Check if end date is not before start date or in the future
       const [startMonth, startYear] = startDate.split('/').map(Number);
       const start = new Date(startYear, startMonth - 1);
+      const today = new Date();
+
+      // Check if start date is in the future
+      if (start > today) {
+        this.experienceForm.get('startDate')?.setErrors({ startDateInFuture: true });
+      }
   
       if (endDate !== 'Present') {
         const [endMonth, endYear] = endDate.split('/').map(Number);
         const end = new Date(endYear, endMonth - 1);
-        const today = new Date();
+        
   
         if (end > today) {
           this.experienceForm.get('endDate')?.setErrors({ endDateInFuture: true });

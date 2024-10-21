@@ -62,6 +62,12 @@
       >
         Invalid start date format. Please use MM/YYYY.
       </div>
+      <div
+        *ngIf="educationForm.get('startDate')?.errors?.['startDateInFuture'] && educationForm.get('startDate')?.touched"
+        class="text-danger"
+      >
+        Start date cannot be in future.
+      </div>
     </div>
 
     <!-- End Date Field -->

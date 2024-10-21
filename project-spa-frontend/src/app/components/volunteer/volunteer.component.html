@@ -4,34 +4,68 @@
 </div>
 
 <!-- List of Added Volunteer Experiences -->
-<div *ngFor="let vol of volunteers; let i = index" class="card volunteer-entry animate-entry mt-3">
+<div
+  *ngFor="let vol of volunteers; let i = index"
+  class="card volunteer-entry animate-entry mt-3"
+>
   <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
-  <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || 'Present' }}</p>
+  <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || "Present" }}</p>
   <ul>
     <h4>Responsibilities:</h4>
-    <li *ngFor="let responsibility of vol.responsibilities">{{ responsibility }}</li>
+    <li *ngFor="let responsibility of vol.responsibilities">
+      {{ responsibility }}
+    </li>
   </ul>
   <div class="d-flex justify-content-between">
-    <button class="btn btn-warning btn-sm me-2" (click)="editVolunteer(i)">Edit</button>
-    <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">Remove</button>
+    <button class="btn btn-warning btn-sm me-2" (click)="editVolunteer(i)">
+      Edit
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">
+      Remove
+    </button>
   </div>
 </div>
 
 <div id="add-button">
   <!-- Add Another Volunteer Experience Button (Visible only when form is hidden) -->
-  <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleVolunteerForm()">Add Another Volunteer Experience</button>
+  <button
+    id="add"
+    *ngIf="!showForm"
+    class="btn btn-primary mt-3"
+    (click)="toggleVolunteerForm()"
+  >
+    Add Another Volunteer Experience
+  </button>
 </div>
 
 <!-- Volunteer Form (Visible only when adding a new volunteer experience) -->
-<form [formGroup]="volunteerForm" (ngSubmit)="onAddVolunteer()" *ngIf="showForm" class="volunteer-form container mt-5 p-4 border rounded shadow">
-
-  <h2 class="text-center mb-4">{{ isEditing ? 'Edit Volunteer Experience' : 'Add Volunteer Experience' }}</h2>
+<form
+  [formGroup]="volunteerForm"
+  (ngSubmit)="onAddVolunteer()"
+  *ngIf="showForm"
+  class="volunteer-form container mt-5 p-4 border rounded shadow"
+>
+  <h2 class="text-center mb-4">
+    {{ isEditing ? "Edit Volunteer Experience" : "Add Volunteer Experience" }}
+  </h2>
 
   <!-- Organization Name -->
   <div class="mb-3">
     <label for="organization" class="form-label">Organization Name:</label>
-    <input id="organization" formControlName="organization" type="text" class="form-control" required />
-    <div *ngIf="volunteerForm.get('organization')?.invalid && volunteerForm.get('organization')?.touched" class="text-danger">
+    <input
+      id="organization"
+      formControlName="organization"
+      type="text"
+      class="form-control"
+      required
+    />
+    <div
+      *ngIf="
+        volunteerForm.get('organization')?.invalid &&
+        volunteerForm.get('organization')?.touched
+      "
+      class="text-danger"
+    >
       <small>Name of organization is required.</small>
     </div>
   </div>
@@ -39,82 +73,148 @@
   <!-- Role -->
   <div class="mb-3">
     <label for="role" class="form-label">Role:</label>
-    <input id="role" formControlName="role" type="text" class="form-control" required />
-    <div *ngIf="volunteerForm.get('role')?.invalid && volunteerForm.get('role')?.touched" class="text-danger">
+    <input
+      id="role"
+      formControlName="role"
+      type="text"
+      class="form-control"
+      required
+    />
+    <div
+      *ngIf="
+        volunteerForm.get('role')?.invalid && volunteerForm.get('role')?.touched
+      "
+      class="text-danger"
+    >
       <small>Role is required.</small>
     </div>
   </div>
 
- <!-- Start Date Field -->
- <div class="form-group">
-  <label for="startDate">Start Date (MM/YYYY)</label>
-  <input 
-    type="text" 
-    id="startDate" 
-    formControlName="startDate" 
-    class="form-control"
-    placeholder="MM/YYYY">
-    
-  <!-- Error Message for Invalid Start Date Format -->
-  <div *ngIf="volunteerForm.get('startDate')?.errors?.['invalidDateFormat'] && volunteerForm.get('startDate')?.touched" class="text-danger">
-    Invalid start date format. Please use MM/YYYY.
-  </div>
-</div>
+  <!-- Start Date Field -->
+  <div class="form-group">
+    <label for="startDate">Start Date (MM/YYYY)</label>
+    <input
+      type="text"
+      id="startDate"
+      formControlName="startDate"
+      class="form-control"
+      placeholder="MM/YYYY"
+    />
 
-<!-- End Date Field -->
-<div class="form-group">
-  <label for="endDate">End Date (MM/YYYY or 'Present')</label>
-  <input 
-    type="text" 
-    id="endDate" 
-    formControlName="endDate" 
-    class="form-control"
-    placeholder="MM/YYYY or 'Present'">
-
-  <!-- Error Message for Invalid End Date Format -->
-  <div *ngIf="volunteerForm.get('endDate')?.errors?.['invalidDateFormat'] && volunteerForm.get('endDate')?.touched" class="text-danger">
-    Invalid end date format. Please use MM/YYYY or 'Present'.
+    <!-- Error Message for Invalid Start Date Format -->
+    <div
+      *ngIf="volunteerForm.get('startDate')?.errors?.['invalidDateFormat'] && volunteerForm.get('startDate')?.touched"
+      class="text-danger"
+    >
+      Invalid start date format. Please use MM/YYYY.
+    </div>
+    <div
+      *ngIf="volunteerForm.get('startDate')?.errors?.['startDateInFuture'] && volunteerForm.get('startDate')?.touched"
+      class="text-danger"
+    >
+      Start date cannot be in future.
+    </div>
   </div>
 
-  <!-- Error Message for End Date Before Start Date -->
-  <div *ngIf="volunteerForm.get('endDate')?.errors?.['endDateBeforeStartDate'] && volunteerForm.get('endDate')?.touched" class="text-danger">
-    End date cannot be before the start date.
-  </div>
+  <!-- End Date Field -->
+  <div class="form-group">
+    <label for="endDate">End Date (MM/YYYY or 'Present')</label>
+    <input
+      type="text"
+      id="endDate"
+      formControlName="endDate"
+      class="form-control"
+      placeholder="MM/YYYY or 'Present'"
+    />
 
-  <!-- Error Message for End Date in Future -->
-  <div *ngIf="volunteerForm.get('endDate')?.errors?.['endDateInFuture'] && volunteerForm.get('endDate')?.touched" class="text-danger">
-    End date cannot be in the future.
-  </div>
-</div>
+    <!-- Error Message for Invalid End Date Format -->
+    <div
+      *ngIf="volunteerForm.get('endDate')?.errors?.['invalidDateFormat'] && volunteerForm.get('endDate')?.touched"
+      class="text-danger"
+    >
+      Invalid end date format. Please use MM/YYYY or 'Present'.
+    </div>
 
+    <!-- Error Message for End Date Before Start Date -->
+    <div
+      *ngIf="volunteerForm.get('endDate')?.errors?.['endDateBeforeStartDate'] && volunteerForm.get('endDate')?.touched"
+      class="text-danger"
+    >
+      End date cannot be before the start date.
+    </div>
+
+    <!-- Error Message for End Date in Future -->
+    <div
+      *ngIf="volunteerForm.get('endDate')?.errors?.['endDateInFuture'] && volunteerForm.get('endDate')?.touched"
+      class="text-danger"
+    >
+      End date cannot be in the future.
+    </div>
+  </div>
 
   <!-- Responsibilities -->
   <div class="mb-3">
     <label for="responsibilities" class="form-label">Responsibilities:</label>
     <div formArrayName="responsibilities">
-      <div *ngFor="let responsibility of responsibilities.controls; let i = index" class="mb-2">
-        <input [formControlName]="i" placeholder="Responsibility {{ i + 1 }}" class="form-control mb-1" />
-        <button type="button" (click)="removeResponsibility(i)" class="btn btn-danger btn-sm">Remove</button>
+      <div
+        *ngFor="let responsibility of responsibilities.controls; let i = index"
+        class="mb-2"
+      >
+        <input
+          [formControlName]="i"
+          placeholder="Responsibility {{ i + 1 }}"
+          class="form-control mb-1"
+        />
+        <button
+          type="button"
+          (click)="removeResponsibility(i)"
+          class="btn btn-danger btn-sm"
+        >
+          Remove
+        </button>
       </div>
     </div>
-    <button type="button" class="btn btn-sm btn-secondary mt-2" (click)="addResponsibility()">Add Responsibility</button>
+    <button
+      type="button"
+      class="btn btn-sm btn-secondary mt-2"
+      (click)="addResponsibility()"
+    >
+      Add Responsibility
+    </button>
   </div>
 
   <!-- Impact (optional) -->
   <div class="mb-3">
     <label for="impact" class="form-label">Impact (Optional):</label>
-    <textarea id="impact" formControlName="impact" class="form-control" placeholder="Add a small paragraph about the impact this role had in the community"></textarea>
+    <textarea
+      id="impact"
+      formControlName="impact"
+      class="form-control"
+      placeholder="Add a small paragraph about the impact this role had in the community"
+    ></textarea>
   </div>
 
   <!-- Save and Cancel buttons -->
   <div class="form-actions d-flex justify-content-between">
-    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Volunteer Experience' : 'Save Volunteer Experience' }}</button>
-    <button type="button" class="btn btn-secondary" (click)="cancelVolunteer()">Cancel</button>
+    <button type="submit" class="btn btn-success">
+      {{
+        isEditing ? "Update Volunteer Experience" : "Save Volunteer Experience"
+      }}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="cancelVolunteer()">
+      Cancel
+    </button>
   </div>
 </form>
 
 <!-- Navigation Buttons -->
 <div class="d-flex justify-content-between mt-4">
   <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
-  <button class="btn btn-success" (click)="onNext()" [disabled]="volunteers.length === 0">Next</button>
+  <button
+    class="btn btn-success"
+    (click)="onNext()"
+    [disabled]="volunteers.length === 0"
+  >
+    Next
+  </button>
 </div>
