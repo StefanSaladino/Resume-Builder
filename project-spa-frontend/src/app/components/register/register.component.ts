@@ -38,8 +38,10 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value).subscribe(
-        () => {
-          this.router.navigate(['/login']);  // Redirect to login after successful registration
+        (response) => {
+          // Navigate to login after successful registration
+          alert(response.message);
+          this.router.navigate(['/login']);
         },
         (error) => {
           this.errorMessage = 'Error during registration';
