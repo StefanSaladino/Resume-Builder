@@ -43,7 +43,7 @@ export class SkillsComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>('http://localhost:4200/backend/resume/skills', { headers })
+    this.http.get<any[]>('https://resume-builder-3aba3.web.app/backend/resume/skills', { headers })
       .pipe(
         tap((response) => {
           this.skills = response; // Populate the skills list
@@ -81,7 +81,7 @@ export class SkillsComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.post('http://localhost:4200/backend/resume/skills', skill, { headers })
+    this.http.post('https://resume-builder-3aba3.web.app/backend/resume/skills', skill, { headers })
       .pipe(
         tap((response: any) => {
           console.log('Skill saved:', response);
@@ -105,7 +105,7 @@ export class SkillsComponent implements OnInit {
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      this.http.delete(`http://localhost:4200/backend/resume/skills/${removedSkill._id}`, { headers })
+      this.http.delete(`https://resume-builder-3aba3.web.app/backend/resume/skills/${removedSkill._id}`, { headers })
         .pipe(
           tap(() => {
             console.log('Skill removed from backend');
@@ -136,7 +136,7 @@ export class SkillsComponent implements OnInit {
 
     this.http
       .put(
-        `http://localhost:4200/backend/resume/skills/${updatedSkill._id}`,
+        `https://resume-builder-3aba3.web.app/backend/resume/skills/${updatedSkill._id}`,
         updatedSkill,
         { headers }
       )

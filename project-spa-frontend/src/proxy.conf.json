@@ -1,7 +1,7 @@
 
 {
     "/backend": {
-      "target": "http://localhost:3000",
+      "target": "https://resume-builder-backend-ahjg.onrender.com",
       "secure": false,
       "pathRewrite": {
         "^/backend": ""

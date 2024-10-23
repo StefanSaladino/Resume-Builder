@@ -11,7 +11,7 @@ export class ResumeService {
   
     generateResume(userData: any, headers: HttpHeaders): Observable<any> {
       return this.http.post(
-        'http://localhost:4200/backend/resume/generate-resume',
+        'https://resume-builder-3aba3.web.app/backend/resume/generate-resume',
         userData,
         { headers }
       );

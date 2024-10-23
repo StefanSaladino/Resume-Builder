@@ -23,7 +23,7 @@ export class FormDataService {
     miscellaneous: [], // New field for miscellaneous data
   };
 
-  private apiUrl = 'http://localhost:4200/backend';
+  private apiUrl = 'https://resume-builder-3aba3.web.app/backend';
 
   constructor(private http: HttpClient) {}
 

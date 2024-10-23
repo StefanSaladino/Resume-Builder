@@ -32,7 +32,7 @@ function sendVerificationEmail(email, userId) {
     from: process.env.EMAIL_ADDRESS,
     to: email,
     subject: "Email Verification",
-    text: `Hi! Please follow the link to verify your email: http://localhost:4200/backend/verify/${token} Thanks.`,
+    text: `Hi! Please follow the link to verify your email: https://resume-builder-3aba3.web.app/backend/verify/${token} Thanks.`,
   };
 
   transporter.sendMail(mailConfigurations, (error, info) => {
@@ -192,7 +192,7 @@ router.post("/reset-password", async (req, res) => {
       subject: "Password Reset",
       text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
         `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-        `http://localhost:4200/reset-password/${resetToken}\n\n` +
+        `https://resume-builder-3aba3.web.app/reset-password/${resetToken}\n\n` +
         `If you did not request this, please ignore this email and your password will remain unchanged.\n`,
     };
 
