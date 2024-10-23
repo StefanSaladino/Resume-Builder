@@ -44,14 +44,15 @@ export class AuthService {
             }
           });
           this.router.navigate(['/resume/basic-info']);
-        } else {
+        } 
+        else {
           console.error('Login failed:', response.message);
         }
       }),
-      catchError(error => {
-        console.error('Login error:', error);
-        return of({ success: false, message: 'Invalid credentials' });
-      })
+      // catchError(error => {
+      //   console.error('Login error:', error);
+      //   return of({ success: false, message: 'Invalid credentials' });
+      // })
     );
   }
 
@@ -81,6 +82,35 @@ export class AuthService {
       return of(false);
     }
   }
+
+  isVerified(): Observable<boolean> {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        return of(false);  // User is not authenticated
+      }
+  
+      return this.http.get(`${this.authUrl}/user`, {
+        headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }),
+        withCredentials: true,
+      }).pipe(
+        map((user: any) => {
+          if (user && user.isVerified) {
+            return true;  // User is verified
+          } else {
+            return false; // User is either not found or not verified
+          }
+        }),
+        catchError(error => {
+          console.error('Verification check error:', error);
+          return of(false);  // In case of error, consider as not verified
+        })
+      );
+    } else {
+      return of(false);  // If not in a browser environment
+    }
+  }
+  
 
   register(data: { username: string; password: string }): Observable<any> {
     return this.http.post(`${this.authUrl}/register`, data).pipe(
@@ -134,4 +164,9 @@ export class AuthService {
       map(user => user ? user._id : null) // Use map to extract the user ID
     );
   }
+
+  resendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`${this.authUrl}/resend-verification-email`, { email });
+  }
+  
 }

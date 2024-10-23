@@ -36,4 +36,15 @@
   {{ errorMessage }}
 </div>
 
+<!-- Display resend verification email option if applicable -->
+<div *ngIf="showResendEmailOption">
+  <button (click)="resendVerificationEmail()" class="btn btn-primary">
+    Resend Verification Email
+  </button>
+</div>
+
+<div *ngIf="true"> <!-- This should always display -->
+  <button class="btn btn-primary">Test Button</button>
+</div>
+
 <router-outlet></router-outlet>

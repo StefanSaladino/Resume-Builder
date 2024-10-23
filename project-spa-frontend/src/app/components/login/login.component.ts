@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -20,11 +21,13 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  showResendEmailOption: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef // Inject ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]], // Added email validation
@@ -43,21 +46,48 @@ export class LoginComponent {
               this.router.navigate(['resume/basic-info']);
             }
           }),
-          catchError((error) => {
-            // Handle any unexpected errors
-            this.errorMessage = 'An unexpected error occurred';
-            console.error('Login error:', error);
-            return of(null); // Returning observable of null to avoid breaking the stream
+          catchError((error: HttpErrorResponse) => {
+            console.error('Full error object:', error);
+            
+            if (error.status === 403 && error.error?.isVerified === false) {
+              this.errorMessage = "Your account is not verified. Please check your email.";
+              this.showResendEmailOption = true;
+              this.cdRef.detectChanges();
+            } else {
+              this.errorMessage = error.error?.message || 'An unexpected error occurred';
+            }
+          
+            return of(null);
           })
         )
-        .subscribe((response: any) => {
-          if (!response?.success) {
-            // Display the error message if login failed
-            this.errorMessage = response?.message || 'Invalid credentials';
-          }
-        });
+        .subscribe();
     } else {
       this.errorMessage = 'Please fill in all required fields';
     }
   }
+  
+
+  resendVerificationEmail() {
+    const email = this.loginForm.get('email')?.value;
+  
+    this.authService.resendVerificationEmail(email)
+      .subscribe(
+        (response: any) => {
+          console.log('Resend email success response:', response);
+          if (response?.success) {
+            this.errorMessage = "Verification email resent. Please check your inbox.";
+            this.showResendEmailOption = false;
+          } else {
+            console.log('Unexpected response structure:', response);
+            this.errorMessage = "Failed to resend verification email.";
+          }
+        },
+        (error: any) => {
+          console.error('Resend email error:', error);
+          this.errorMessage = 'Failed to resend verification email.';
+        }
+      );
+  }
+  
+  
 }
