@@ -20,8 +20,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  resetForm: FormGroup;
   errorMessage: string | null = null;
   showResendEmailOption: boolean = false;
+  resetPasswordMessage: string | null = null; // For success messages on password reset
+  showResetForm: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +36,9 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]], // Added email validation
       password: ['', [Validators.required]],
     });
+    this.resetForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    })
   }
 
   onSubmit() {
@@ -66,7 +72,6 @@ export class LoginComponent {
     }
   }
   
-
   resendVerificationEmail() {
     const email = this.loginForm.get('email')?.value;
   
@@ -88,6 +93,40 @@ export class LoginComponent {
         }
       );
   }
+
+  toggleForm(){
+    this.showResetForm = true;
+  }
+
+  revertForm(){
+    this.showResetForm = false;
+  }
   
+  forgotPassword() {
+    // Prompt the user for their email
+    const email = this.resetForm.get('email')?.value
   
+    // Check if the user entered an email
+    if (email) {
+      this.authService.resetPassword({ email }) // Pass email as parameter
+        .subscribe(
+          (response: any) => {
+            if (response?.success) {
+              this.resetPasswordMessage = "Reset link sent to your email."; // Success message
+              this.errorMessage = null; // Clear error message
+            } else {
+              this.errorMessage = "Failed to send reset link."; // Handle error
+              this.resetPasswordMessage = null; // Clear success message
+            }
+          },
+          (error: any) => {
+            console.error('Reset password error:', error);
+            this.errorMessage = 'Failed to send reset link.';
+            this.resetPasswordMessage = null; // Clear success message
+          }
+        );
+    } else {
+      this.errorMessage = 'Email is required.'; // Handle empty input case
+    }
+  }
 }

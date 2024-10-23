@@ -1,50 +1,109 @@
-<h1>Login</h1>
+<div *ngIf="!showResetForm">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header text-center">
+            <h1>Login</h1>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" id="loginForm">
+              <fieldset class="form-group">
+                <label for="email">Email: *</label>
+                <input
+                  formControlName="email"
+                  name="email"
+                  id="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  required
+                />
+              </fieldset>
 
-<form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-  <fieldset class="form-group">
-    <label for="email" class="col-2 control-label">Email: *</label>
-    <input formControlName="email" name="email" id="email" required />
-  </fieldset>
+              <fieldset class="form-group">
+                <label for="password">Password: *</label>
+                <input
+                  formControlName="password"
+                  name="password"
+                  id="password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  required
+                />
+              </fieldset>
 
-  <fieldset class="form-group">
-    <label for="password" class="col-2 control-label">Password: *</label>
-    <input
-      formControlName="password"
-      name="password"
-      id="password"
-      type="password"
-      required
-    />
-  </fieldset>
-  <div *ngIf="errorMessage" class="error">
-    {{ errorMessage }}
-  </div>  
+              <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+                {{ errorMessage }}
+              </div>
 
-  <fieldset class="form-group">
-    <button class="btn btn-info offset-3" type="submit">Login</button>
-    <hr />
-    Need an account?
-    <a class="link" routerLink="/register" title="Register">Register</a>
-  </fieldset>
+              <fieldset class="form-group">
+                <button class="btn btn-info btn-block" type="submit">Login</button>
+                <hr />
+                Need an account?
+                <a class="link" routerLink="/register" title="Register">Register</a>
+              </fieldset>
 
-  <fieldset class="form-group">
-    <a routerLink="/forgot-password">Forgot Password?</a>
-  </fieldset>
-</form>
+              <!-- Display resend verification email option if applicable -->
+              <div *ngIf="showResendEmailOption">
+                <button (click)="resendVerificationEmail()" class="btn btn-primary btn-block">
+                  Resend Verification Email
+                </button>
+              </div>
 
-<div *ngIf="errorMessage" class="alert alert-danger">
-  {{ errorMessage }}
+              <fieldset class="form-group text-left">
+                <a class="link" (click)="toggleForm()" id="fp-link">Forgot Password?</a>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Display resend verification email option if applicable -->
-<div *ngIf="showResendEmailOption">
-  <button (click)="resendVerificationEmail()" class="btn btn-primary">
-    Resend Verification Email
-  </button>
-</div>
+<div *ngIf="showResetForm">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header text-center">
+            <h1>Reset Password</h1>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="forgotPassword()" [formGroup]="resetForm">
+              <fieldset class="form-group">
+                <label for="resetEmail">Email: </label>
+                <input
+                  formControlName="email"
+                  name="email"
+                  id="resetEmail"
+                  type="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  required
+                />
+              </fieldset>
 
-<div *ngIf="true"> <!-- This should always display -->
-  <button class="btn btn-primary">Test Button</button>
+              <div class="action-buttons">
+                <button class="btn btn-info btn-block" type="submit">
+                  Send Forgot Password Email
+                </button>
+                <button class="btn btn-info btn-block" (click)="revertForm()">
+                  Cancel
+                </button>
+              </div>
+
+              <div *ngIf="resetPasswordMessage" class="alert alert-success mt-3">
+                {{ resetPasswordMessage }}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>

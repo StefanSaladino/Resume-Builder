@@ -169,4 +169,12 @@ export class AuthService {
     return this.http.post(`${this.authUrl}/resend-verification-email`, { email });
   }
   
+  resetPassword(emailData: { email: string }) {
+    return this.http.post<any>(`${this.authUrl}/reset-password`, emailData);
+  }
+
+  resetPasswordWithToken(token: string, passwordData: { password: string, confirmPassword: string }) {
+    return this.http.post<any>(`${this.authUrl}/reset-password/${token}`, passwordData);
+  }
+  
 }

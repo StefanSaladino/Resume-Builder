@@ -5,6 +5,7 @@ const { ensureAuthenticated } = require("../middleware/enforceAuth");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const crypto = require('crypto');
 require("dotenv").config();
 
 // Nodemailer setup using SendGrid SMTP
@@ -164,33 +165,78 @@ router.get("/user", (req, res) => {
 });
 
 // Resend verification email route (POST)
-router.post("/resend-verification-email", async (req, res) => {
-  const { email } = req.body; // Get email from the request body
+// Forgot Password Route
+router.post("/reset-password", async (req, res) => {
+  const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email }); // Find the user by email
+    const user = await User.findOne({ email });
+
     if (!user) {
-      // Send a JSON response when the user is not found
-      return res.status(404).json({ success: false, message: "User not found" });
+      // Return a structured error response
+      return res.status(400).json({ success: false, message: "User with this email does not exist." });
     }
 
-    if (user.isVerified) {
-      // Send a JSON response when the user is already verified
-      return res.status(400).json({ success: false, message: "User is already verified" });
-    }
+    // Generate a random reset token
+    const resetToken = crypto.randomBytes(20).toString("hex");
 
-    // Send the verification email
-    sendVerificationEmail(user.email, user._id);
+    // Set reset token and its expiration on the user object
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
+    await user.save();
 
-    // Send a JSON response when the email is successfully resent
-    return res.status(200).json({ success: true, message: "Verification email resent" });
-  } catch (err) {
-    console.error("Error resending verification email:", err);
-    // Send a JSON response in case of an internal server error
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    // Set up email data
+    const mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: email,
+      subject: "Password Reset",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+        `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+        `http://localhost:4200/reset-password/${resetToken}\n\n` +
+        `If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    // Send email with the reset token
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Error sending email." });
+      }
+      res.json({ success: true, message: `An e-mail has been sent to ${email} with further instructions.` });
+    });
+  } catch (error) {
+    console.error("Error in reset-password route:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
 
+// Route to handle the password reset
+router.post("/reset-password/:resetToken", async (req, res) => {
+  console.log("Received data:", req.body);
+  const { password, confirmPassword } = req.body;
+  
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match." });
+  }
 
+  const user = await User.findOne({
+    resetPasswordToken: req.params.resetToken,
+    resetPasswordExpires: { $gt: Date.now() }, // Check if the token is still valid
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "Password reset token is invalid or has expired." });
+  }
+
+  // Set the new password
+  await user.setPassword(password);
+
+  // Clear the reset token and expiration
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.status(200).json({ message: "Password has been reset successfully." });
+});
 
 module.exports = router;

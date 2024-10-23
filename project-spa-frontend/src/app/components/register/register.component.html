@@ -1,42 +1,91 @@
-<h2>Register</h2>
+<div class="container mt-5" id="body">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h2>Register</h2>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+            <fieldset class="form-group">
+              <label for="firstName">First Name: *</label>
+              <input
+                formControlName="firstName"
+                id="firstName"
+                type="text"
+                class="form-control"
+                placeholder="Enter your first name"
+                required
+              />
+            </fieldset>
 
-<form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-  <fieldset class="form-group">
-    <label for="firstName">First Name: *</label>
-    <input formControlName="firstName" id="firstName" required />
-  </fieldset>
+            <fieldset class="form-group">
+              <label for="lastName">Last Name: *</label>
+              <input
+                formControlName="lastName"
+                id="lastName"
+                type="text"
+                class="form-control"
+                placeholder="Enter your last name"
+                required
+              />
+            </fieldset>
 
-  <fieldset class="form-group">
-    <label for="lastName">Last Name: *</label>
-    <input formControlName="lastName" id="lastName" required />
-  </fieldset>
+            <fieldset class="form-group">
+              <label for="email">Email: *</label>
+              <input
+                formControlName="email"
+                id="email"
+                type="email"
+                class="form-control"
+                placeholder="Enter your email"
+                required
+              />
+            </fieldset>
 
-  <fieldset class="form-group">
-    <label for="email">Email: *</label>
-    <input formControlName="email" id="email" type="email" required />
-  </fieldset>
+            <fieldset class="form-group">
+              <label for="password">Password: *</label>
+              <input
+                formControlName="password"
+                id="password"
+                type="password"
+                class="form-control"
+                placeholder="Enter your password"
+                required
+              />
+              <div
+                *ngIf="registerForm.get('password')?.errors?.['pattern']"
+                class="alert alert-warning mt-2"
+              >
+                Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.
+              </div>
+            </fieldset>
 
-  <fieldset class="form-group">
-    <label for="password">Password: *</label>
-    <input formControlName="password" id="password" type="password" required />
-    <div *ngIf="registerForm.get('password')?.errors?.['pattern']">
-      Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.
+            <fieldset class="form-group">
+              <label for="confirmPassword">Confirm Password: *</label>
+              <input
+                formControlName="confirmPassword"
+                id="confirmPassword"
+                type="password"
+                class="form-control"
+                placeholder="Confirm your password"
+                required
+              />
+              <div *ngIf="registerForm.hasError('passwordMismatch')" class="alert alert-warning mt-2">
+                Passwords must match.
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group text-center">
+              <button class="btn btn-info btn-block" type="submit">Register</button>
+            </fieldset>
+
+            <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+              {{ errorMessage }}
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-  </fieldset>
-
-  <fieldset class="form-group">
-    <label for="confirmPassword">Confirm Password: *</label>
-    <input formControlName="confirmPassword" id="confirmPassword" type="password" required />
-    <div *ngIf="registerForm.hasError('passwordMismatch')">
-      Passwords must match.
-    </div>
-  </fieldset>
-
-  <fieldset class="form-group">
-    <button class="btn btn-info" type="submit">Register</button>
-  </fieldset>
-
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
   </div>
-</form>
+</div>

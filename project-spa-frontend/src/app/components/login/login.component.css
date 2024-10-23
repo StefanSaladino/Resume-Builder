@@ -1,0 +1,34 @@
+#resetForm{
+    
+    width: 50%;
+    margin: auto;
+    padding: 1em;
+}
+
+#resetForm fieldset{
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#resetForm input{
+    height: 67%;
+    width: 90%;
+    color: black;
+}
+
+.action-buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+#loginForm fieldset{
+    padding: 1em;
+}
+
+#fp-link:hover{
+    cursor: pointer;
+}
