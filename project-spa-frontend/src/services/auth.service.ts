@@ -21,7 +21,7 @@ import { User } from '../app/models/user.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = 'https://resume-builder-3aba3.web.app/backend';
+  private authUrl = '/backend';
   private currentUserSubject = new BehaviorSubject<User | null>(null); 
   currentUser$ = this.currentUserSubject.asObservable(); 
 

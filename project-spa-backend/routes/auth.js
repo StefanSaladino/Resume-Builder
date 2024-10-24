@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
  * Function to send a verification email
  */
 function sendVerificationEmail(email, userId) {
-  const token = jwt.sign({ id: userId }, "ourSecretKey", { expiresIn: "10m" });
+  const token = jwt.sign({ id: userId }, process.env.JWT_VERIFY, { expiresIn: "10m" });
 
   // Log the email being sent to
   console.log("Sending verification email to:", email);
@@ -70,7 +70,7 @@ router.get("/verify/:token", async (req, res) => {
   const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, "ourSecretKey"); // Verify JWT
+    const decoded = jwt.verify(token, process.env.JWT_VERIFY); // Verify JWT
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -127,7 +127,7 @@ router.post("/login", (req, res, next) => {
           .json({ success: false, message: "Internal server error" });
       }
       // Generate JWT
-      const token = jwt.sign({ id: user._id }, process.env.JWT, {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
       return res.json({ success: true, user: user, token: token }); // Send token with response
