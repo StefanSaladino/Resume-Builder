@@ -2,7 +2,7 @@
 {
     "/backend": {
       "target": "https://resume-builder-backend-ahjg.onrender.com",
-      "secure": false,
+      "secure": true,
       "pathRewrite": {
         "^/backend": ""
       },
