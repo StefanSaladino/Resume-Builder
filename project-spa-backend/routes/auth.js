@@ -97,18 +97,16 @@ router.get("/login", (req, res, next) => {
   });
 });
 
-// Login route (POST)
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      console.error("Authentication Error: ", err);
+      return res.status(500).json({ success: false, message: "Internal server error" });
     }
     if (!user) {
       return res.status(401).json({ success: false, message: info.message });
     }
-
+    
     // Check if the user is verified
     if (!user.isVerified) {
       return res.status(403).json({
@@ -117,6 +115,21 @@ router.post("/login", (req, res, next) => {
         message: "User is not verified"
       });
     }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error("Login Error: ", err);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+      }
+      
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      return res.json({ success: true, user: user, token: token });
+    });
+  })(req, res, next);
+});
+
     
 
     // If user is verified, log them in
