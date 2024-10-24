@@ -19,7 +19,7 @@ var dotenv = require('dotenv');
 
 // Enabling cross origin resource sharing so the API can be called at the host origin
 var corsOptions = {
-  origin: ['http://localhost:4200', 'https://resume-builder-3aba3.web.app'],
+  origin: ['http://localhost:4200', 'https://resume-builder-3aba3.web.app', 'https://resume-builder-backend-ahjg.onrender.com'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };
