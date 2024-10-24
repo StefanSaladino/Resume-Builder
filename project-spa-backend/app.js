@@ -13,6 +13,7 @@ const cors = require('cors');
 var User = require('./models/user'); // Import the user model
 const authRouter = require('./routes/auth'); // Auth routes
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const MongoStore = require('connect-mongo');
 
 var dotenv = require('dotenv');
 
@@ -53,16 +54,30 @@ app.get('/', (req, res) => {
 
 
 // Configure session object
-// Initialize passport
+// MongoDB connection (adjust with your connection details)
+mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB for session storage');
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+});
+
+// express-session configuration with MongoStore
 app.use(session({
-  secret: 'resume-Builder',
+  secret: 'your-secret', 
   resave: false,
   saveUninitialized: false,
-  cookie: { 
-    secure: true,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  } // Secure should be true only in production with HTTPS
+  store: MongoStore.create({
+    mongoUrl: process.env.CONNECTION_STRING_MONGODB,
+    collectionName: 'sessions', 
+    ttl: 14 * 24 * 60 * 60 // Time-to-live for sessions in seconds (14 days)
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+    maxAge: 1000 * 60 * 60 * 24 * 14 // Expire after 14 days (in milliseconds)
+  }
 }));
 
 app.use(cors(corsOptions));
@@ -118,11 +133,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// Use the environment variable provided by Render or default to a port for local development
-const port = process.env.PORT || 3000;  // Use port 3000 for local testing
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 module.exports = app;
