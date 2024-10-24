@@ -45,7 +45,7 @@ export class LandingPageComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .get<any[]>('https://resume-builder-3aba3.web.app/backend/landing-page', { headers })
+      .get<any[]>('/backend/landing-page', { headers })
       .pipe(
         tap((response) => {
           // Handle login response

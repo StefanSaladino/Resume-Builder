@@ -118,4 +118,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// Use the environment variable provided by Render or default to a port for local development
+const port = process.env.PORT || 3000;  // Use port 3000 for local testing
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
 module.exports = app;
