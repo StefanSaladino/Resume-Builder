@@ -127,7 +127,7 @@ router.post("/login", (req, res, next) => {
           .json({ success: false, message: "Internal server error" });
       }
       // Generate JWT
-      const token = jwt.sign({ id: user._id }, "your_jwt_secret", {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
       return res.json({ success: true, user: user, token: token }); // Send token with response

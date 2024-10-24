@@ -50,6 +50,8 @@ app.get('/', (req, res) => {
 
 
 
+
+
 // Configure session object
 // Initialize passport
 app.use(session({
