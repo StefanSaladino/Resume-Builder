@@ -15,6 +15,7 @@ const authRouter = require('./routes/auth'); // Auth routes
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const MongoStore = require('connect-mongo');
 
+
 var dotenv = require('dotenv');
 
 
@@ -56,8 +57,6 @@ app.get('/', (req, res) => {
 // Configure session object
 // MongoDB connection (adjust with your connection details)
 mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 }).then(() => {
   console.log('Connected to MongoDB for session storage');
 }).catch(err => {
@@ -132,6 +131,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;
