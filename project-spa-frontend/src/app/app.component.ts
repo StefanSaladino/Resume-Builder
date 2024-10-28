@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  [x: string]: any;
   isLoggedIn: boolean = false;
   firstName: string = '';
 

@@ -5,7 +5,7 @@ const { verifyToken } = require("../middleware/tokenVerifier");
 const User = require("../models/user");
 
 /* GET home page. */
-router.get('/landing-page', ensureAuthenticated, verifyToken, async function(req, res, next) {
+router.get('/landing-page', verifyToken, async function(req, res, next) {
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
     if (!user) return res.status(404).json({ message: "User not found" });
