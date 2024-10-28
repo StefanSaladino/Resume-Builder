@@ -15,6 +15,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
+// Import required routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const resumeRoutes = require('./routes/components');
@@ -34,7 +35,7 @@ var corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Connect to MongoDB for session storage
+// MongoDB connection setup for session storage
 mongoose.connect(globals.ConnectionString.MongoDB, {
 }).then(() => {
   console.log('Connected to MongoDB for session storage');
@@ -48,6 +49,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Set view engine to use Handlebars with '.hbs' extension
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
 // Session configuration with MongoStore
 app.use(session({
@@ -86,13 +91,13 @@ app.use('/', authRouter);
 app.use('/resume', resumeRoutes);
 app.use('/api', apiRoute);
 
-// Proxy for Python API
+// Proxy setup for Python API
 app.use('/python-api', createProxyMiddleware({
   target: 'http://localhost:5000', 
   changeOrigin: true
 }));
 
-// Catch-all route for Angular app (assuming your app is served from this directory)
+// Catch-all route for Angular app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'project-spa-frontend', 'src', 'index.html'));
 });
