@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
     this.authService.logout().subscribe(() => {
       this.isLoggedIn = false;
       this.firstName = '';  // Reset firstName on logout
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['/login']);
     });
   }
 }

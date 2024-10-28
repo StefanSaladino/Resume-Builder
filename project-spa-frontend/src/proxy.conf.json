@@ -1,13 +1,6 @@
 
 {
-    "/backend": {
-      "target": "https://resume-builder-backend-ahjg.onrender.com",
-      "secure": true,
-      "pathRewrite": {
-        "^/backend": ""
-      },
-      "changeOrigin": true
-    },
+    
     "/python-api": {
     "target": "http://localhost:5000",
     "secure": false,

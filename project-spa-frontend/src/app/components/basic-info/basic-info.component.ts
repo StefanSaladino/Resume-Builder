@@ -16,7 +16,7 @@ import { catchError, of, tap } from 'rxjs';
 })
 export class BasicInfoComponent implements OnInit {
   basicInfoForm!: FormGroup;
-  private apiUrl = 'https://resume-builder-3aba3.web.app/backend/resume/basic-info';
+  private apiUrl = 'https://resume-builder-backend-ahjg.onrender.com/basic-info';
 
   constructor(
     private fb: FormBuilder,
