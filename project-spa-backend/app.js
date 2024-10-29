@@ -52,28 +52,15 @@ app.get('/', (req, res) => {
 });
 
 // MongoDB connection setup for session storage
-mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
-}).then(() => {
-  console.log('Connected to MongoDB for session storage');
-}).catch(err => {
-  console.error('MongoDB connection error:', err);
-});
-
-// Configure express-session with MongoStore
 app.use(session({
-  secret: 'your-secret',
+  secret: 'resume-Builder',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.CONNECTION_STRING_MONGODB,
-    collectionName: 'sessions',
-    ttl: 14 * 24 * 60 * 60 // Sessions last 14 days
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // Secure cookies in production only
+  cookie: { 
+    secure: true,
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 14 // Expire after 14 days
-  }
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  } // Secure should be true only in production with HTTPS
 }));
 
 // CORS setup
