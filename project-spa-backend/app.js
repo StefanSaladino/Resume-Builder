@@ -80,9 +80,6 @@ app.use(session({
 // CORS setup
 app.use(cors(corsOptions));
 
-// Passport and session management
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Session logger to help with debugging
 app.use((req, res, next) => {
@@ -98,8 +95,15 @@ app.use('/python-api', createProxyMiddleware({
 
 // Passport strategy configuration for user login
 passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Store user ID in the session
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user); // Retrieve user from DB
+  });
+});
 
 // Routes
 app.use('/', indexRouter);

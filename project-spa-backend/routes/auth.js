@@ -123,6 +123,7 @@ router.post("/login", (req, res, next) => {
     console.log(`User: ${user}`);
     // If user is verified, log them in
     req.logIn(user, (err) => {
+      console.log('User after login:', req.user);
       if (err) {
         return res
           .status(500)
@@ -134,6 +135,7 @@ router.post("/login", (req, res, next) => {
         expiresIn: "1h",
       });
       console.log('Success');
+      console.log(token);
       return res.json({ success: true, user: user, token: token });
       // Send token with response
     });
