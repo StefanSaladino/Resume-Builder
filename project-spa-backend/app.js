@@ -95,15 +95,8 @@ app.use('/python-api', createProxyMiddleware({
 
 // Passport strategy configuration for user login
 passport.use(User.createStrategy());
-passport.serializeUser((user, done) => {
-  done(null, user.id); // Store user ID in the session
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user); // Retrieve user from DB
-  });
-});
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Routes
 app.use('/', indexRouter);
