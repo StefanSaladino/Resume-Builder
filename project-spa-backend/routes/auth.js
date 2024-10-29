@@ -100,6 +100,7 @@ router.get("/login", (req, res, next) => {
 // Login route (POST)
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
+    console.log("Authenticating...");
     if (err) {
       return res
         .status(500)
@@ -109,6 +110,7 @@ router.post("/login", (req, res, next) => {
       return res.status(401).json({ success: false, message: info.message });
     }
 
+    console.log("Verifying...");
     // Check if the user is verified
     if (!user.isVerified) {
       return res.status(403).json({
@@ -118,7 +120,7 @@ router.post("/login", (req, res, next) => {
       });
     }
     
-
+    console.log(`User: ${user}`);
     // If user is verified, log them in
     req.logIn(user, (err) => {
       if (err) {
@@ -131,7 +133,9 @@ router.post("/login", (req, res, next) => {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      return res.json({ success: true, user: user, token: token }); // Send token with response
+      console.log('Success');
+      return res.json({ success: true, user: user, token: token });
+      // Send token with response
     });
   })(req, res, next);
 });
