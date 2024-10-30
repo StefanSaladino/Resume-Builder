@@ -59,6 +59,11 @@ mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
   console.error('MongoDB connection error:', err);
 });
 
+// Passport strategy configuration for user login
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // Configure express-session with MongoStore
 app.use(session({
   secret: 'your-secret',
@@ -91,11 +96,6 @@ app.use('/python-api', createProxyMiddleware({
   target: 'http://localhost:5000',
   changeOrigin: true
 }));
-
-// Passport strategy configuration for user login
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 // Routes
 app.use('/', indexRouter);
