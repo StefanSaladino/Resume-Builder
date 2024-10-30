@@ -55,7 +55,7 @@ export class EducationComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>('https://resume-builder-3aba3.web.app/backend/resume/education', { headers })
+    this.http.get<any[]>('https://resume-builder-backend-ahjg.onrender.com/resume/education', { headers })
       .pipe(
         tap((response) => {
           this.educations = response; // Assign the response to the educations array

@@ -47,6 +47,7 @@ router.post("/basic-info", async (req, res) => {
 
 // Get route to retrieve the user's basic info
 router.get("/basic-info", async (req, res) => {
+  console.log("Navigating to basic info");
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
     console.log('User id on BI page' + user.userId);
