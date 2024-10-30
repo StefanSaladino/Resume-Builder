@@ -49,7 +49,10 @@ router.post("/basic-info", async (req, res) => {
 router.get("/basic-info", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      console.log("Error finding user");
+      return res.status(404).json({ message: "User not found" });
+    }
 
     // Check if resume.basicInfo exists
     if (user.resume && user.resume.basicInfo) {
