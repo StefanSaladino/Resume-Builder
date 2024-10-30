@@ -96,7 +96,12 @@ app.use('/python-api', createProxyMiddleware({
 // Passport strategy configuration for user login
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    console.log('Deserialized User:', user);
+    done(err, user);
+  });
+});
 
 // Routes
 app.use('/', indexRouter);
