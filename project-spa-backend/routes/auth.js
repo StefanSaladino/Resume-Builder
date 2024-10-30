@@ -160,13 +160,20 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-router.get("/user", (req, res) => {
-  console.log("Session:", req.session);
-  console.log("User:", req.user);
-  if (req.isAuthenticated()) {
-    return res.status(200).json(req.user); // Return the user object
-  } else {
-    return res.status(200).json(null); // Return null if not authenticated
+router.get('/user', verifyToken, async (req, res) => {
+  try {
+      // Fetch user data from the database using the decoded userId
+      const user = await User.findById(req.userId);
+      
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Return the user data (excluding sensitive information)
+      return res.status(200).json(user);
+  } catch (error) {
+      console.error("Error fetching user:", error);
+      return res.status(500).json({ message: 'Server error while retrieving user data' });
   }
 });
 
