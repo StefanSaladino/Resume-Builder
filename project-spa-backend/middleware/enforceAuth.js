@@ -15,6 +15,7 @@
  * - Use this middleware in Express routes to restrict 
  *   access to authenticated users only.
  */
+const passport = require("passport");
 
 function ensureAuthenticated(req, res, next) {
     console.log('User:', req.user); // Check if user is set
