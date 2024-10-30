@@ -49,8 +49,8 @@ router.post("/basic-info", async (req, res) => {
 router.get("/basic-info", async (req, res) => {
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
+    console.log('User id on BI page' + user.userId);
     if (!user) {
-      console.log("Error finding user");
       return res.status(404).json({ message: "User not found" });
     }
 
