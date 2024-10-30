@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 require("dotenv").config();
+const { verifyToken } = require("../middleware/tokenVerifier");
 
 // Nodemailer setup using SendGrid SMTP
 const transporter = nodemailer.createTransport({
