@@ -66,7 +66,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // Configure express-session with MongoStore
 app.use(session({
-  secret: 'your-secret',
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
