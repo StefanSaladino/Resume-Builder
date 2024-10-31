@@ -239,31 +239,32 @@ router.post("/skills", async (req, res) => {
 router.delete("/skills/:id", async (req, res) => {
   try {
     const userId = req.user._id;
-    const skillId = req.params._id;
+    const skillId = req.params.id;
 
     // Find the user and remove the specific entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { "user.resume.skills": { _id: skillId } } },
+      { $pull: { "resume.skills": { _id: skillId } } },
       { new: true } // Return the updated user document
     );
 
     if (!user) {
       return res
         .status(404)
-        .json({ message: "User not found or education entry not found" });
+        .json({ message: "User not found or skill entry not found" });
     }
 
-    // Return the updated education list as part of the response
+    // Return the updated skills list as part of the response
     res.json({
       message: "Skill removed successfully",
-      experience: user.resume.skills,
+      skills: user.resume.skills,
     });
   } catch (err) {
     console.error("Error deleting skill:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 router.put("/skills/:_id", async (req, res, next) => {
   try {
