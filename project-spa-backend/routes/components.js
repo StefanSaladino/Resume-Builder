@@ -241,10 +241,10 @@ router.delete("/skills/:id", async (req, res) => {
     const userId = req.user._id;
     const skillId = req.params.id;
 
-    // Find the user and remove the specific education entry from the resume
+    // Find the user and remove the specific entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { "resume.skills": { _id: skillId } } }, // Use the correct path to remove the education entry
+      { $pull: { "user.resume.skills": { _id: skillId } } },
       { new: true } // Return the updated user document
     );
 
