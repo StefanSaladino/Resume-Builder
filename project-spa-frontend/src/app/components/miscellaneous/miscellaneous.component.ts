@@ -72,7 +72,7 @@ export class MiscellaneousComponent implements OnInit {
 
     this.http
       .put(
-        `http://localhost:4200/backend/resume/miscellaneous/${updatedMisc._id}`,
+        `https://resume-builder-backend-ahjg.onrender.com/miscellaneous/${updatedMisc._id}`,
         updatedMisc,
         { headers }
       )
@@ -105,7 +105,7 @@ export class MiscellaneousComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
       this.http
-        .delete(`http://localhost:4200/backend/resume/miscellaneous/${removedMiscellaneous._id}`, { headers })
+        .delete(`https://resume-builder-backend-ahjg.onrender.com/miscellaneous/${removedMiscellaneous._id}`, { headers })
         .pipe(
           tap(() => {
             console.log('Miscellaneous entry removed from backend');
@@ -130,7 +130,7 @@ export class MiscellaneousComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .post('http://localhost:4200/backend/resume/miscellaneous', miscellaneous, { headers })
+      .post('https://resume-builder-backend-ahjg.onrender.com/resume/miscellaneous', miscellaneous, { headers })
       .pipe(
         tap((response: any) => {
           console.log('Miscellaneous entry saved:', response);
@@ -154,7 +154,7 @@ export class MiscellaneousComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .get<any[]>('http://localhost:4200/backend/resume/miscellaneous', { headers })
+      .get<any[]>('https://resume-builder-backend-ahjg.onrender.com/resume/miscellaneous', { headers })
       .pipe(
         tap((response) => {
           this.miscellaneous = response;

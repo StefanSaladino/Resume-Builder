@@ -137,7 +137,7 @@ export class VolunteerComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .post('http://localhost:4200/backend/resume/volunteer', volunteer, {
+      .post('https://resume-builder-backend-ahjg.onrender.com/resume/volunteer', volunteer, {
         headers,
       })
       .pipe(
@@ -185,7 +185,7 @@ export class VolunteerComponent implements OnInit {
 
     this.http
       .put(
-        `http://localhost:4200/backend/resume/volunteer/${updatedVolunteer._id}`,
+        `https://resume-builder-backend-ahjg.onrender.com/volunteer/${updatedVolunteer._id}`,
         updatedVolunteer,
         { headers }
       )
@@ -215,7 +215,7 @@ export class VolunteerComponent implements OnInit {
 
       this.http
         .delete(
-          `http://localhost:4200/backend/resume/volunteer/${removedExperience._id}`,
+          `https://resume-builder-backend-ahjg.onrender.com/volunteer/${removedExperience._id}`,
           { headers }
         )
         .pipe(
@@ -242,7 +242,7 @@ export class VolunteerComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .get<any[]>('http://localhost:4200/backend/resume/volunteer', { headers })
+      .get<any[]>('https://resume-builder-backend-ahjg.onrender.com/resume/volunteer', { headers })
       .pipe(
         tap((response) => {
           this.volunteers = response; // Assign the response to the educations array

@@ -170,7 +170,7 @@ export class ExperienceComponent implements OnInit {
 
       this.http
         .delete(
-          `https://resume-builder-3aba3.web.app/backend/resume/experience/${removedExperience._id}`,
+          `https://resume-builder-backend-ahjg.onrender.com/resume/experience/${removedExperience._id}`,
           { headers }
         )
         .pipe(
@@ -191,7 +191,7 @@ export class ExperienceComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .post('https://resume-builder-3aba3.web.app/backend/resume/experience', experience, {
+      .post('https://resume-builder-backend-ahjg.onrender.com/resume/experience', experience, {
         headers,
       })
       .pipe(
@@ -213,7 +213,7 @@ export class ExperienceComponent implements OnInit {
 
     this.http
       .put(
-        `https://resume-builder-3aba3.web.app/backend/resume/experience/${updatedExperience._id}`,
+        `https://resume-builder-backend-ahjg.onrender.com/resume/experience/${updatedExperience._id}`,
         updatedExperience,
         { headers }
       )
@@ -237,7 +237,7 @@ export class ExperienceComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http
-      .get<any[]>('https://resume-builder-3aba3.web.app/backend/resume/experience', {
+      .get<any[]>('https://resume-builder-backend-ahjg.onrender.com/resume/experience', {
         headers,
       })
       .pipe(

@@ -37,7 +37,7 @@ export class FinalizeResumeComponent implements OnInit {
     const token = localStorage.getItem('authToken'); // Get token from localStorage
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Set Authorization header
 
-    this.http.get<any[]>('https://resume-builder-3aba3.web.app/backend/user', { headers })
+    this.http.get<any[]>('https://resume-builder-backend-ahjg.onrender.com/user', { headers })
       .subscribe(user => {
         this.userInfo = user; // Set user data from backend
       }, error => {
@@ -55,7 +55,7 @@ export class FinalizeResumeComponent implements OnInit {
   
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    this.http.get<any>('https://resume-builder-3aba3.web.app/backend/resume/generate-resume', { headers })
+    this.http.get<any>('https://resume-builder-backend-ahjg.onrender.com/resume/generate-resume', { headers })
       .subscribe(
         (response) => {
           if (response && response.generatedResume) {
@@ -100,7 +100,7 @@ export class FinalizeResumeComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
-    this.http.post('https://resume-builder-3aba3.web.app/backend/resume/generate-resume', 
+    this.http.post('https://resume-builder-backend-ahjg.onrender.com/resume/generate-resume', 
       { generatedResume: this.generatedResume }, 
       { headers }
     ).subscribe(

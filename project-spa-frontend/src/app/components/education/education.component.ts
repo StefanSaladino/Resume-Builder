@@ -145,7 +145,7 @@ if (isValidStartDate && isValidEndDate) {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.post('https://resume-builder-3aba3.web.app/backend/resume/education', education, { headers })
+    this.http.post('https://resume-builder-backend-ahjg.onrender.com/resume/education', education, { headers })
       .pipe(
         tap((response) => {
           console.log('Education info saved:', response);
@@ -162,7 +162,7 @@ if (isValidStartDate && isValidEndDate) {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.put(`https://resume-builder-3aba3.web.app/backend/resume/education/${id}`, education, { headers })
+    this.http.put(`https://resume-builder-backend-ahjg.onrender.com/resume/education/${id}`, education, { headers })
       .pipe(
         tap((response) => {
           console.log('Education info updated:', response);
