@@ -15,8 +15,6 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3000; // Define port
-
 // Enable CORS
 var corsOptions = {
   origin: [
@@ -131,9 +129,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// Listen on the defined port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Listen on the Render-provided port without specifying a default
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running`);
 });
 
 module.exports = app;
