@@ -7,7 +7,7 @@ const User = require("../models/user");
 const dotenv = require("dotenv");
 
 // Middleware to ensure the user is authenticated
-router.use(ensureAuthenticated);
+// router.use(ensureAuthenticated);
 
 // Define routes for different parts of the resume
 // Apply the token verification middleware to all /resume routes
@@ -236,7 +236,7 @@ router.post("/skills", async (req, res) => {
   }
 });
 
-router.delete("/skills/:id", async (req, res) => {
+router.delete("/skills/:id", ensureAuthenticated, async (req, res) => {
   try {
     const userId = req.user._id;
     const skillId = req.params.id;
