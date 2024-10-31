@@ -7,7 +7,7 @@ const User = require("../models/user");
 const dotenv = require("dotenv");
 
 // Middleware to ensure the user is authenticated
-// router.use(ensureAuthenticated);
+router.use(ensureAuthenticated);
 
 // Define routes for different parts of the resume
 // Apply the token verification middleware to all /resume routes
