@@ -59,11 +59,6 @@ mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
   console.error('MongoDB connection error:', err);
 });
 
-// Passport strategy configuration for user login
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 // Configure express-session with MongoStore
 app.use(session({
   secret: process.env.JWT_SECRET,
@@ -80,6 +75,11 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 14 // Expire after 14 days
   }
 }));
+
+// Passport strategy configuration for user login
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // CORS setup
 app.use(cors(corsOptions));

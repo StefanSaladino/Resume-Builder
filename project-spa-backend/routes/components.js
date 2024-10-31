@@ -50,7 +50,7 @@ router.get("/basic-info", async (req, res) => {
   console.log("Navigating to basic info");
   try {
     const user = await User.findById(req.userId); // Use req.userId from the token
-    console.log('User id on BI page' + user.userId);
+    console.log('User id on BI page:' + user.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
