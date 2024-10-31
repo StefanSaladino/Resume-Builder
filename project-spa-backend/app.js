@@ -129,9 +129,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// Listen on the Render-provided port without specifying a default
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running`);
-});
-
 module.exports = app;

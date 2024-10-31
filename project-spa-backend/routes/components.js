@@ -7,7 +7,7 @@ const User = require("../models/user");
 const dotenv = require("dotenv");
 
 // Middleware to ensure the user is authenticated
-router.use(ensureAuthenticated);
+// router.use(ensureAuthenticated);
 
 // Define routes for different parts of the resume
 // Apply the token verification middleware to all /resume routes
@@ -46,11 +46,11 @@ router.post("/basic-info", async (req, res) => {
 });
 
 // Get route to retrieve the user's basic info
-router.get("/basic-info", async (req, res) => {
+router.get("/basic-info", verifyToken, async (req, res) => {
   console.log("Navigating to basic info");
   try {
-    const user = await User.findById(req.userId); // Use req.userId from the token
-    console.log('User id on BI page:' + user.userId);
+    const user = await User.findById(req.userId); // Use req.userId set by verifyToken
+    console.log('User id on BI page:', req.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
