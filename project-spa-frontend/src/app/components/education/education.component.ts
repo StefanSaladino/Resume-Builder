@@ -189,7 +189,7 @@ if (isValidStartDate && isValidEndDate) {
   removeEducation(index: number) {
     if (this.educations[index]) {
       this.educations.splice(index, 1);
-      this.saveEducationToBackend(this.educations[index]); // You may want to handle deletion in the backend instead
+      this.saveEducationToBackend(this.educations[index]);
       if (this.educations.length === 0) {
         this.showForm = true; // Show the form again if no entries are left
       }

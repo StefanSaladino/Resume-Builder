@@ -239,7 +239,7 @@ router.post("/skills", async (req, res) => {
 router.delete("/skills/:id", async (req, res) => {
   try {
     const userId = req.user._id;
-    const skillId = req.params.id;
+    const skillId = req.params._id;
 
     // Find the user and remove the specific entry from the resume
     const user = await User.findByIdAndUpdate(
