@@ -15,6 +15,8 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
+const PORT = process.env.PORT || 3000; // Define port
+
 // Enable CORS
 var corsOptions = {
   origin: [
@@ -25,6 +27,7 @@ var corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 };
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const resumeRoutes = require('./routes/components');
@@ -84,7 +87,6 @@ passport.deserializeUser(User.deserializeUser());
 // CORS setup
 app.use(cors(corsOptions));
 
-
 // Session logger to help with debugging
 app.use((req, res, next) => {
   console.log('Session Data:', req.session);
@@ -127,6 +129,11 @@ app.use(function(err, req, res, next) {
   // Render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+// Listen on the defined port
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
