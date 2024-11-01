@@ -177,6 +177,35 @@ router.get('/user', verifyToken, async (req, res) => {
 });
 
 // Resend verification email route (POST)
+router.post("/resend-verification-email", async (req, res) => {
+  const { email } = req.body; // Get email from the request body
+
+  try {
+    const user = await User.findOne({ email }); // Find the user by email
+    if (!user) {
+      // Send a JSON response when the user is not found
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.isVerified) {
+      // Send a JSON response when the user is already verified
+      return res.status(400).json({ success: false, message: "User is already verified" });
+    }
+
+    // Send the verification email
+    sendVerificationEmail(user.email, user._id);
+
+    // Send a JSON response when the email is successfully resent
+    return res.status(200).json({ success: true, message: "Verification email resent" });
+  } catch (err) {
+    console.error("Error resending verification email:", err);
+    // Send a JSON response in case of an internal server error
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+
+
 // Forgot Password Route
 router.post("/reset-password", async (req, res) => {
   const { email } = req.body;
