@@ -236,7 +236,7 @@ router.post("/skills", async (req, res) => {
   }
 });
 
-router.delete("/skills/:id", ensureAuthenticated, async (req, res) => {
+router.delete("/skills/:id", async (req, res) => {
   try {
     const skillId = req.params.id;
 
