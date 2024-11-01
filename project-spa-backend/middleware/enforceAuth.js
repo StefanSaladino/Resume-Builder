@@ -15,14 +15,15 @@
  * - Use this middleware in Express routes to restrict 
  *   access to authenticated users only.
  */
+const passport = require("passport");
 
-// Update ensureAuthenticated to check for req.userId set by verifyToken
 function ensureAuthenticated(req, res, next) {
-  console.log('User ID:', req.userId); // Check if user ID is set by verifyToken
-  if (req.userId) {
-    return next();
+    console.log('User:', req.user); // Check if user is set
+    console.log('Session:', req.session); // Check session data
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-  return res.status(401).json({ error: 'Unauthorized' });
-}
 
 module.exports = { ensureAuthenticated };

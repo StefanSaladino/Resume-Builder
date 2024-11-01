@@ -33,7 +33,7 @@ function sendVerificationEmail(email, userId) {
     from: process.env.EMAIL_ADDRESS,
     to: email,
     subject: "Email Verification",
-    text: `Hi! Please follow the link to verify your email: https://resume-builder-3aba3.web.app/backend/verify/${token} Thanks.`,
+    text: `Hi! Please follow the link to verify your email: https://resume-builder-backend-ahjg.onrender.com/verify/${token} Thanks.`,
   };
 
   transporter.sendMail(mailConfigurations, (error, info) => {
