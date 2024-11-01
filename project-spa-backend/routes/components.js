@@ -238,17 +238,11 @@ router.post("/skills", async (req, res) => {
 
 router.delete("/skills/:id", ensureAuthenticated, async (req, res) => {
   try {
-    const userId = req.userId;
     const skillId = req.params.id;
-
-    // Check if userId and skillId are valid
-    if (!userId || !skillId) {
-      return res.status(400).json({ message: "Invalid user ID or skill ID" });
-    }
 
     // Find the user and remove the specific entry from the resume
     const user = await User.findByIdAndUpdate(
-      userId,
+      req.userId,
       { $pull: { "user.resume.skills": { _id: skillId } } },
       { new: true } // Return the updated user document
     );
