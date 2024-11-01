@@ -104,7 +104,6 @@ export class SkillsComponent implements OnInit {
     if (removedSkill && removedSkill._id) {
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
       this.http.delete(`https://resume-builder-backend-ahjg.onrender.com/resume/skills/${removedSkill._id}`, { headers })
         .pipe(
           tap(() => {
@@ -113,13 +112,17 @@ export class SkillsComponent implements OnInit {
           }),
           catchError((error) => {
             console.error('Error removing skill:', error);
+            alert(`Failed to remove skill: ${error.message}`);
             return of(error);
           })
         ).subscribe();
     } else {
-      console.error('Skill to remove does not exist or has no ID:', removedSkill);
+      const errorMessage = removedSkill ? 'Skill to remove has no ID' : 'Skill to remove does not exist';
+      console.error(errorMessage, removedSkill);
+      alert(errorMessage);
     }
   }
+  
 
   editSkill(index: number) {
     const skillToEdit = this.skills[index];

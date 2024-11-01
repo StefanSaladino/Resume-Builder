@@ -241,6 +241,11 @@ router.delete("/skills/:id", ensureAuthenticated, async (req, res) => {
     const userId = req.user._id;
     const skillId = req.params.id;
 
+    // Check if userId and skillId are valid
+    if (!userId || !skillId) {
+      return res.status(400).json({ message: "Invalid user ID or skill ID" });
+    }
+
     // Find the user and remove the specific entry from the resume
     const user = await User.findByIdAndUpdate(
       userId,
@@ -261,9 +266,10 @@ router.delete("/skills/:id", ensureAuthenticated, async (req, res) => {
     });
   } catch (err) {
     console.error("Error deleting skill:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
 
 
 router.put("/skills/:_id", async (req, res, next) => {
