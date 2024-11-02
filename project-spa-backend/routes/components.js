@@ -131,30 +131,25 @@ router.post("/education", async (req, res) => {
 // Remove Education instance
 router.delete("/education/:id", async (req, res) => {
   try {
-    const userId = req.user.id; // Get the user ID from the authenticated session
-    const educationId = req.params.id; // Get the education ID from the route parameter
+    const educationId = req.params.id;
 
-    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { "resume.education": { _id: educationId } } }, // Use the correct path to remove the education entry
-      { new: true } // Return the updated user document
+      req.userId,
+      { $pull: { "resume.education": { _id: educationIdId } } },
+      { new: true }
     );
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found or education entry not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the updated education list as part of the response
-    res.json({
-      message: "Education entry removed successfully",
-      education: user.resume.education,
+    res.status(200).json({
+      message: "Education removed successfully",
+      skills: user.resume.education,
     });
   } catch (err) {
-    console.error("Error deleting education entry:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error deleting education:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
@@ -337,30 +332,25 @@ router.post("/volunteer", async (req, res) => {
 
 router.delete("/volunteer/:id", async (req, res) => {
   try {
-    const userId = req.user._id; // Get the logged-in user's ID
-    const volunteerId = req.params.id; // Get the experience ID from the request parameters
+    const volunteerId = req.params.id;
 
-    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { "resume.volunteer": { _id: volunteerId } } }, // Use the correct path to remove the education entry
-      { new: true } // Return the updated user document
+      req.userId,
+      { $pull: { "resume.skills": { _id: volunteerId } } },
+      { new: true }
     );
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found or education entry not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the updated education list as part of the response
-    res.json({
+    res.status(200).json({
       message: "Volunteer entry removed successfully",
-      experience: user.resume.volunteer,
+      skills: user.volunteer.skills,
     });
   } catch (err) {
-    console.error("Error deleting volunteer entry:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error deleting volunteer:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
@@ -570,30 +560,25 @@ router.put("/miscellaneous/:id", async (req, res) => {
 // Remove a miscellaneous entry
 router.delete("/miscellaneous/:id", async (req, res) => {
   try {
-    const userId = req.user._id; // Get the logged-in user's ID
-    const miscellaneousId = req.params.id; // Get the miscellaneous entry ID from the request parameters
+    const miscellaneousId = req.params.id;
 
-    // Find the user and remove the specific miscellaneous entry from the resume
     const user = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { "resume.miscellaneous": { _id: miscellaneousId } } }, // Use the correct path to remove the miscellaneous entry
-      { new: true } // Return the updated user document
+      req.userId,
+      { $pull: { "resume.miscellaneous": { _id: miscellaneousId } } },
+      { new: true }
     );
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User or miscellaneous entry not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the updated miscellaneous list as part of the response
-    res.json({
-      message: "Miscellaneous entry removed successfully",
-      miscellaneous: user.resume.miscellaneous,
+    res.status(200).json({
+      message: "Misc. entry removed successfully",
+      skills: user.resume.skills,
     });
-  } catch (error) {
-    console.error("Error deleting miscellaneous entry:", error);
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+    console.error("Error deleting misc. entry:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
