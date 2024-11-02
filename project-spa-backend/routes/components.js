@@ -262,9 +262,6 @@ router.delete("/skills/:id", async (req, res) => {
   }
 });
 
-
-
-
 router.put("/skills/:_id", async (req, res, next) => {
   try {
     // Find the user by their authenticated user ID
@@ -443,30 +440,25 @@ router.post("/experience", async (req, res) => {
 // Remove an experience
 router.delete("/experience/:id", async (req, res) => {
   try {
-    const userId = req.user._id; // Get the logged-in user's ID
-    const experienceId = req.params.id; // Get the experience ID from the request parameters
+    const experienceId = req.params.id;
 
-    // Find the user and remove the specific education entry from the resume
     const user = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { "resume.experience": { _id: experienceId } } }, // Use the correct path to remove the education entry
-      { new: true } // Return the updated user document
+      req.userId,
+      { $pull: { "resume.experience": { _id: experienceId } } },
+      { new: true }
     );
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found or education entry not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the updated education list as part of the response
-    res.json({
-      message: "Experience entry removed successfully",
+    res.status(200).json({
+      message: "Experience removed successfully",
       experience: user.resume.experience,
     });
   } catch (err) {
     console.error("Error deleting experience entry:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
