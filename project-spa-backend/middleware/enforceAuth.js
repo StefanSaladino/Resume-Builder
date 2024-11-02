@@ -16,14 +16,29 @@
  *   access to authenticated users only.
  */
 const passport = require("passport");
+const jwt = require('jsonwebtoken');
+const User = require('../models/user'); // Adjust the path as needed
 
-function ensureAuthenticated(req, res, next) {
-    console.log('User:', req.user); // Check if user is set
-    console.log('Session:', req.session); // Check session data
-    if (req.isAuthenticated()) {
-      return next();
+async function ensureAuthenticated(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized, token missing' });
     }
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId = decoded.userId; // Attach userId to the request object
+        
+        const user = await User.findById(req.userId); // Optional: Fetch user data if needed
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        next();
+    } catch (error) {
+        console.error("Authentication error:", error);
+        return res.status(401).json({ error: 'Unauthorized, invalid token' });
+    }
+}
 
 module.exports = { ensureAuthenticated };
