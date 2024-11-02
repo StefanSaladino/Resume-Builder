@@ -60,15 +60,21 @@ mongoose.connect(process.env.CONNECTION_STRING_MONGODB, {
   console.error('MongoDB connection error:', err);
 });
 
+// Configure express-session with MongoStore
 app.use(session({
-  secret: 'resume-Builder',
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { 
-    secure: true,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  } // Secure should be true only in production with HTTPS
+  store: MongoStore.create({
+    mongoUrl: process.env.CONNECTION_STRING_MONGODB,
+    collectionName: 'sessions',
+    ttl: 14 * 24 * 60 * 60 // Sessions last 14 days
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    // httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 14 // Expire after 14 days
+  }
 }));
 
 // Passport strategy configuration for user login
