@@ -104,24 +104,36 @@ export class SkillsComponent implements OnInit {
     if (removedSkill && removedSkill._id) {
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      
+      // Optimistically remove the skill from local state
+      const removedSkillCopy = { ...removedSkill }; // Copy the skill to restore it if needed
+      this.skills.splice(index, 1);
+      
       this.http.delete(`https://resume-builder-backend-ahjg.onrender.com/resume/skills/${removedSkill._id}`, { headers })
         .pipe(
-          tap(() => {
-            console.log('Skill removed from backend');
-            this.skills.splice(index, 1); // Remove the skill from the array
-          }),
           catchError((error) => {
+            // Handle error
             console.error('Error removing skill:', error);
             alert(`Failed to remove skill: ${error.message}`);
-            return of(error);
+            // Restore the skill if the delete request fails
+            this.skills.splice(index, 0, removedSkillCopy);
+            return of(null); // Return null to complete the observable
           })
-        ).subscribe();
+        )
+        .subscribe(response => {
+          if (!response) {
+            console.log('Skill was not found or deletion failed.');
+          } else {
+            console.log('Skill deleted successfully', response);
+          }
+        });
     } else {
       const errorMessage = removedSkill ? 'Skill to remove has no ID' : 'Skill to remove does not exist';
       console.error(errorMessage, removedSkill);
       alert(errorMessage);
     }
   }
+  
   
 
   editSkill(index: number) {

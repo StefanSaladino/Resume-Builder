@@ -217,7 +217,7 @@ router.get("/skills", async (req, res) => {
 
 router.post("/skills", async (req, res) => {
   try {
-    const user = await User.findById(req.userId); // Use req.userId from JWT
+    const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const newSkill = {
@@ -226,38 +226,33 @@ router.post("/skills", async (req, res) => {
       description: req.body.description,
     };
 
+    // Push new skill and await save to ensure ID is generated
     user.resume.skills.push(newSkill);
     await user.save();
-    res
-      .status(200)
-      .json({ message: "Skills added successfully", data: newSkill });
+    const addedSkill = user.resume.skills[user.resume.skills.length - 1]; // Get newly added skill
+
+    res.status(200).json({ message: "Skill added successfully", skill: addedSkill });
   } catch (error) {
     res.status(500).json({ message: "Error adding skill", error });
   }
 });
 
+
 router.delete("/skills/:id", async (req, res) => {
   try {
-    console.log("User ID from verifyToken middleware:", req.userId);
     const skillId = req.params.id;
 
-    // Corrected path: "resume.skills"
     const user = await User.findByIdAndUpdate(
       req.userId,
       { $pull: { "resume.skills": { _id: skillId } } },
-      { new: true } // Return the updated user document
+      { new: true }
     );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.resume.skills.some(skill => skill._id.toString() === skillId)) {
-      return res.status(404).json({ message: "Skill entry not found" });
-    }
-
-    // Return the updated skills list as part of the response
-    res.json({
+    res.status(200).json({
       message: "Skill removed successfully",
       skills: user.resume.skills,
     });
