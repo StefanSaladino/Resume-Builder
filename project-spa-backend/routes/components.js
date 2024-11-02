@@ -7,7 +7,7 @@ const User = require("../models/user");
 const dotenv = require("dotenv");
 
 // Middleware to ensure the user is authenticated
-router.use(ensureAuthenticated);
+// router.use(ensureAuthenticated);
 
 // Define routes for different parts of the resume
 // Apply the token verification middleware to all /resume routes
@@ -238,19 +238,22 @@ router.post("/skills", async (req, res) => {
 
 router.delete("/skills/:id", async (req, res) => {
   try {
+    console.log("User ID from verifyToken middleware:", req.userId);
     const skillId = req.params.id;
 
-    // Find the user and remove the specific entry from the resume
+    // Corrected path: "resume.skills"
     const user = await User.findByIdAndUpdate(
       req.userId,
-      { $pull: { "user.resume.skills": { _id: skillId } } },
+      { $pull: { "resume.skills": { _id: skillId } } },
       { new: true } // Return the updated user document
     );
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found or skill entry not found" });
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.resume.skills.some(skill => skill._id.toString() === skillId)) {
+      return res.status(404).json({ message: "Skill entry not found" });
     }
 
     // Return the updated skills list as part of the response
@@ -263,6 +266,7 @@ router.delete("/skills/:id", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
 
 
 
