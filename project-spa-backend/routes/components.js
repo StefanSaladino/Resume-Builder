@@ -346,7 +346,7 @@ router.delete("/volunteer/:id", async (req, res) => {
 
     res.status(200).json({
       message: "Volunteer entry removed successfully",
-      skills: user.volunteer.skills,
+      skills: user.resume.volunteer,
     });
   } catch (err) {
     console.error("Error deleting volunteer:", err);
