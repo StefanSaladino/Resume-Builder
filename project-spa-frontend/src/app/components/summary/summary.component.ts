@@ -32,7 +32,7 @@ export class SummaryComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any>('https://resume-builder-backend-ahjg.onrender.com/summary', { headers })
+    this.http.get<any>('https://resume-builder-backend-ahjg.onrender.com/resume/summary', { headers })
       .pipe(
         tap((response) => {
           this.resume = response;

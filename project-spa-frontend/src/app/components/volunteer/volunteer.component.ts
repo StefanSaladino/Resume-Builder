@@ -185,7 +185,7 @@ export class VolunteerComponent implements OnInit {
 
     this.http
       .put(
-        `https://resume-builder-backend-ahjg.onrender.com/volunteer/${updatedVolunteer._id}`,
+        `https://resume-builder-backend-ahjg.onrender.com/resume/volunteer/${updatedVolunteer._id}`,
         updatedVolunteer,
         { headers }
       )
@@ -215,7 +215,7 @@ export class VolunteerComponent implements OnInit {
 
       this.http
         .delete(
-          `https://resume-builder-backend-ahjg.onrender.com/volunteer/${removedExperience._id}`,
+          `https://resume-builder-backend-ahjg.onrender.com/resume/volunteer/${removedExperience._id}`,
           { headers }
         )
         .pipe(
