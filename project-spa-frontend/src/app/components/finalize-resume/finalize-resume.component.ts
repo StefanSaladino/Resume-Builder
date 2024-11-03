@@ -117,7 +117,7 @@ export class FinalizeResumeComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    this.http.post('https://resume-builder-3aba3.web.app/python-api/generate-doc', 
+    this.http.post('https://resume-builder-backend-ahjg.onrender.com/python-api/generate-doc', 
       { userId: this.userInfo._id },  // Pass the userId to Python API
       { headers, responseType: 'blob' }
     ).subscribe(
