@@ -210,33 +210,28 @@ router.get("/skills", async (req, res) => {
   }
 });
 
-// Add Skill - POST
 router.post("/skills", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Create a new skill object
     const newSkill = {
       skill: req.body.skill,
       proficiency: req.body.proficiency,
       description: req.body.description,
     };
 
-    // Add the new skill to the user's resume and save
+    // Push new skill and await save to ensure ID is generated
     user.resume.skills.push(newSkill);
     await user.save();
+    const addedSkill = user.resume.skills[user.resume.skills.length - 1]; // Get newly added skill
 
-    // Retrieve the last added skill, including its generated _id
-    const addedSkill = user.resume.skills[user.resume.skills.length - 1];
-
-    // Send the added skill back to the frontend
     res.status(200).json({ message: "Skill added successfully", skill: addedSkill });
   } catch (error) {
-    console.error("Error adding skill:", error);
     res.status(500).json({ message: "Error adding skill", error });
   }
 });
+
 
 router.delete("/skills/:id", async (req, res) => {
   try {
@@ -307,12 +302,14 @@ router.get("/volunteer", async (req, res) => {
   }
 });
 
+// Add Volunteer Experience - POST
 router.post("/volunteer", async (req, res) => {
   console.log("Volunteer Experience Submitted:", req.body);
   try {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Create a new volunteer experience object
     const newVolunteer = {
       organization: req.body.organization,
       role: req.body.role,
@@ -322,18 +319,27 @@ router.post("/volunteer", async (req, res) => {
       impact: req.body.impact || null,
     };
 
+    // Add the new volunteer experience to the user's resume
     user.resume.volunteer.push(newVolunteer);
     await user.save();
+
+    // Retrieve the last added volunteer experience with its generated _id
+    const addedVolunteer = user.resume.volunteer[user.resume.volunteer.length - 1];
+
+    // Send the added volunteer experience back to the frontend
     res.status(200).json({
       message: "Volunteer experience added successfully",
-      data: newVolunteer,
+      data: addedVolunteer,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error adding volunteer experience", error });
+    console.error("Error adding volunteer experience:", error);
+    res.status(500).json({
+      message: "Error adding volunteer experience",
+      error: error.message,
+    });
   }
 });
+
 
 router.delete("/volunteer/:id", async (req, res) => {
   try {

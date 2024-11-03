@@ -142,10 +142,9 @@ export class VolunteerComponent implements OnInit {
       })
       .pipe(
         tap((response: any) => {
-          console.log('Volunteer experience saved:', response);
-          // Check if the ID is present in the response
-          if (response._id) {
-            this.volunteers.push({ ...volunteer, _id: response._id });
+          console.log('Volunteer experience added:', response);
+          if (response.data && response.data._id) {
+            this.volunteers.push(response.data); // Add the new volunteer experience to the displayed list
           } else {
             console.error('No ID returned from backend.');
           }
