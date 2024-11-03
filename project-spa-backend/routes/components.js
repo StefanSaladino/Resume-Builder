@@ -135,7 +135,7 @@ router.delete("/education/:id", async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
       req.userId,
-      { $pull: { "resume.education": { _id: educationIdId } } },
+      { $pull: { "resume.education": { _id: educationId } } },
       { new: true }
     );
 
