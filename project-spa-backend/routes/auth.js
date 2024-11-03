@@ -144,22 +144,9 @@ router.post("/login", (req, res, next) => {
 
 // Logout route
 router.get("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err); // Pass error to error-handling middleware
-    }
-
-    // Clear the session (optional but ensures everything is cleared)
-    req.session.destroy((err) => {
-      if (err) {
-        return next(err);
-      }
-
       // Send success response to the frontend
       res.status(200).json({ message: "Logout successful" });
     });
-  });
-});
 
 router.get('/user', verifyToken, async (req, res) => {
   try {
