@@ -12,7 +12,10 @@
   </div>
 
   <div class="text-center mb-3">
-    <button class="btn btn-success" (click)="temp()">Download as Word doc</button>
+    <button class="btn btn-success" (click)="temp()" [disabled]="isCooldown">
+      Download as Word doc
+      <span *ngIf="isCooldown"> (Cooldown)</span>
+    </button>
   </div>
 
   <div *ngIf="errorMessage" class="alert alert-danger mt-3">

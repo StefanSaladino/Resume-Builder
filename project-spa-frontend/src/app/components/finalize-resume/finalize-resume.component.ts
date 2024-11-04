@@ -20,6 +20,8 @@ export class FinalizeResumeComponent implements OnInit {
   error: string = ''; // Variable to store error messages
   resumeHtml: string | null = null;
   errorMessage: string | null = null;
+  isCooldown: boolean = false; // Cooldown state
+  cooldownTimer: any; // Timer reference
 
   constructor(
     private formDataService: FormDataService,
@@ -140,7 +142,21 @@ export class FinalizeResumeComponent implements OnInit {
 
   temp() {
     alert("This feature is coming soon! Please bare with us while we implement it!")
+    this.startCooldown(); // Start the cooldown after the download action
   }
-  
-  
+
+  // Method to start the cooldown
+  private startCooldown() {
+    this.isCooldown = true;
+    this.cooldownTimer = setTimeout(() => {
+      this.isCooldown = false; // Reset cooldown after 1 minute
+    }, 60000); // 60000 milliseconds = 1 minute
+  }
+
+  // Clean up the timer if needed
+  ngOnDestroy() {
+    if (this.cooldownTimer) {
+      clearTimeout(this.cooldownTimer);
+    }
+  }
 }
