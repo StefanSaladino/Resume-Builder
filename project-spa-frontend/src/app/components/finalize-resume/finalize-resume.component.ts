@@ -1,28 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormDataService } from '../../../services/form-data.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResumeService } from '../../../services/resume-generator.service';
-import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-finalize-resume',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './finalize-resume.component.html',
   styleUrls: ['./finalize-resume.component.css']
 })
 export class FinalizeResumeComponent implements OnInit, OnDestroy {
   userInfo: any = {};
-  generatedResume: string = ''; // Define the 'generatedResume' property correctly
-  error: string = ''; // Variable to store error messages
-  resumeHtml: string | null = null;
+  generatedResume: string = '';
   errorMessage: string | null = null;
-  isGenerateCooldown: boolean = false; // Cooldown state for generating resume
-  isDownloadCooldown: boolean = false; // Cooldown state for downloading resume
-  cooldownTimer: Subscription | null = null; // Timer reference
+  isCooldown: boolean = false; // Cooldown state
+  cooldownTimer: any; // Timer reference
+  remainingSeconds: number = 0; // Track remaining seconds for cooldown
 
   constructor(
     private formDataService: FormDataService,
@@ -32,20 +28,20 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.checkLogin(); // Check user login status when component loads
+    this.checkLogin();
     this.loadExistingResume();
   }
 
   checkLogin() {
-    const token = localStorage.getItem('authToken'); // Get token from localStorage
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Set Authorization header
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.get<any[]>('https://resume-builder-backend-ahjg.onrender.com/user', { headers })
       .subscribe(user => {
-        this.userInfo = user; // Set user data from backend
+        this.userInfo = user;
       }, error => {
-        console.error('Error fetching user data:', error); // Log error in case of failure
-        this.errorMessage = 'Failed to fetch user data. Please try again.'; // Set error message
+        console.error('Error fetching user data:', error);
+        this.errorMessage = 'Failed to fetch user data. Please try again.';
       });
   }
 
@@ -72,11 +68,6 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
   }
 
   generateResume() {
-    if (this.isGenerateCooldown) {
-      console.warn('Generate Resume is on cooldown.');
-      return; // Prevent generating a resume if on cooldown
-    }
-
     const token = localStorage.getItem('authToken');
     if (!token) {
       console.error('No token found in localStorage');
@@ -89,12 +80,7 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.msg) {
           this.generatedResume = response.msg;
-          
-          // Save the generated resume to the backend
           this.saveGeneratedResume();
-          
-          // Start cooldown for generating resume
-          this.startGenerateCooldown();
         } else {
           console.error('Failed to generate resume');
         }
@@ -123,31 +109,22 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
   }
   
   downloadResume() {
-    if (this.isDownloadCooldown) {
-      console.warn('Download Resume is on cooldown.');
-      return; // Prevent downloading if on cooldown
-    }
-
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
     this.http.post('https://resume-builder-backend-ahjg.onrender.com/python-api/generate-doc', 
-      { userId: this.userInfo._id },  // Pass the userId to Python API
+      { userId: this.userInfo._id },
       { headers, responseType: 'blob' }
     ).subscribe(
       (blob) => {
-        // Create a download link
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'resume.docx';  // Name of the downloaded file
+        a.download = 'resume.docx';  
         a.click();
-        
-        // Clean up the URL object
         window.URL.revokeObjectURL(url);
         
-        // Start cooldown for downloading resume
-        this.startDownloadCooldown();
+        this.startCooldown(); // Start cooldown after successful download
       },
       error => {
         console.error('Error downloading resume:', error);
@@ -156,30 +133,26 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
   }
 
   temp() {
-    alert("This feature is coming soon! Please bear with us while we implement it!");
-    this.startDownloadCooldown(); // Start cooldown after the alert action
+    alert("This feature is coming soon! Please bare with us while we implement it!");
+    this.startCooldown(); // Start cooldown after the alert action
   }
 
-  // Method to start the cooldown for generating resume
-  private startGenerateCooldown() {
-    this.isGenerateCooldown = true;
-    this.cooldownTimer = timer(60000).subscribe(() => {
-      this.isGenerateCooldown = false; // Reset cooldown after 1 minute
-    });
+  // Method to start the cooldown
+  private startCooldown() {
+    this.isCooldown = true;
+    this.remainingSeconds = 60; // Set the cooldown duration in seconds
+    this.cooldownTimer = setInterval(() => {
+      this.remainingSeconds--;
+      if (this.remainingSeconds <= 0) {
+        this.isCooldown = false; // Reset cooldown
+        clearInterval(this.cooldownTimer); // Stop the timer
+      }
+    }, 1000); // Update every second
   }
 
-  // Method to start the cooldown for downloading resume
-  private startDownloadCooldown() {
-    this.isDownloadCooldown = true;
-    this.cooldownTimer = timer(60000).subscribe(() => {
-      this.isDownloadCooldown = false; // Reset cooldown after 1 minute
-    });
-  }
-
-  // Clean up the timer if needed
   ngOnDestroy() {
     if (this.cooldownTimer) {
-      this.cooldownTimer.unsubscribe();
+      clearInterval(this.cooldownTimer);
     }
   }
 }

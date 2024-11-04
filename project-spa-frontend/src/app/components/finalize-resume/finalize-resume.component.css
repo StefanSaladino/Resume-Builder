@@ -62,3 +62,8 @@ h2 {
 button{
     margin: 0.75em;
 }
+
+small{
+    color: red;
+}
+
