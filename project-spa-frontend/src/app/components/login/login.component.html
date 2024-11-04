@@ -62,6 +62,18 @@
     </div>
   </div>
 </div>
+<div *ngIf="failedAttempts >= 3" class="text-center mt-3">
+  <p>Are you trying to brute force?</p>
+  <iframe
+      width="560"
+      height="315"
+      src="https://www.youtube.com/embed/Jl0CmfZNeWM?autoplay=1&mute=0"
+      title="Are you trying to brute force?"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+</div>
 
 <div *ngIf="showResetForm">
   <div class="container mt-5">

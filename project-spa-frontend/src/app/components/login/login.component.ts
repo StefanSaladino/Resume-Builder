@@ -25,6 +25,7 @@ export class LoginComponent {
   showResendEmailOption: boolean = false;
   resetPasswordMessage: string | null = null; // For success messages on password reset
   showResetForm: boolean = false;
+  failedAttempts=0;
 
   constructor(
     private fb: FormBuilder,
@@ -48,13 +49,18 @@ export class LoginComponent {
         .pipe(
           tap((response: any) => {
             if (response.success) {
-              // Navigate to the next page if login is successful
+              this.failedAttempts = 0; // Reset on successful login
               this.router.navigate(['resume/basic-info']);
             }
           }),
           catchError((error: HttpErrorResponse) => {
             console.error('Full error object:', error);
-            
+            this.failedAttempts++; // Increment on error
+
+            if (this.failedAttempts >= 3) {
+              this.errorMessage = "Are you trying to brute force?"; // Show message after 3 attempts
+            }
+
             if (error.status === 403 && error.error?.isVerified === false) {
               this.errorMessage = "Your account is not verified. Please check your email.";
               this.showResendEmailOption = true;
@@ -71,6 +77,7 @@ export class LoginComponent {
       this.errorMessage = 'Please fill in all required fields';
     }
   }
+
   
   resendVerificationEmail() {
     const email = this.loginForm.get('email')?.value;

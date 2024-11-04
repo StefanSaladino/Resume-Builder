@@ -108,7 +108,7 @@ router.post("/login", (req, res, next) => {
         .json({ success: false, message: "Internal server error" });
     }
     if (!user) {
-      return res.status(401).json({ success: false, message: info.message + 'Error authenticating user' });
+      return res.status(401).json({ success: false, message: info.message });
     }
 
     console.log("Verifying...");
