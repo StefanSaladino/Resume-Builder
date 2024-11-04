@@ -196,37 +196,22 @@ if (isValidStartDate && isValidEndDate) {
     if (removedEducation && removedEducation._id) {
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      
-      // Optimistically remove the education entry from local state
-      const removedEducationCopy = { ...removedEducation }; // Copy to restore if deletion fails
-      this.educations.splice(index, 1);
-  
-      this.http.delete(`https://resume-builder-backend-ahjg.onrender.com/resume/education/${removedEducation._id}`, { headers })
+
+      this.http
+        .delete(
+          `https://resume-builder-backend-ahjg.onrender.com/resume/education/${removedEducation._id}`,
+          { headers }
+        )
         .pipe(
+          tap(() => {
+            this.educations.splice(index, 1);
+          }),
           catchError((error) => {
-            // Handle error
             console.error('Error removing education:', error);
-            alert(`Failed to remove education: ${error.message}`);
-            // Restore the education entry if deletion fails
-            this.educations.splice(index, 0, removedEducationCopy);
-            return of(null); // Return null to complete the observable
+            return of(error);
           })
         )
-        .subscribe(response => {
-          if (!response) {
-            console.log('Education entry was not found or deletion failed.');
-          } else {
-            console.log('Education entry deleted successfully', response);
-          }
-        });
-  
-      if (this.educations.length === 0) {
-        this.showForm = true; // Show the form again if no entries are left
-      }
-    } else {
-      const errorMessage = removedEducation ? 'Education entry to remove has no ID' : 'Education entry to remove does not exist';
-      console.error(errorMessage, removedEducation);
-      alert(errorMessage);
+        .subscribe();
     }
   }
   

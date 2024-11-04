@@ -119,9 +119,10 @@ router.post("/education", async (req, res) => {
 
     user.resume.education.push(newEducation);
     await user.save();
+    const addedEdu = user.resume.education[user.resume.education.length - 1];
     res
       .status(200)
-      .json({ message: "Education added successfully", data: newEducation });
+      .json({ message: "Education added successfully", data:addedEdu });
   } catch (error) {
     console.error("Error saving education:", error);
     res.status(500).json({ message: "Server error", error: error.message });
