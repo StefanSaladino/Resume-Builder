@@ -2,7 +2,10 @@
   <h1>Your Generated Resume</h1>
   
   <div class="text-center">
-    <button class="btn btn-primary" (click)="generateResume()">Generate Resume</button>
+    <button class="btn btn-primary" (click)="generateResume()" [disabled]="isGenerateCooldown">
+      Generate Resume
+      <span *ngIf="isGenerateCooldown"> (Cooldown)</span>
+    </button>
   </div>
 
   <div *ngIf="generatedResume" class="resume-card card mb-4">
@@ -12,9 +15,9 @@
   </div>
 
   <div class="text-center mb-3">
-    <button class="btn btn-success" (click)="temp()" [disabled]="isCooldown">
+    <button class="btn btn-success" (click)="temp()" [disabled]="isDownloadCooldown">
       Download as Word doc
-      <span *ngIf="isCooldown"> (Cooldown)</span>
+      <span *ngIf="isDownloadCooldown"> (Cooldown)</span>
     </button>
   </div>
 
