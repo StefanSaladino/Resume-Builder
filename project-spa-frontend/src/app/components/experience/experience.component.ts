@@ -196,7 +196,12 @@ export class ExperienceComponent implements OnInit {
       })
       .pipe(
         tap((response: any) => {
-          this.experiences.push({ ...experience, _id: response._id });
+          console.log('Volunteer experience added:', response);
+          if (response.data && response.data._id) {
+            this.experiences.push(response.data); // Add the new volunteer experience to the displayed list
+          } else {
+            console.error('No ID returned from backend.');
+          }
         }),
         catchError((error) => {
           console.error('Error saving experience:', error);

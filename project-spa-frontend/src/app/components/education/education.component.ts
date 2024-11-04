@@ -147,8 +147,13 @@ if (isValidStartDate && isValidEndDate) {
 
     this.http.post('https://resume-builder-backend-ahjg.onrender.com/resume/education', education, { headers })
       .pipe(
-        tap((response) => {
-          console.log('Education info saved:', response);
+        tap((response: any) => {
+          console.log('Volunteer experience added:', response);
+          if (response.data && response.data._id) {
+            this.educations.push(response.data); // Add the new volunteer experience to the displayed list
+          } else {
+            console.error('No ID returned from backend.');
+          }
         }),
         catchError((error) => {
           console.error('Error saving education info:', error);

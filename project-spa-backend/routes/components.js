@@ -430,9 +430,10 @@ router.post("/experience", async (req, res) => {
 
     user.resume.experience.push(newExperience);
     await user.save();
+    const addedExp = user.resume.experience[user.resume.experience.length - 1]; // Get newly added skill
     res
       .status(200)
-      .json({ message: "Experience added successfully", data: newExperience });
+      .json({ message: "Experience added successfully", data: addedExp });
   } catch (error) {
     res.status(500).json({ message: "Error adding experience", error });
   }
@@ -528,9 +529,10 @@ router.post("/miscellaneous", async (req, res) => {
     user.resume.miscellaneous.push(newMiscellaneous);
     await user.save();
 
+    const addedMisc = user.resume.miscellaneous[user.resume.miscellaneous.length - 1]; // Get newly added skill
     res.status(200).json({
       message: "Miscellaneous entry added successfully",
-      data: newMiscellaneous,
+      data: addedMisc,
     });
   } catch (error) {
     res

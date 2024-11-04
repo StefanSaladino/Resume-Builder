@@ -133,9 +133,9 @@ export class MiscellaneousComponent implements OnInit {
       .post('https://resume-builder-backend-ahjg.onrender.com/resume/miscellaneous', miscellaneous, { headers })
       .pipe(
         tap((response: any) => {
-          console.log('Miscellaneous entry saved:', response);
-          if (response._id) {
-            this.miscellaneous.push({ ...miscellaneous, _id: response._id });
+          console.log('Volunteer experience added:', response);
+          if (response.data && response.data._id) {
+            this.miscellaneous.push(response.data); // Add the new volunteer experience to the displayed list
           } else {
             console.error('No ID returned from backend.');
           }
