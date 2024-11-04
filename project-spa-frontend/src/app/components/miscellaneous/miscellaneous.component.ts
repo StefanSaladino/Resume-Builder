@@ -105,7 +105,7 @@ export class MiscellaneousComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
       this.http
-        .delete(`https://resume-builder-backend-ahjg.onrender.com/miscellaneous/${removedMiscellaneous._id}`, { headers })
+        .delete(`https://resume-builder-backend-ahjg.onrender.com/resume/miscellaneous/${removedMiscellaneous._id}`, { headers })
         .pipe(
           tap(() => {
             console.log('Miscellaneous entry removed from backend');
@@ -133,9 +133,9 @@ export class MiscellaneousComponent implements OnInit {
       .post('https://resume-builder-backend-ahjg.onrender.com/resume/miscellaneous', miscellaneous, { headers })
       .pipe(
         tap((response: any) => {
-          console.log('Volunteer experience added:', response);
+          console.log('Misc added:', response);
           if (response.data && response.data._id) {
-            this.miscellaneous.push(response.data); // Add the new volunteer experience to the displayed list
+            this.miscellaneous.push(response.data)
           } else {
             console.error('No ID returned from backend.');
           }

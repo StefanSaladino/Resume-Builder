@@ -224,9 +224,9 @@ router.post("/skills", async (req, res) => {
     // Push new skill and await save to ensure ID is generated
     user.resume.skills.push(newSkill);
     await user.save();
-    const addedSkill = user.resume.skills[user.resume.skills.length - 1]; // Get newly added skill
 
-    res.status(200).json({ message: "Skill added successfully", skill: addedSkill });
+    const addedSkill = user.resume.skills[user.resume.skills.length - 1]; // Get newly added skill
+    res.status(200).json({ message: "Skill added successfully", data: addedSkill });
   } catch (error) {
     res.status(500).json({ message: "Error adding skill", error });
   }
@@ -529,7 +529,7 @@ router.post("/miscellaneous", async (req, res) => {
     user.resume.miscellaneous.push(newMiscellaneous);
     await user.save();
 
-    const addedMisc = user.resume.miscellaneous[user.resume.miscellaneous.length - 1]; // Get newly added skill
+    const addedMisc = user.resume.miscellaneous[user.resume.miscellaneous.length - 1];
     res.status(200).json({
       message: "Miscellaneous entry added successfully",
       data: addedMisc,

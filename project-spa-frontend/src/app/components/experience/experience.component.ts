@@ -35,7 +35,7 @@ export class ExperienceComponent implements OnInit {
       startDate: ['', [Validators.required, this.validateDateFormat]],
       endDate: ['', this.validateOptionalEndDate],
       responsibilities: this.fb.array([this.fb.control('')], Validators.required),
-      achievements: ['', Validators.required] 
+      achievements: [''] 
     });
 
     this.fetchExperienceEntries();

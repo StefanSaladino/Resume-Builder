@@ -84,9 +84,9 @@ export class SkillsComponent implements OnInit {
     this.http.post('https://resume-builder-backend-ahjg.onrender.com/resume/skills', skill, { headers })
       .pipe(
         tap((response: any) => {
-          console.log('Volunteer experience added:', response);
+          console.log('Skill added:', response);
           if (response.data && response.data._id) {
-            this.skills.push(response.data); // Add the new volunteer experience to the displayed list
+            this.skills.push(response.data); 
           } else {
             console.error('No ID returned from backend.');
           }
