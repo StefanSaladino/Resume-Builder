@@ -1,7 +1,8 @@
+/* General card styling */
 .card {
     width: 33vw;
     margin-left: 2em;
-    margin-top: 1em;
+    margin-top: 2em;
 }
 
 .card-body {
@@ -14,6 +15,7 @@
     margin-top: 1em;
 }
 
+/* Volunteer entry styling */
 .volunteer-entry {
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -35,16 +37,15 @@
     }
 }
 
-/* Add spacing to the form */
+/* Form container styling */
 .volunteer-form {
     max-width: 600px;
     margin: 0 auto;
+    padding: 16px;
 }
 
-/* Add spacing between fields */
-.mb-3 {
-    margin-bottom: 1rem;
-}
+/* Field spacing */
+
 
 button {
     margin-right: 10px;
@@ -62,4 +63,105 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Mobile Responsive Styling */
+@media (max-width: 768px) {
+
+    button{
+        height: 42px;
+        width: auto;
+    }
+    
+
+    /* Remove card styling on mobile */
+    .card {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+        
+    }
+
+    .volunteer-entry.animate-entry {
+        opacity: 1; /* Set to fully visible */
+        transform: translateX(0); /* No translation */
+        animation: none; /* Disable animation */
+    }
+
+    .card-header{
+        background: none;
+        border: none;
+        text-decoration: underline;
+    }
+
+    /* Simplified styling for volunteer entries */
+    .volunteer-entry {
+        padding: 12px;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        border-bottom: solid 2px black;
+        margin-bottom: 0;
+    }
+
+    .volunteer-entry:nth-of-type(2) {
+        border-top: solid 2px black;
+        margin-top: 1.5em;
+    }
+
+    /* Alternating background colors for entries */
+    .volunteer-entry:nth-child(even) {
+        background-color: #d4ecff;
+    }
+
+    .volunteer-entry:nth-child(odd) {
+        background-color: #e0e0e0;
+    }
+   
+
+    .volunteer-form {
+        width: 90vw;
+        padding: 1em;
+        margin: 0 auto;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        padding: 1em;
+    }
+
+    .form-actions button{
+        margin: 1em;
+        min-width: 100px;
+    }
+
+    #pageButtons{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0 4em;
+        
+    }
+
+    #pageButtons button{
+        min-width: 100px;
+    }
+
+    .volunteer-form {
+        max-width: 80%;
+        margin: 0 auto;
+        padding: 16px;
+    }
+
+    .volunteer-form button{
+        height: auto;
+    }
+
 }

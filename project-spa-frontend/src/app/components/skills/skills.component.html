@@ -3,7 +3,7 @@
   <small>Employers only want employees who have great skills (nunchuck skills, bow hunting skills, computer hacking skills)</small>
 </div>
 
-<!-- Display List of Skills as a Table -->
+<!-- Display List of Skills as a Table (Hidden on mobile) -->
 <table class="table table-striped table-hover skill-table animate-table">
   <thead class="thead-light">
     <tr>
@@ -23,6 +23,26 @@
     </tr>
   </tbody>
 </table>
+
+<!-- Accordion Layout for Mobile View -->
+<div *ngIf="isMobile" class="accordion-skill-list">
+  <div *ngFor="let skill of skills; let i = index" class="skill-accordion">
+    <!-- Accordion Header (Skill Name) -->
+    <div class="skill-header" (click)="toggleSkill(i)">
+      <h3>{{ skill.skill }}</h3>
+    </div>
+
+    <!-- Accordion Content (Skill Details, hidden by default) -->
+    <div class="skill-details" [ngClass]="{ 'show': expandedIndex === i }">
+      <p><strong>Proficiency:</strong> {{ skill.proficiency }}</p>
+      <p>{{ skill.description }}</p>
+      <div class="actions">
+        <button class="btn btn-warning btn-sm" (click)="editSkill(i); $event.stopPropagation()">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="removeSkill(i); $event.stopPropagation()">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="add-button">
   <!-- Add Another Skill Button (Visible only when form is hidden and there are existing skills) -->

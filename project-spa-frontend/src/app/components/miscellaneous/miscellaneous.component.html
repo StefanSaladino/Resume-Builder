@@ -1,65 +1,66 @@
 <div class="pageTitle">
-<h1>Miscellaneous Entries</h1>
-<small>Other things to make you look good</small>
+  <h1>Miscellaneous Entries</h1>
+  <small>Other things to make you look good</small>
 </div>
 
 <!-- List of Miscellaneous Entries -->
 <div *ngFor="let misc of miscellaneous; let i = index" class="card misc-entry animate-entry">
-    <p class="fw-bold card-header">{{ misc.type }}: {{ misc.title }}</p>
-    <p class="card-body">{{ misc.description }}</p>
-    <div class="d-flex justify-content-between">
+  <p class="fw-bold card-header">{{ misc.type }}: {{ misc.title }}</p>
+  <p class="card-body">{{ misc.description }}</p>
+  <div class="d-flex justify-content-between">
     <button class="btn btn-danger btn-sm" (click)="removeMiscellaneous(i)">Remove</button>
     <button class="btn btn-warning btn-sm" (click)="editMisc(i)">Edit</button>
+  </div>
+</div>
+
+<div id="add-button">
+  <!-- Add Miscellaneous Entry Button (Visible only when form is hidden) -->
+  <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">
+    {{ isEditing ? 'Edit Miscellaneous' : 'Add Miscellaneous' }}
+  </button>
+</div>
+
+<!-- Miscellaneous Form (Visible when user clicks 'Add Miscellaneous') -->
+<div *ngIf="showForm" class="mt-4">
+  <form [formGroup]="miscForm" (ngSubmit)="onAddMiscellaneous()" class="container mt-5 p-4 border rounded shadow">
+    <h2 class="text-center mb-4">Add Miscellaneous</h2>
+
+    <!-- Type (Certificate, Language, or Other) -->
+    <div class="mb-3">
+      <label for="type" class="form-label">Type:</label>
+      <select id="type" formControlName="type" class="form-control" required>
+        <option value="certificate">Certificate</option>
+        <option value="language">Language</option>
+        <option value="extracurricular">Extracurricular</option>
+        <option value="project">Project</option>
+      </select>
+      <div *ngIf="miscForm.get('type')?.invalid && miscForm.get('type')?.touched" class="text-danger">
+        <small>Type is required.</small>
+      </div>
     </div>
-  </div>
-  
-  <div id="add-button">
-    <!-- Add Miscellaneous Entry Button (Visible only when form is hidden) -->
-    <button id="add" *ngIf="!showForm" class="btn btn-primary mt-3" (click)="toggleForm()">{{ isEditing ? 'Edit Miscellaneous' : 'Add Miscellaneous' }}</button>
-  </div>
-  
-  <!-- Miscellaneous Form (Visible when user clicks 'Add Miscellaneous') -->
-  <div *ngIf="showForm" class="mt-4">
-    <form [formGroup]="miscForm" (ngSubmit)="onAddMiscellaneous()" class="container mt-5 p-4 border rounded shadow">
-      <h2 class="text-center mb-4">Add Miscellaneous</h2>
-  
-      <!-- Type (Certificate, Language, or Other) -->
-      <div class="mb-3">
-        <label for="type" class="form-label">Type:</label>
-        <select id="type" formControlName="type" class="form-control" required>
-          <option value="certificate">Certificate</option>
-          <option value="language">Language</option>
-          <option value="extracurricular">Extracurricular</option>
-          <option value="project">Project</option>
-        </select>
-        <div *ngIf="miscForm.get('type')?.invalid && miscForm.get('type')?.touched" class="text-danger">
-          <small>Type is required.</small>
-        </div>
+
+    <!-- Title -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Title:</label>
+      <input id="title" formControlName="title" type="text" class="form-control" required>
+      <div *ngIf="miscForm.get('title')?.invalid && miscForm.get('title')?.touched" class="text-danger">
+        <small>Title is required.</small>
       </div>
-  
-      <!-- Title -->
-      <div class="mb-3">
-        <label for="title" class="form-label">Title:</label>
-        <input id="title" formControlName="title" type="text" class="form-control" required>
-        <div *ngIf="miscForm.get('title')?.invalid && miscForm.get('title')?.touched" class="text-danger">
-          <small>Title is required.</small>
-        </div>
-      </div>
-  
-      <!-- Description (optional) -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Description:</label>
-        <textarea id="description" formControlName="description" rows="3" class="form-control"></textarea>
-      </div>
-  
-      <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Miscellaneous' : 'Save Miscellaneous' }}</button>
-      <button type="button" class="btn btn-secondary" (click)="cancelMiscellaneous()">Cancel</button>
-    </form>
-  </div>
-  
-  <!-- Navigation Buttons -->
-  <div class="d-flex justify-content-between mt-4">
-    <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="miscellaneous.length === 0">Next</button>
-  </div>
-  
+    </div>
+
+    <!-- Description (optional) -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description:</label>
+      <textarea id="description" formControlName="description" rows="3" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">{{ isEditing ? 'Update Miscellaneous' : 'Save Miscellaneous' }}</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelMiscellaneous()">Cancel</button>
+  </form>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="d-flex justify-content-between mt-4" id="pageButtons">
+  <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="miscellaneous.length === 0">Next</button>
+</div>

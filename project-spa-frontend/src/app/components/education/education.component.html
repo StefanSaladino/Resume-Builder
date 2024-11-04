@@ -4,29 +4,34 @@
 </div>
 
 <!-- List of Added Educations -->
-<table class="table table-striped table-hover education-table animate-table">
-  <thead class="thead-light">
-    <tr>
-      <th>School Name</th>
-      <th>Degree</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let edu of educations; let i = index" class="education-entry animate-entry">
-      <td>{{ edu.schoolName }}</td>
-      <td>{{ edu.degreeName }}</td>
-      <td>{{ edu.startDate }}</td>
-      <td>{{ edu.endDate || 'Present' }}</td>
-      <td>
-        <button class="btn btn-warning btn-sm" (click)="editEducation(edu, i)">Edit</button>
-        <button class="btn btn-danger btn-sm" (click)="removeEducation(i)">Remove</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table table-striped table-hover education-table animate-table">
+    <thead class="thead-light">
+      <tr>
+        <th>School Name</th>
+        <th>Degree</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let edu of educations; let i = index" class="education-entry animate-entry">
+        <td data-label="School Name">{{ edu.schoolName }}</td>
+        <td data-label="Degree">{{ edu.degreeName }}</td>
+        <td data-label="Start Date">{{ edu.startDate }}</td>
+        <td data-label="End Date">{{ edu.endDate || 'Present' }}</td>
+        <td data-label="Actions">
+          <div id="table-buttons">
+          <button class="btn btn-warning btn-sm" (click)="editEducation(edu, i)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="removeEducation(i)">Remove</button>
+        </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 <div id="add-button">
   <!-- Add Another Education Button (Visible only when form is hidden and not in edit mode) -->
@@ -131,7 +136,7 @@
 </div>
 
 <!-- Navigation Buttons -->
-<div class="d-flex justify-content-between mt-4">
+<div class="d-flex justify-content-between mt-4" id="pageButtons">
   <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
   <button class="btn btn-success" (click)="onNext()" [disabled]="educations.length === 0">Next</button>
 </div>

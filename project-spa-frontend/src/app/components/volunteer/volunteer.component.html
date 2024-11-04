@@ -6,7 +6,7 @@
 <!-- List of Added Volunteer Experiences -->
 <div
   *ngFor="let vol of volunteers; let i = index"
-  class="card volunteer-entry animate-entry mt-3"
+  class="card volunteer-entry animate-entry"
 >
   <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
   <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || "Present" }}</p>
@@ -208,7 +208,7 @@
 </form>
 
 <!-- Navigation Buttons -->
-<div class="d-flex justify-content-between mt-4">
+<div class="d-flex justify-content-between mt-4 mb-3" id="pageButtons">
   <button class="btn btn-outline-secondary" (click)="onBack()">Back</button>
   <button
     class="btn btn-success"

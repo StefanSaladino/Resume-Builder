@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormDataService } from '../../../services/form-data.service';
@@ -20,6 +20,8 @@ export class SkillsComponent implements OnInit {
   showForm: boolean = false;
   editingIndex: number | null = null;
   isEditing: boolean = false;
+  isMobile: boolean = window.innerWidth <= 768;
+  expandedIndex: number | null = null; // Track the currently expanded skill
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +29,11 @@ export class SkillsComponent implements OnInit {
     private formDataService: FormDataService,
     private http: HttpClient
   ) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.isMobile = window.innerWidth <= 768;
+  }
 
   ngOnInit() {
     this.skillsForm = this.fb.group({
@@ -36,6 +43,7 @@ export class SkillsComponent implements OnInit {
     });
 
     this.fetchSkills(); // Load the skills list on component init
+    this.isMobile = window.innerWidth <= 768;
   }
 
   // Fetch the skills entries from backend
@@ -178,6 +186,10 @@ export class SkillsComponent implements OnInit {
   cancelSkill() {
     this.skillsForm.reset(); // Reset the form
     this.showForm = false; // Hide the form
+  }
+
+  toggleSkill(index: number) {
+    this.expandedIndex = this.expandedIndex === index ? null : index;
   }
 
   onNext() {

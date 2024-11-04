@@ -1,3 +1,4 @@
+/* General card styling */
 .card {
     width: 33vw;
     margin-left: 2em;
@@ -35,13 +36,11 @@
     }
 }
 
-/* Add spacing to the form */
 .form-group {
     max-width: 600px;
     margin: 0 auto;
 }
 
-/* Add spacing between fields */
 .mb-3 {
     margin-bottom: 1rem;
 }
@@ -64,3 +63,93 @@ button {
     justify-content: center;
 }
 
+/* Mobile Responsive Styling */
+@media (max-width: 768px) {
+    /* Adjust button size */
+    button {
+        height: 42px;
+        width: auto;
+    }
+
+    /* Remove card styling on mobile */
+    .card {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .experience-entry.animate-entry {
+        opacity: 1;
+        transform: translateX(0);
+        animation: none;
+    }
+
+    .card-header {
+        background: none;
+        border: none;
+        text-decoration: underline;
+    }
+
+    /* Simplified styling for experience entries */
+    .experience-entry {
+        padding: 12px;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        border-bottom: solid 2px black;
+        margin-bottom: 0;
+    }
+
+    .experience-entry:nth-of-type(2) {
+        border-top: solid 2px black;
+        margin-top: 1.5em;
+    }
+
+    /* Alternating background colors */
+    .experience-entry:nth-child(even) {
+        background-color: #d4ecff;
+    }
+
+    .experience-entry:nth-child(odd) {
+        background-color: #e0e0e0;
+    }
+
+    .form-group {
+        width: 90vw;
+        padding: 1em;
+        margin: 0 auto;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        padding: 1em;
+    }
+
+    .form-actions button {
+        margin: 1em;
+        min-width: 100px;
+    }
+
+    #pageButtons {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0 4em;
+        margin-bottom: 2em;
+    }
+
+    #pageButtons button {
+        min-width: 100px;
+    }
+
+    .form-group button {
+        height: auto;
+    }
+}
