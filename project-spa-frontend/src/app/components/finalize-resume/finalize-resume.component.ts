@@ -137,6 +137,10 @@ export class FinalizeResumeComponent implements OnInit {
       }
     );
   }
+
+  temp() {
+    alert("This feature is coming soon! Please bare with us while we implement it!")
+  }
   
   
 }

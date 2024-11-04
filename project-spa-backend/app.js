@@ -13,6 +13,7 @@ var User = require('./models/user'); // Import the user model
 const authRouter = require('./routes/auth'); // Auth routes
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const MongoStore = require('connect-mongo');
+const cron = require('node-cron');
 require('dotenv').config();
 
 // Enable CORS
@@ -111,6 +112,18 @@ mongoose.connect(globals.ConnectionString.MongoDB)
 })
 .catch((err) => {
   console.log(err);
+});
+
+//scheduling reset of API calls to 0 every night
+cron.schedule('1 0 * * *', () => {
+  console.log('Resetting API Calls Today to 0 at 00:01 every night');
+  User.updateMany({}, { apiCallsToday: 0 }, (err, res) => {
+    if (err) {
+      console.error('Error resetting apiCallsToday:', err);
+    } else {
+      console.log('API calls reset successfully:', res);
+    }
+  });
 });
 
 // 404 Error handling

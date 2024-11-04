@@ -634,6 +634,11 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     const user = await User.findById(req.userId); // Ensure req.userId is set correctly by your verifyToken middleware
     if (!user) return res.status(404).send("<h1>User not found</h1>");
 
+    // Check if the user has exceeded their API call limit
+    if (user.apiCallsToday > 0) {
+      return res.status(403).json({ message: "API call limit exceeded. Please try again tomorrow." });
+    }
+
     // Create the prompt based on the user's information
     const prompt = `
     (Here is an example resume. IT IS VERY IMPORTANT to note that you may use this as a TEMPLATE ONLY. ALL INFO RETURNED IN THE ACTUAL RESUME SHOULD
@@ -934,11 +939,13 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
           return res.status(500).json({ message: "Error generating resume" });
         }
 
-        const responseBody = JSON.parse(body); // Assuming the body is JSON
+        const responseBody = JSON.parse(body);
         const msg = responseBody.msg || "No message returned"; // Extract msg field
 
         // Save the generated resume to the user record
-        user.resume.generatedResume = msg; // Use msg instead of generatedResume
+        user.resume.generatedResume = msg;
+
+        user.apiCallsToday += 1;
         await user.save();
 
         res.json({ msg });

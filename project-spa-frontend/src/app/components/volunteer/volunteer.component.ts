@@ -167,6 +167,9 @@ export class VolunteerComponent implements OnInit {
 
   editVolunteer(index: number) {
     const volunteerToEdit = this.volunteers[index];
+    if(volunteerToEdit.endDate=='Present'){
+      volunteerToEdit.endDate='';
+    }
     this.volunteerForm.patchValue(volunteerToEdit);
     this.responsibilities.clear();
     volunteerToEdit.responsibilities.forEach((resp: string) => {

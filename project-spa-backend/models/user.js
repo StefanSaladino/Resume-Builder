@@ -80,6 +80,10 @@ const UserSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date,
   },
+  apiCallsToday: {
+    type: Number,
+    default: 0
+  }
 });
 
 // Apply the passport-local-mongoose plugin to the schema

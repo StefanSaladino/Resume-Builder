@@ -124,7 +124,6 @@ if (isValidStartDate && isValidEndDate) {
         this.updateEducationInBackend(this.currentEducationId, formValue);
       } else {
         // Add new education (POST request)
-        this.educations.push(formValue);
         this.formDataService.setEducation(formValue); // Save to service
         this.saveEducationToBackend(formValue);
       }
@@ -148,7 +147,7 @@ if (isValidStartDate && isValidEndDate) {
     this.http.post('https://resume-builder-backend-ahjg.onrender.com/resume/education', education, { headers })
       .pipe(
         tap((response: any) => {
-          console.log('Volunteer experience added:', response);
+          console.log('Education added:', response);
           if (response.data && response.data._id) {
             this.educations.push(response.data); // Add the new volunteer experience to the displayed list
           } else {
@@ -185,6 +184,9 @@ if (isValidStartDate && isValidEndDate) {
   }
 
   editEducation(education: any, index: number) {
+    if(education.endDate=='Present'){
+      education.endDate='';
+    }
     this.educationForm.patchValue(education);
     this.isEditing = true;
     this.currentEducationId = education._id; // Store the ID for updating

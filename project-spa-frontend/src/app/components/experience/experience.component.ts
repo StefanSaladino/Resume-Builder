@@ -79,7 +79,7 @@ export class ExperienceComponent implements OnInit {
     
     // Date validation logic
     const startDate = formValue.startDate;
-    const endDate = formValue.endDate;
+    var endDate = formValue.endDate;
   
     // Check if the start date and end date formats are valid
     const datePattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
@@ -143,6 +143,9 @@ export class ExperienceComponent implements OnInit {
 
   editExperience(index: number) {
     const experienceToEdit = this.experiences[index];
+    if(experienceToEdit.endDate=='Present'){
+      experienceToEdit.endDate='';
+    }
     this.experienceForm.patchValue(experienceToEdit);
     this.responsibilities.clear();
     experienceToEdit.responsibilities.forEach((resp: string) => {
