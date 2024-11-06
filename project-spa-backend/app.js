@@ -94,7 +94,7 @@ app.use((req, res, next) => {
 
 // Proxy setup for Python API
 app.use('/python-api', createProxyMiddleware({
-  target: 'http://localhost:5000',
+  target: 'https://resume-builder-py-script.onrender.com',
   changeOrigin: true
 }));
 
