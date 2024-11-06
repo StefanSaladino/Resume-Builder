@@ -5,3 +5,4 @@ python-dotenv==0.20.0
 docx==0.2.4
 python-docx==0.8.11
 gunicorn==23.0.0
+werkzeug==2.0.3
