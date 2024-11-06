@@ -67,3 +67,8 @@ small{
     color: red;
 }
 
+@media (max-width: 768px) {
+    #docButton{
+        margin-bottom: 5em;
+    }
+}

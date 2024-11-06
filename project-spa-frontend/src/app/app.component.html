@@ -25,6 +25,18 @@
   </div>
 </nav>
 
+<!-- Mobile Bottom Bar -->
+<div class="mobile-bottom-bar" *ngIf="isLoggedIn || !isLoggedIn">
+  <div *ngIf="isLoggedIn" class="bottom-bar-content">
+    <span>Hello, {{ firstName }}</span>
+    <button class="btn btn-danger btn-sm ml-2" (click)="logout()">Logout</button>
+  </div>
+  <div *ngIf="!isLoggedIn" class="bottom-bar-content">
+    <a class="btn btn-primary btn-sm" routerLink="/login">Login</a>
+  </div>
+</div>
+
+
 <router-outlet></router-outlet>
 
 

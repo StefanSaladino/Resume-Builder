@@ -71,8 +71,7 @@
   
   /* Adjust content section below the SVG */
   .content-section {
-    background-color: #f8f9fa;
-    height: 60vh;
+    min-height: 60vh;
     background-color: rgba(138, 214, 242, 0.5);
   }
   
@@ -205,6 +204,12 @@
   
     p {
       font-size: 1rem;
+    }
+
+    .content-section{
+      padding-bottom: 6em;
+      background-color: rgba(138, 214, 242, 0.5);
+      background-size: cover ;
     }
   }
   

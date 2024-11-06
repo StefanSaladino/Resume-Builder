@@ -77,4 +77,12 @@
       transform: translateY(0);
     }
   }
+
+  @media (max-width: 768px) {
+
+    #pageButtons{
+      padding-bottom: 5em;
+    }
+
+  }
   

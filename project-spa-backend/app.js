@@ -115,15 +115,14 @@ mongoose.connect(globals.ConnectionString.MongoDB)
 });
 
 //scheduling reset of API calls to 0 every night
-cron.schedule('1 0 * * *', () => {
+cron.schedule('1 0 * * *', async () => {
   console.log('Resetting API Calls Today to 0 at 00:01 every night');
-  User.updateMany({}, { apiCallsToday: 0 }, (err, res) => {
-    if (err) {
-      console.error('Error resetting apiCallsToday:', err);
-    } else {
-      console.log('API calls reset successfully:', res);
-    }
-  });
+  try {
+    const res = await User.updateMany({}, { apiCallsToday: 0 });
+    console.log('API calls reset successfully:', res);
+  } catch (err) {
+    console.error('Error resetting apiCallsToday:', err);
+  }
 });
 
 // 404 Error handling
