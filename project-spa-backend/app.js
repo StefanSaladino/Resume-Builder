@@ -21,7 +21,8 @@ var corsOptions = {
   origin: [
     'http://localhost:4200',
     'https://resume-builder-3aba3.web.app',
-    'https://resume-builder-backend-ahjg.onrender.com'
+    'https://resume-builder-backend-ahjg.onrender.com',
+    'https://resume-builder-py-script.onrender.com',
   ],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
