@@ -1,8 +1,8 @@
 # project-spa-backend/python-api/requirements.txt
 Flask==2.1.2
-pymongo==4.1.1
+pymongo[srv]==4.1.1
 python-dotenv==0.20.0
-docx==0.2.4
 python-docx==0.8.11
 gunicorn==23.0.0
 werkzeug==2.0.3
+dnspython==2.2.1  # Enables support for `mongodb+srv://` URIs with pymongo
