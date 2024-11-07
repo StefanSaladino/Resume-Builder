@@ -95,8 +95,10 @@ app.use((req, res, next) => {
 // Proxy setup for Python API
 app.use('/python-api', createProxyMiddleware({
   target: 'https://resume-builder-py-script.onrender.com',
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { '^/python-api': '' } // Remove the /python-api prefix
 }));
+
 
 // Routes
 app.use('/', indexRouter);
