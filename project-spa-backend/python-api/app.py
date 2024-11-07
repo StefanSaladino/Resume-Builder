@@ -17,7 +17,9 @@ load_dotenv()
 app = Flask(__name__)
 
 # Enable CORS for specific origin
-CORS(app, origins=["https://resume-builder-3aba3.web.app"])
+CORS(app, origins=['http://localhost:4200',
+    'https://resume-builder-3aba3.web.app',
+    'https://resume-builder-backend-ahjg.onrender.com' ])
 
 # Fetch sensitive data from environment variables
 mongodb_connection_string = os.getenv('CONNECTION_STRING_MONGODB')
