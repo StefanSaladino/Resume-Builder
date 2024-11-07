@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, jsonify
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 from pymongo import MongoClient
 from bson import ObjectId
 from docx import Document
@@ -16,10 +16,12 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Enable CORS for specific origin
-CORS(app, origins=['http://localhost:4200',
+# Enable CORS for specific origins
+CORS(app, origins=[
+    'http://localhost:4200',
     'https://resume-builder-3aba3.web.app',
-    'https://resume-builder-backend-ahjg.onrender.com' ])
+    'https://resume-builder-backend-ahjg.onrender.com'
+], supports_credentials=True)
 
 # Fetch sensitive data from environment variables
 mongodb_connection_string = os.getenv('CONNECTION_STRING_MONGODB')
@@ -30,6 +32,17 @@ mongodb_users = os.getenv('COLLECTION')
 client = MongoClient(mongodb_connection_string)
 db = client[mongodb_db]
 users = db[mongodb_users]
+
+# Handle OPTIONS requests for CORS preflight
+@app.before_request
+def handle_options():
+    if request.method == 'OPTIONS':
+        response = jsonify({"status": "CORS preflight handled"})
+        response.status_code = 200
+        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin"))
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        return response
 
 @app.route('/generate-doc', methods=['POST'])
 def generate_doc():
@@ -84,7 +97,9 @@ def generate_doc():
         doc.save(temp_file.name)
 
         # Return the generated document as a download
-        return send_file(temp_file.name, as_attachment=True, download_name="resume.docx")
+        response = send_file(temp_file.name, as_attachment=True, download_name="resume.docx")
+        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin"))
+        return response
 
     except Exception as e:
         print(f"Error occurred: {e}")
