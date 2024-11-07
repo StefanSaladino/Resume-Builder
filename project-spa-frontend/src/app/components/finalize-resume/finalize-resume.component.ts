@@ -112,7 +112,7 @@ export class FinalizeResumeComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    this.http.post('https://resume-builder-backend-ahjg.onrender.com/python-api/generate-doc', 
+    this.http.post('https://resume-builder-py-script.onrender.com/python-api/generate-doc', 
       { userId: this.userInfo._id },
       { headers, responseType: 'blob' }
     ).subscribe(

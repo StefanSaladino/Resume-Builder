@@ -22,7 +22,7 @@ var corsOptions = {
     'http://localhost:4200',
     'https://resume-builder-3aba3.web.app',
     'https://resume-builder-backend-ahjg.onrender.com',
-    'https://resume-builder-py-script.onrender.com',
+    'https://resume-builder-py-script.onrender.com'
   ],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
@@ -32,7 +32,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const resumeRoutes = require('./routes/components');
 const apiRoute = require('./routes/openAi');
-
 var app = express();
 
 // Catch-all route for serving Angular's index.html (currently commented out if needed for CSR support)

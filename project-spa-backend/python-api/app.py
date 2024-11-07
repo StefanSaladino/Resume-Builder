@@ -1,4 +1,5 @@
 from flask import Flask, request, send_file, jsonify
+from flask_cors import CORS  # Import CORS
 from pymongo import MongoClient
 from bson import ObjectId
 from docx import Document
@@ -14,6 +15,9 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 load_dotenv()
 
 app = Flask(__name__)
+
+# Enable CORS for specific origin
+CORS(app, origins=["https://resume-builder-3aba3.web.app"])
 
 # Fetch sensitive data from environment variables
 mongodb_connection_string = os.getenv('CONNECTION_STRING_MONGODB')
