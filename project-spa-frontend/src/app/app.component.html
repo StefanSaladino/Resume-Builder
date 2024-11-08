@@ -4,23 +4,27 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Display greeting if user is logged in -->
-      <li *ngIf="isLoggedIn" class="nav-item">
-        <span class="nav-link text-warning">Hello, {{ firstName }}</span>
-      </li>
-      <!-- Login link if not logged in -->
-      <li *ngIf="!isLoggedIn" class="nav-item">
-        <a class="nav-link text-light" routerLink="/login">Login</a>
-      </li>
-      <!-- Logout link if logged in -->
-      <li *ngIf="isLoggedIn" class="nav-item">
-        <a class="nav-link text-light" (click)="logout()">Logout</a>
-      </li>
-      <!-- Optional message when not logged in -->
-      <li *ngIf="!isLoggedIn" class="nav-item">
-        <span class="nav-link text-danger">NOT LOGGED IN!</span>
-      </li>
+    <!-- Adjusted to use d-flex and justify-content-between for space between -->
+    <ul class="navbar-nav w-100 d-flex justify-content-between">
+      <div id="nav-other" class="d-flex">
+        <li class="nav-item">
+          <a class="nav-link text-light" routerLink="/about">About</a>
+        </li>
+      </div>
+      <div id="login-nav" class="d-flex">
+        <!-- Display greeting if user is logged in -->
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <span class="nav-link text-warning">Hello, {{ firstName }}</span>
+        </li>
+        <!-- Login link if not logged in -->
+        <li *ngIf="!isLoggedIn" class="nav-item">
+          <a class="nav-link text-light" routerLink="/login">Login</a>
+        </li>
+        <!-- Logout link if logged in -->
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <a class="nav-link text-light" (click)="logout()">Logout</a>
+        </li>
+      </div>
     </ul>
   </div>
 </nav>

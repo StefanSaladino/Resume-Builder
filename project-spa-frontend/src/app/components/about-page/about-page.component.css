@@ -1,0 +1,80 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f0f2f5;
+  }
+  
+  .title {
+    position: relative;
+    font-size: 2.5em;
+    text-align: center;
+    padding: 2em 1em 2em 1em;
+    color: white;
+    overflow: hidden;
+  }
+  
+  /* Section Styling */
+  .about-section {
+    padding: 8em 4em; /* Increased padding */
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-secondary{
+    color: white;
+  }
+
+  .about-section h2 {
+    font-size: 1.8em;
+    text-align: center;
+  }
+  
+  .about-section p {
+    font-size: 1.1em;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+  }
+
+  /* Inverted Wave at the Top */
+.title:before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 100px;
+    left: 50%;
+    top: -50px;
+    transform: translateX(-50%) rotate(180deg);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='198'%3e%3cdefs%3e%3clinearGradient id='a' x1='50%25' x2='50%25' y1='-10.959%25' y2='100%25'%3e%3cstop stop-color='%23FFFFFF' stop-opacity='.25' offset='0%25'/%3e%3cstop stop-color='%23FFFFFF' offset='100%25'/%3e%3c/linearGradient%3e%3c/defs%3e%3cpath fill='url(%23a)' fill-rule='evenodd' d='M.005 121C311 121 409.898-.25 811 0c400 0 500 121 789 121v77H0s.005-48 .005-77z'/%3e%3c/svg%3e");
+    background-size: 1600px 100%;
+    background-repeat: repeat-x;
+    animation: wave-move 12s linear infinite;
+  }
+  
+  /* Wavy Bottom Border Animation for Last Section Only */
+.last-section::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 100px;
+    left: 50%;
+    bottom: -30px;
+    transform: translateX(-50%);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='198'%3e%3cdefs%3e%3clinearGradient id='a' x1='50%25' x2='50%25' y1='-10.959%25' y2='100%25'%3e%3cstop stop-color='%238AD6F2' stop-opacity='.25' offset='0%25'/%3e%3cstop stop-color='%238AD6F2' offset='100%25'/%3e%3c/linearGradient%3e%3c/defs%3e%3cpath fill='url(%23a)' fill-rule='evenodd' d='M.005 121C311 121 409.898-.25 811 0c400 0 500 121 789 121v77H0s.005-48 .005-77z'/%3e%3c/svg%3e");
+    background-size: 1600px 100%;
+    background-repeat: repeat-x;
+    animation: wave-move 12s linear infinite;
+  }
+  
+  
+  @keyframes wave-move {
+    0% {
+      background-position-x: 0;
+    }
+    100% {
+      background-position-x: 1600px;
+    }
+  }
+  

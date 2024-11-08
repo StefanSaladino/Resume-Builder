@@ -12,6 +12,16 @@ nav li {
     padding: 0.5em;
 }
 
+#login-nav{
+    display: flex;
+    flex-direction: row;
+}
+
+nav div ul{
+    display: flex;
+    justify-content: space-around;
+}
+
 /* Optional custom styles for navbar */
 .navbar {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
