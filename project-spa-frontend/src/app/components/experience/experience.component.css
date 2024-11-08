@@ -1,8 +1,26 @@
 /* General card styling */
+/* Card styling */
+.exp-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 480px));
+    gap: 1em;
+    padding: 0 4em;
+    align-items: stretch; /* Ensures all cards are the same height */
+    justify-content: center;
+}
+
+/* Card styling */
 .card {
-    width: 33vw;
-    margin-left: 2em;
-    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures content is evenly spaced */
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2em;
+    flex-grow: 1; /* Allows the card to stretch to fill height */
 }
 
 .card-body {
@@ -65,6 +83,11 @@ button {
 
 /* Mobile Responsive Styling */
 @media (max-width: 768px) {
+    .exp-list{
+        padding: 0;
+        gap:0;
+    }
+
     /* Adjust button size */
     button {
         height: 42px;

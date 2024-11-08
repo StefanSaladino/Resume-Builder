@@ -1,9 +1,22 @@
 /* Card styling */
 .card {
-    width: 33vw;
-    margin-left: 2em;
-    margin-top: 1em;
-}
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2em;
+  }
+
+/* Grid container for volunteer entries */
+.misc-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 480px));
+    gap: 1em;
+    padding: 0 4em;
+    align-items: center;
+    justify-content: center;
+  }
 
 /* Card body flex column */
 .card-body {

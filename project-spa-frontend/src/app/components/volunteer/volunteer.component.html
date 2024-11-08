@@ -1,28 +1,30 @@
-<div class="pageTitle">
+<div class="pageTitle mb-3">
   <h1>Volunteer Experiences</h1>
   <small>I don't have a pun for this. Deal with it</small>
 </div>
 
-<!-- List of Added Volunteer Experiences -->
-<div
-  *ngFor="let vol of volunteers; let i = index"
-  class="card volunteer-entry animate-entry"
->
-  <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
-  <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || "Present" }}</p>
-  <ul>
-    <h4>Responsibilities:</h4>
-    <li *ngFor="let responsibility of vol.responsibilities">
-      {{ responsibility }}
-    </li>
-  </ul>
-  <div class="d-flex justify-content-between">
-    <button class="btn btn-warning btn-sm me-2" (click)="editVolunteer(i)">
-      Edit
-    </button>
-    <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">
-      Remove
-    </button>
+<!-- Volunteer Experience Grid -->
+<div class="volunteer-list">
+  <div
+    *ngFor="let vol of volunteers; let i = index"
+    class="card volunteer-entry animate-entry"
+  >
+    <h3 class="fw-bold card-header">{{ vol.role }} at {{ vol.organization }}</h3>
+    <p class="card-body">{{ vol.startDate }} - {{ vol.endDate || "Present" }}</p>
+    <ul>
+      <h4>Responsibilities:</h4>
+      <li *ngFor="let responsibility of vol.responsibilities">
+        {{ responsibility }}
+      </li>
+    </ul>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-warning btn-sm me-2" (click)="editVolunteer(i)">
+        Edit
+      </button>
+      <button class="btn btn-danger btn-sm" (click)="removeVolunteer(i)">
+        Remove
+      </button>
+    </div>
   </div>
 </div>
 

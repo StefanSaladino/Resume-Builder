@@ -16,6 +16,7 @@ import { FinalizeResumeComponent } from './components/finalize-resume/finalize-r
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MiscellaneousComponent } from './components/miscellaneous/miscellaneous.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { AboutPageComponent } from './components/about-page/about-page.component';
 
 // Declare the routes array
 export const routes: Routes = [
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'landing-page', component: LandingPageComponent },
+  { path: 'about', component: AboutPageComponent},
   { path: '**', redirectTo: 'landing-page' }
 ];
 
