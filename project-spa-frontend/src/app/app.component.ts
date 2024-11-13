@@ -16,8 +16,24 @@ export class AppComponent implements OnInit {
   [x: string]: any;
   isLoggedIn: boolean = false;
   firstName: string = '';
+  icons = [
+    { src: 'basic-info.svg', caption: 'Basic Info', route: '/resume/basic-info' },
+    { src: 'school.svg', caption: 'School', route: '/resume/education' },
+    { src: 'work.svg', caption: 'Experience', route: '/resume/experience' },
+    { src: 'volunteer.svg', caption: 'Volunteer', route: '/resume/volunteer' },
+    { src: 'skills.svg', caption: 'Skills', route: '/resume/skills' },
+    { src: 'misc.svg', caption: 'Miscellaneous', route: '/resume/miscellaneous' },
+    { src: 'summary.svg', caption: 'Summary', route: '/resume/summary' }
+  ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  hideIcons = false;
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.router.events.subscribe(() => {
+      this.hideIcons = this.router.url.includes('/about')||this.router.url.includes('/login')||
+      this.router.url.includes('/register');
+    });
+  }
 
   ngOnInit() {
     // Subscribe to user state to update isLoggedIn and firstName

@@ -29,6 +29,15 @@
   </div>
 </nav>
 
+<div *ngIf="!hideIcons" class="icon-section">
+  <div class="icon-wrapper" *ngFor="let item of icons">
+    <a [routerLink]="item.route">
+      <img [src]="'/img/svg/' + item.src" [alt]="item.caption" class="icon-svg" />
+      <p class="icon-caption">{{ item.caption }}</p>
+    </a>
+  </div>
+</div>
+
 <!-- Mobile Bottom Bar -->
 <div class="mobile-bottom-bar" *ngIf="isLoggedIn || !isLoggedIn">
   <div *ngIf="isLoggedIn" class="bottom-bar-content">
