@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { User } from './models/user.model';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,10 +26,17 @@ export class AppComponent implements OnInit {
     { src: 'misc.svg', caption: 'Miscellaneous', route: '/resume/miscellaneous' },
     { src: 'summary.svg', caption: 'Summary', route: '/resume/summary' }
   ];
-
+  resizeSubscription: Subscription | undefined;
+  isBrowser: boolean;
   hideIcons = false;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
     this.router.events.subscribe(() => {
       this.hideIcons = this.router.url.includes('/about') || this.router.url.includes('/login') ||
       this.router.url.includes('/register');
@@ -48,23 +57,45 @@ export class AppComponent implements OnInit {
     this.authService.isAuthenticated().subscribe((isAuthenticated: boolean) => {
       this.isLoggedIn = isAuthenticated;
     });
+
+    if (this.isBrowser) {
+      this.checkViewportWidth();
+      window.addEventListener('resize', this.checkViewportWidth.bind(this));
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.isBrowser) {
+      window.removeEventListener('resize', this.checkViewportWidth.bind(this));
+    }
+  }
+
+  toggleSlideMenu() {
+    if (this.isBrowser) {
+      const menu = document.getElementById('rightSlideMenu');
+      if (menu) {
+        menu.classList.toggle('show');
+        document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : 'auto';
+      }
+    }
   }
 
   closeSlideMenu() {
-    const menu = document.getElementById('rightSlideMenu');
-    if (menu) {
-      menu.classList.remove('show');
-      document.body.style.overflow = 'auto'; // Re-enable body scrolling
+    if (this.isBrowser) {
+      const menu = document.getElementById('rightSlideMenu');
+      if (menu) {
+        menu.classList.remove('show');
+        document.body.style.overflow = 'auto';
+      }
     }
   }
-  
-  toggleSlideMenu() {
-    const menu = document.getElementById('rightSlideMenu');
-    if (menu) {
-      menu.classList.toggle('show');
-      document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : 'auto';
+
+  checkViewportWidth() {
+    if (this.isBrowser && window.innerWidth > 768) {
+      this.closeSlideMenu(); // Close menu if width is more than 768px
     }
   }
+
 
   logout() {
     this.authService.logout().subscribe(() => {
