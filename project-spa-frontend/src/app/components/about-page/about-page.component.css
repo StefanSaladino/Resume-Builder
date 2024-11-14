@@ -72,13 +72,18 @@ body {
     animation: wave-move 12s linear infinite;
   }
   
-  
   @keyframes wave-move {
     0% {
       background-position-x: 0;
     }
     100% {
       background-position-x: 1600px;
+    }
+  }
+
+  @media (max-width: 768px){
+    .wrapper{
+      margin: 0 0 1.5em 0;
     }
   }
   

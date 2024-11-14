@@ -31,3 +31,9 @@
 #fp-link:hover{
     cursor: pointer;
 }
+
+@media (max-width: 768px){
+    .card{
+        margin-bottom: 4em;
+    }
+}
