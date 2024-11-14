@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  [x: string]: any;
   isLoggedIn: boolean = false;
   firstName: string = '';
   icons = [
@@ -30,33 +29,46 @@ export class AppComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {
     this.router.events.subscribe(() => {
-      this.hideIcons = this.router.url.includes('/about')||this.router.url.includes('/login')||
+      this.hideIcons = this.router.url.includes('/about') || this.router.url.includes('/login') ||
       this.router.url.includes('/register');
     });
   }
 
   ngOnInit() {
-    // Subscribe to user state to update isLoggedIn and firstName
     this.authService.currentUser$.subscribe((user: User | null) => {
       if (user) {
         this.isLoggedIn = true;
         this.firstName = user.firstName;
       } else {
         this.isLoggedIn = false;
-        this.firstName = ''; // Clear firstName when logged out
+        this.firstName = '';
       }
     });
 
-    // Also check if user is already authenticated on init
     this.authService.isAuthenticated().subscribe((isAuthenticated: boolean) => {
       this.isLoggedIn = isAuthenticated;
     });
   }
 
+  closeSlideMenu() {
+    const menu = document.getElementById('rightSlideMenu');
+    if (menu) {
+      menu.classList.remove('show');
+      document.body.style.overflow = 'auto'; // Re-enable body scrolling
+    }
+  }
+  
+  toggleSlideMenu() {
+    const menu = document.getElementById('rightSlideMenu');
+    if (menu) {
+      menu.classList.toggle('show');
+      document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : 'auto';
+    }
+  }
+
   logout() {
     this.authService.logout().subscribe(() => {
       this.isLoggedIn = false;
-      this.firstName = '';  // Reset firstName on logout
       this.router.navigate(['/login']);
     });
   }

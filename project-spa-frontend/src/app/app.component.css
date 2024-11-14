@@ -1,137 +1,158 @@
-
-
-small{
-    color: red;
-}
-
-nav{
-    padding: 0.5em;
-}
-
-nav li {
-    padding: 0.5em;
-}
-
-#login-nav{
-    display: flex;
-    flex-direction: row;
-}
-
-nav div ul{
-    display: flex;
-    justify-content: space-around;
-}
-
-/* Optional custom styles for navbar */
+/* Navbar custom styles */
 .navbar {
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 0.5em;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .navbar-brand {
-    font-size: 1.5rem; /* Increase font size for brand */
-    font-weight: bold;
+  font-size: 1.5rem; /* Increase font size for brand */
+  font-weight: bold;
 }
 
 .nav-link {
-    font-size: 1rem; /* Standard font size for links */
-    transition: color 0.3s ease-in-out; /* Smooth transition for hover effect */
+  font-size: 1rem;
+  transition: color 0.3s ease-in-out;
 }
 
 .nav-link:hover {
-    color: #ffc107 !important; /* Highlight link on hover (Bootstrap warning color) */
+  color: #ffc107 !important; /* Highlight link on hover */
 }
 
-a:hover{
-    cursor: pointer;
+a:hover {
+  cursor: pointer;
+}
+
+/* Right slide-in menu styling */
+.right-slide-menu {
+  position: fixed;
+  top: 56px; /* Start below the navbar */
+  right: -100%; /* Initially hidden off-screen */
+  height: calc(100vh - 56px); /* Full height minus navbar height */
+  width: 100%; /* Full width of the screen */
+  background-color: #343a40;
+  z-index: 1050;
+  transition: right 0.3s ease;
+  padding-top: 20px;
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Show the menu when toggled */
+.right-slide-menu.show {
+  right: 0;
+}
+
+/* Style each nav item with a separator line */
+.right-slide-menu .nav-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Line separator */
+  padding: 10px 15px;
+}
+
+/* Increase spacing for icons in the menu */
+.right-slide-menu .nav-link {
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+
+.navbar-toggler {
+  z-index: 1100; /* Bring the toggler above the slide-in menu */
+}
+
+@media (min-width: 769px) {
+  .navbar-toggler {
+      display: none; /* Hide toggler at larger viewports */
+  }
+}
+
+/* Navbar and icon section styles */
+#login-nav {
+  display: flex;
+  flex-direction: row;
+}
+
+.icon-section {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem 0 1rem 0;
+  margin-top: 10px;
+}
+
+.icon-wrapper {
+  text-align: center;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.icon-svg {
+  width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.icon-caption {
+  padding-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.icon-section a {
+  font-family: 'Ubuntu', sans-serif;
+  color: black;
+  text-decoration: none;
+}
+
+.icon-wrapper:hover .icon-svg {
+  filter: invert(0.75);
+  animation: bounce 1s infinite;
+  cursor: pointer;
+}
+
+@keyframes bounce {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-10px);
+  }
 }
 
 /* Mobile Bottom Bar styling */
 .mobile-bottom-bar {
-    background-color: #343a40;
-    color: #fff;
-    padding: 0.5em;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+  background-color: #343a40;
+  color: #fff;
+  padding: 0.5em;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  margin-top: 2em;
 }
 
 .bottom-bar-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 0.9rem;
 }
 
 .mobile-bottom-bar a,
 .mobile-bottom-bar button {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
-.icon-section {
-    display: flex;
-    justify-content: space-around;
-    padding: 2rem 0 1rem 0;
-    margin-top: 10px;
-  }
-  
-  .icon-wrapper {
-    text-align: center;
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
-  
-  .icon-svg {
-    width: 50px;
-    height: 50px;
-    transition: transform 0.3s ease;
-  }
-  
-  .icon-caption {
-    padding-top: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .icon-section a{
-    font-family: 'Ubuntu', sans-serif;
-    color: black;
-    text-decoration: none;
-  }
-  
-  .icon-wrapper:hover .icon-svg {
-    filter: invert(0.75);
-    animation: bounce 1s infinite;
-    cursor: pointer;
-  }
-  
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  
-
 @media (max-width: 768px) {
+  .icon-section {
+      display: none;
+  }
 
-    .icon-section {
-        display: none;
-      }
-
-    button{
-        height: 42px;
-        width: auto;
-    }
-
+  button {
+      height: 42px;
+      width: auto;
+  }
 }
 
 @media (min-width: 769px) {
-    /* Hide mobile bottom bar on larger screens */
-    .mobile-bottom-bar {
-        display: none;
-    }
+  .mobile-bottom-bar {
+    display: none; /* Hidden for screens > 768px */
+  }
 }
