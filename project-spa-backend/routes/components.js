@@ -634,11 +634,6 @@ router.post("/generate-resume", verifyToken, async (req, res) => {
     const user = await User.findById(req.userId); // Ensure req.userId is set correctly by your verifyToken middleware
     if (!user) return res.status(404).send("<h1>User not found</h1>");
 
-    // Check if the user has exceeded their API call limit
-    if (user.apiCallsToday > 0) {
-      return res.status(403).json({ message: "API call limit exceeded. Please try again tomorrow." });
-    }
-
     // Create the prompt based on the user's information
     const prompt = `
     (Here is an example resume. IT IS VERY IMPORTANT to note that you may use this as a TEMPLATE ONLY. ALL INFO RETURNED IN THE ACTUAL RESUME SHOULD
