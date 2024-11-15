@@ -47,10 +47,12 @@ def handle_options():
 @app.route('/generate-doc', methods=['POST'])
 def generate_doc():
     try:
+        # Get the user ID from the request payload
         user_id = request.json.get('userId')
         if not user_id:
             return jsonify({"error": "User ID is required"}), 400
 
+        # Fetch user from the database
         user = users.find_one({'_id': ObjectId(user_id)})
         if not user or 'resume' not in user or 'generatedResume' not in user['resume']:
             return jsonify({"error": "No resume found for this user"}), 404
@@ -60,49 +62,61 @@ def generate_doc():
         # Create a new Word document
         doc = Document()
 
-        # Split the resume text by double newlines and further check if the next section contains a semicolon
-        sections = generated_resume.split('\n\n')
-        
+        # Overall font and style settings
+        style = doc.styles['Normal']
+        style.font.name = 'Calibri'
+        style.font.size = Pt(11)
+
+        # HEADER - Name and Contact Information
+        header = doc.add_paragraph()
+        name = header.add_run(f"{user['resume']['basicInfo']['firstName']} {user['resume']['basicInfo']['lastName']}\n")
+        name.font.size = Pt(16)
+        name.font.bold = True
+        contact = header.add_run(
+            f"{user['resume']['basicInfo'].get('emailAddress', '')} | {user['resume']['basicInfo'].get('phone', '')}\n"
+        )
+        contact.font.size = Pt(10)
+        contact.font.italic = True
+        header.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+        doc.add_paragraph("\n")  # Add spacing after the header
+
+        # SECTIONS: Format dynamically generated resume content
+        sections = generated_resume.split('\n\n')  # Assuming '\n\n' separates sections
         for section in sections:
             lines = section.split('\n')
 
-            # Check if the first line contains a semicolon (indicating a section header)
-            if len(lines) > 0 and ":" or "references" in lines[0] :
-                # If not the first section, add a horizontal line
-                if sections.index(section) > 0:
-                    separator = doc.add_paragraph()
-                    run = separator.add_run()
-                    run.bold = True
-                    run.add_text('_____________________________________________________________________________________')
-                    separator_format = separator.paragraph_format
-                    separator_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            # Title of the section
+            if len(lines) > 0:
+                title = doc.add_paragraph(lines[0], style='Heading 1')
+                title.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
-                # The first line after the separator should be bold (for section titles)
-                first_line = doc.add_paragraph()
-                run = first_line.add_run(lines[0])
-                run.bold = True
-
-                # Add the remaining lines normally within the same section
+                # Content of the section
                 for line in lines[1:]:
-                    if line.strip():  # Avoid adding extra blank lines
-                        doc.add_paragraph(line)
-            else:
-                # If there's no semicolon in the first line, treat it as a continuation of the previous section
-                for line in lines:
                     if line.strip():
-                        doc.add_paragraph(line)
+                        if line.startswith("-"):
+                            doc.add_paragraph(line.strip("- "), style='List Bullet')
+                        else:
+                            doc.add_paragraph(line.strip())
 
-        # Save to a temporary file
+            doc.add_paragraph("\n")  # Add spacing after sections
+
+        # FOOTER - Optional Notes or References
+        footer = doc.add_paragraph()
+        footer.add_run("\nReferences available upon request").italic = True
+        footer.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+        # Save the document to a temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
         doc.save(temp_file.name)
 
-        # Return the generated document as a download
+        # Return the document as a file download
         response = send_file(temp_file.name, as_attachment=True, download_name="resume.docx")
         response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin"))
         return response
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        print(f"Error: {e}")
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
 
