@@ -31,7 +31,6 @@ client = MongoClient(mongodb_connection_string)
 db = client[mongodb_db]
 users = db[mongodb_users]
 
-# Handle OPTIONS requests for CORS preflight
 @app.before_request
 def handle_options():
     if request.method == 'OPTIONS':
@@ -65,7 +64,7 @@ def generate_doc():
         style.font.name = 'Calibri'
         style.font.size = Pt(11)
 
-        # HEADER - Name and Contact Information
+        # HEADER - Add Name and Contact Information Once
         header = doc.add_paragraph()
         name = header.add_run(f"{user['resume']['basicInfo']['firstName']} {user['resume']['basicInfo']['lastName']}\n")
         name.font.size = Pt(16)
@@ -83,7 +82,7 @@ def generate_doc():
 
         # SECTIONS: Format dynamically generated resume content
         sections = generated_resume.split('\n\n')  # Assuming '\n\n' separates sections
-        for section in sections:
+        for i, section in enumerate(sections):
             lines = section.split('\n')
 
             # Title of the section
@@ -93,7 +92,7 @@ def generate_doc():
 
                 # Reduce spacing after the title
                 title_format = title.paragraph_format
-                title_format.space_after = Pt(6)  # Set spacing after title to 6pt
+                title_format.space_after = Pt(6)
 
                 # Content of the section
                 for line in lines[1:]:
@@ -105,11 +104,13 @@ def generate_doc():
 
                         # Reduce spacing after each paragraph
                         content_format = content_paragraph.paragraph_format
-                        content_format.space_after = Pt(3)  # Set spacing to 3pt
+                        content_format.space_after = Pt(3)
 
-            doc.add_paragraph("")  # Add a slight gap between sections
+            # Add spacing between sections, except after the last section
+            if i < len(sections) - 1:
+                doc.add_paragraph("")
 
-        # FOOTER - Optional Notes or References
+        # FOOTER - Add References Information Once
         footer = doc.add_paragraph()
         footer.add_run("\nReferences available upon request").italic = True
         footer.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
