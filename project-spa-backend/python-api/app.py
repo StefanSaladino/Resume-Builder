@@ -77,7 +77,9 @@ def generate_doc():
         contact.font.italic = True
         header.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-        doc.add_paragraph("\n")  # Add spacing after the header
+        # Reduce spacing after the header
+        header_format = header.paragraph_format
+        header_format.space_after = Pt(6)
 
         # SECTIONS: Format dynamically generated resume content
         sections = generated_resume.split('\n\n')  # Assuming '\n\n' separates sections
