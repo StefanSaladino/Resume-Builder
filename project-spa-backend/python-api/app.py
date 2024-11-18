@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 import os
 import tempfile
 from docx.shared import Pt
-from docx.oxml.ns import qn
-from docx.oxml import OxmlElement
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 # Load environment variables from the .env file
@@ -91,15 +89,23 @@ def generate_doc():
                 title = doc.add_paragraph(lines[0], style='Heading 1')
                 title.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
+                # Reduce spacing after the title
+                title_format = title.paragraph_format
+                title_format.space_after = Pt(6)  # Set spacing after title to 6pt
+
                 # Content of the section
                 for line in lines[1:]:
                     if line.strip():
                         if line.startswith("-"):
-                            doc.add_paragraph(line.strip("- "), style='List Bullet')
+                            content_paragraph = doc.add_paragraph(line.strip("- "), style='List Bullet')
                         else:
-                            doc.add_paragraph(line.strip())
+                            content_paragraph = doc.add_paragraph(line.strip())
 
-            doc.add_paragraph("\n")  # Add spacing after sections
+                        # Reduce spacing after each paragraph
+                        content_format = content_paragraph.paragraph_format
+                        content_format.space_after = Pt(3)  # Set spacing to 3pt
+
+            doc.add_paragraph("")  # Add a slight gap between sections
 
         # FOOTER - Optional Notes or References
         footer = doc.add_paragraph()
